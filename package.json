@@ -1,0 +1,62 @@
+{
+  "name": "checkin",
+  "version": "0.1.0",
+  "description": "Check In API for Aetheras Employees",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development nodemon --watch src src/server.js",
+    "start": "node src/server.js",
+    "lint": "eslint . --ignore-path .gitignore",
+    "lint:fix": "eslint . --ignore-path .gitignore --fix"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "git add"
+    ]
+  },
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "uuid": "^3.3.2",
+    "moment": "^2.24.0",
+    "p-event": "^4.1.0",
+    "winston": "^3.2.1",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.0",
+    "pg": "^7.11.0",
+    "bcrypt": "^3.0.6",
+    "jsonwebtoken": "^8.4.0",
+    "kcors": "2.2.2",
+    "knex": "^0.16.5",
+    "koa": "^2.6.2",
+    "koa-bodyparser": "^4.2.1",
+    "koa-helmet": "^4.0.0",
+    "koa-jwt": "^3.5.1",
+    "koa-logger": "^3.2.0",
+    "koa-response-time": "^2.1.0",
+    "koa-router": "^7.4.0",
+    "koa-x-request-id": "^2.0.0",
+    "stoppable": "^1.1.0",
+    "validator": "11.0.0",
+    "yup": "^0.27.0"
+  },
+  "devDependencies": {
+    "cross-env": "^5.2.0",
+    "eslint": "^5.13.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-node": "^8.0.1",
+    "eslint-plugin-promise": "^4.0.1",
+    "husky": "^1.3.1",
+    "lint-staged": "^8.1.3",
+    "nodemon": "^1.18.9"
+  },
+  "engines": {
+    "node": ">=10"
+  }
+}
