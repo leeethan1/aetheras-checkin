@@ -1,9 +1,21 @@
+let i = 0;
+const cookieDelete = function (ctx) {
+  ctx.cookies.set('name', '', { httpOnly: false });
+};
 module.exports = {
   async hello(ctx) {
-    ctx.body = { resp: 'Check In API' };
+    ctx.body = { resp: 'hello' };
+    ctx.redirect('./sample2');
+    ctx.cookies.set('name', 'ethan', { httpOnly: false });
   },
   async byebye(ctx) {
-    ctx.body = { data: 'good bye' };
+    ctx.body = {
+      resp: 'bye',
+      name: ctx.cookies.get('name'),
+    };
+    ctx.body.redirected = ctx.cookies.get('name') ? 'yes' : 'no';
+    // console.log(ctx.status);
+    cookieDelete(ctx);
   },
   async tests(ctx) {
     ctx.append('hello', 'header');
@@ -29,4 +41,31 @@ module.exports = {
     const start = new Date();
     ctx.body = `Time: ${start}`;
   },
+
+  async count(ctx) {
+    i += 1;
+    ctx.body = { count: i };
+    if (i % 2 === 1) {
+      ctx.body.number = 'odd';
+    } else {
+      ctx.body.number = 'even';
+    }
+    cookieDelete(ctx);
+  },
+  async startover(ctx) {
+    i = 0;
+    ctx.body = 'count reset!';
+    cookieDelete(ctx);
+  },
+  async today(ctx) {
+    const d = new Date();
+    const ampm = d.getHours() > 12 ? 'pm' : 'am';
+    ctx.body = {
+      date: d.toDateString(),
+      time: `${d.getHours()} : ${d.getMinutes()}${ampm}`,
+    };
+    cookieDelete(ctx);
+  },
+
+
 };
