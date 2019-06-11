@@ -1,6 +1,6 @@
 FROM node:latest
 
-WORKDIR /checkin
+WORKDIR /aetheras-checkin
 
 # install packages
 COPY package*.json ./
