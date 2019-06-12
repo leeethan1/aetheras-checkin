@@ -1,3 +1,7 @@
+/* eslint-disable  no-console */
+/* eslint-disable  func-names */
+const db = require('../app/db');
+
 let i = 0;
 const cookieDelete = function (ctx) {
   ctx.cookies.set('name', '', { httpOnly: false });
@@ -79,6 +83,11 @@ module.exports = {
     console.log(q);
     console.log('checking in');
     ctx.body = { status: 'checked in' };
+
+    await db('work').insert({ email: q });
+    // x = await db('work').select();
+    // console.log(x);
+    console.log('CHECKED IN');
   },
   async checkout(ctx) {
     const start = new Date();
@@ -93,6 +102,11 @@ module.exports = {
     console.log(q);
     console.log('checking out');
     ctx.body = { status: 'checked out' };
+
+    await db('work').insert({ email: q });
+    // x = await db('work').select();
+    // console.log(x);
+    console.log('CHECKED OUT');
   },
 
 

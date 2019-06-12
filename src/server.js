@@ -2,10 +2,10 @@
 /* eslint-disable  no-process-exit */
 const pEvent = require('p-event');
 
-// const config = require("config");
+// const config = require('./config');
 const createServerAndListen = require('./app/serverbuilder');
 const logger = require('./app/logger');
-// const db = require('./app/db');
+const db = require('./app/db');
 const app = require('./app/app');
 
 async function main() {
@@ -14,8 +14,8 @@ async function main() {
   let server;
 
   try {
-    // await db.select(db.raw("1"));
-    // logger.info("Database connected");
+    await db.select(db.raw('1'));
+    logger.info('Database connected');
 
     server = await createServerAndListen(app, port, host);
     logger.info('hey we are running');
@@ -39,7 +39,7 @@ async function main() {
     }
 
     logger.debug('Close database');
-    // await db.destroy();
+    await db.destroy();
     logger.debug('Database closed');
 
     setTimeout(() => process.exit(), 10000).unref();
