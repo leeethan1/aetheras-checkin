@@ -78,6 +78,7 @@ module.exports = {
     const q = ctx.request.querystring;
     console.log(q);
     console.log('checking in');
+    ctx.body = { status: 'checked in' };
   },
   async checkout(ctx) {
     const start = new Date();
@@ -91,6 +92,7 @@ module.exports = {
     const q = ctx.request.querystring;
     console.log(q);
     console.log('checking out');
+    ctx.body = { status: 'checked out' };
   },
 
 
