@@ -6,7 +6,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Aetheras</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="index.css" />
     <script src="index.js"></script>
 
     <style>
@@ -15,7 +14,7 @@
             font-family: 'Verdana'
         }
 
-        #submit {
+        input[type=button] {
             border-radius: 10px;
             width: 100px;
             height: 25px;
@@ -38,13 +37,14 @@
 
 <body>
     <div>
-        <h1 id='status'>Aetheras Check in</h1>
-        <form>
+        <h1>Aetheras Check in</h1>
+        <form id='form'>
             Email:<br>
             <input type='text' name='email'><br><br>
             <input class='radio' type='radio' name='check' value='checkin'> Check in<br>
             <input class='radio' type='radio' name='check' value='checkout'> Check out<br>
-            <input id='submit' type='submit' value='Submit'>
+            <input type='button' onclick='myfunction()' value='Submit'>
+            <h3 id='text'></h3>
         </form>
 
     </div>
