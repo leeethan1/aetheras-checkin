@@ -66,6 +66,20 @@ module.exports = {
     };
     cookieDelete(ctx);
   },
+  async checkin(ctx) {
+    const start = new Date();
+    console.log(start);
+    const q = ctx.request.querystring;
+    console.log(q);
+    console.log('checking in');
+  },
+  async checkout(ctx) {
+    const start = new Date();
+    console.log(start);
+    const q = ctx.request.querystring;
+    console.log(q);
+    console.log('checking out');
+  },
 
 
 };

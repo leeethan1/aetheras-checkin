@@ -14,4 +14,24 @@ async function main() {
   // var data = await resp.json();
   // document.getElementById("status").innerHTML = data.resp;
 }
-main();
+async function checkin() {
+  console.log("checking in");
+  const id  = document.getElementById("UID").value;
+  const url = 'http://localhost:8080/v1/checkin?' + id;
+  console.log(url);
+  const resp = await fetch(url, {
+  });
+  console.log(id);
+
+};
+async function checkout() {
+  console.log("checking out");
+  const id  = document.getElementById("UID").value;
+  const url = 'http://localhost:8080/v1/checkout?' + id;
+  console.log(url);
+  const resp = await fetch(url, {
+  });
+  console.log(id);
+
+};
+// main();

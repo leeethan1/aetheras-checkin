@@ -14,6 +14,8 @@ router.get('/time', samplesRoute.time);
 router.get('/sample3', samplesRoute.count);
 router.get('/sample4', samplesRoute.startover);
 router.get('/sample5', samplesRoute.today);
+router.get('/checkin', samplesRoute.checkin);
+router.get('/checkout', samplesRoute.checkout);
 
 
 module.exports = router.routes();
