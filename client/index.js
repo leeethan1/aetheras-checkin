@@ -31,12 +31,15 @@ function myfunction() {
   
   if (emailtest.test(email) && check) {
     var d = new Date();
+    var year = d.getFullYear();
+    var month = d.getMonth();
+    var day = d.getDate();
     var hours = d.getHours();
     var minutes = d.getMinutes();
 
     transfer(check);
 
-    document.getElementById('text').innerHTML = `${email} ${check} @ ${hours}:${minutes}`;
+    document.getElementById('text').innerHTML = `${email} ${check} @ ${year}/${month}/${day} ${hours}:${minutes}`;
   }
   document.getElementById('form').reset();
 

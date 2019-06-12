@@ -68,14 +68,26 @@ module.exports = {
   },
   async checkin(ctx) {
     const start = new Date();
-    console.log(start);
+    const year = start.getFullYear();
+    const month = start.getMonth();
+    const day = start.getDate();
+    const hours = start.getHours();
+    const minutes = start.getMinutes();
+
+    console.log(`${year}/${month}/${day} ${hours}:${minutes}`);
     const q = ctx.request.querystring;
     console.log(q);
     console.log('checking in');
   },
   async checkout(ctx) {
     const start = new Date();
-    console.log(start);
+    const year = start.getFullYear();
+    const month = start.getMonth();
+    const day = start.getDate();
+    const hours = start.getHours();
+    const minutes = start.getMinutes();
+
+    console.log(`${year}/${month}/${day} ${hours}:${minutes}`);
     const q = ctx.request.querystring;
     console.log(q);
     console.log('checking out');
