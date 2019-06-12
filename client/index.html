@@ -1,20 +1,55 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Page Title</title>
+    <title>Aetheras</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="index.css" />
     <script src="index.js"></script>
+
+    <style>
+        div {
+            text-align: center;
+            font-family: 'Verdana'
+        }
+
+        #submit {
+            border-radius: 10px;
+            width: 100px;
+            height: 25px;
+            margin: .25%
+        }
+
+
+        input[type=text] {
+            font-size: 17px;
+            width: 200px;
+            border-radius: 5px
+        }
+
+
+        .radio {
+            font-size: 30px
+        }
+    </style>
 </head>
+
 <body>
+    <div>
+        <h1 id='status'>Aetheras Check in</h1>
+        <form>
+            Email:<br>
+            <input type='text' name='email'><br><br>
+            <input class='radio' type='radio' name='check' value='checkin'> Check in<br>
+            <input class='radio' type='radio' name='check' value='checkout'> Check out<br>
+            <input id='submit' type='submit' value='Submit'>
+        </form>
 
-    <h1 id="status">nothing</h1>
-    
+    </div>
 
-    <script>
-    
-    </script>
+
 </body>
+
 </html>
