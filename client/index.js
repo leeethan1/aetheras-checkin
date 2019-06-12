@@ -28,35 +28,39 @@ function myfunction() {
   }
 
   console.log(check);
-  document.getElementById('form').reset();
+  
   if (emailtest.test(email) && check) {
     var d = new Date();
     var hours = d.getHours();
     var minutes = d.getMinutes();
 
+    transfer(check);
+
     document.getElementById('text').innerHTML = `${email} ${check} @ ${hours}:${minutes}`;
   }
-
+  document.getElementById('form').reset();
 
 }
-async function checkin() {
-  console.log("checking in");
-  const id  = document.getElementById("UID").value;
-  const url = 'http://localhost:8080/v1/checkin?' + id;
-  console.log(url);
-  const resp = await fetch(url, {
-  });
-  console.log(id);
-
-};
-async function checkout() {
-  console.log("checking out");
-  const id  = document.getElementById("UID").value;
-  const url = 'http://localhost:8080/v1/checkout?' + id;
-  console.log(url);
-  const resp = await fetch(url, {
-  });
-  console.log(id);
-
+async function transfer(stamp) {
+  if (stamp == "checkin") {
+    console.log("checking in");
+    const data = document.getElementById('form');
+    const id = data[0].value;
+    const url = 'http://localhost:8080/v1/checkin?' + id;
+    console.log(url);
+    const resp = await fetch(url, {
+    });
+    console.log(id);
+  }
+  else if (stamp == "checkout") {
+    console.log("checking out");
+    const data = document.getElementById('form');
+    const id = data[0].value;
+    const url = 'http://localhost:8080/v1/checkout?' + id;
+    console.log(url);
+    const resp = await fetch(url, {
+    });
+    console.log(id);
+  }
 };
 // main();
