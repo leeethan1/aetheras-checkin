@@ -9,9 +9,14 @@
     "es6": true,
     "node": true
   },
-  "plugins": ["promise"],
+  "plugins": [
+    "promise"
+  ],
   "rules": {
-    "linebreak-style": ["error", "windows"],
+    "linebreak-style": [
+      "error",
+      "unix"
+    ],
     "no-unused-vars": [
       "error",
       {
@@ -29,12 +34,21 @@
     "import/order": [
       "error",
       {
-        "groups": [["builtin", "external", "internal"]],
+        "groups": [
+          [
+            "builtin",
+            "external",
+            "internal"
+          ]
+        ],
         "newlines-between": "always"
       }
     ],
     "node/no-missing-import": "error",
     "node/no-extraneous-import": "error",
-    "node/exports-style": ["error", "module.exports"]
+    "node/exports-style": [
+      "error",
+      "module.exports"
+    ]
   }
 }

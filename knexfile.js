@@ -9,7 +9,7 @@ module.exports = {
       port: '5432',
       database: 'postgres',
       user: 'postgres',
-      password: 'docker',
+      password: '123456',
     },
   },
 
