@@ -49,7 +49,7 @@ This is a small example of how to start a postgres docker container and send com
 docker network create testnet
 
 # start a detached postgres container named mydb with default password of 123456
-docker run --rm --name mydb --network testnet -e POSTGRES_PASSWORD=123456 -d postgres:11 
+docker run --rm --name mydb --network testnet -p 5432:5432 -e POSTGRES_PASSWORD=123456 -d postgres:11 
 
 # start a interactive container using psql to connect to mydb
 docker run -it --rm --network testnet postgres:11 psql -h mydb -U postgres
