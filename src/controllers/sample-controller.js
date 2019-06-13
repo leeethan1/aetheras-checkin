@@ -24,7 +24,7 @@ module.exports = {
     ctx.body = { status: 'checked in' };
     var checkinperson = [{
       email: q,
-      checkdate: `${year}/${month}/${day}`,
+      checkdate: `${year}-${month}-${day}`,
       checkintime: `${hours}:${minutes}`,
       checkouttime: null,
     }];
@@ -54,7 +54,7 @@ module.exports = {
       checkdate: `${year}-${month}-${day}`,
       checkouttime: `${hours}:${minutes}`,
     });
-    x = await db('work').select();
+    x = await db('checkin').select();
     console.log(x);
     console.log('CHECKED OUT');
 

@@ -28,7 +28,7 @@ function myfunction() {
   }
 
   console.log(check);
-  
+
   if (emailtest.test(email) && check) {
     var d = new Date();
     var year = d.getFullYear();
@@ -40,6 +40,8 @@ function myfunction() {
     transfer(check);
 
     document.getElementById('text').innerHTML = `${email} ${check} @ ${year}/${month}/${day} ${hours}:${minutes}`;
+  } else {
+    alert('Not Valid');
   }
   document.getElementById('form').reset();
 
