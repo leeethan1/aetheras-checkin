@@ -32,7 +32,7 @@ function myfunction() {
   if (emailtest.test(email) && check) {
     var d = new Date();
     var year = d.getFullYear();
-    var month = d.getMonth();
+    var month = d.getMonth() + 1;
     var day = d.getDate();
     var hours = d.getHours();
     var minutes = d.getMinutes();

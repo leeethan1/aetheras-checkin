@@ -12,7 +12,7 @@ module.exports = {
   async checkin(ctx) {
     const start = new Date();
     const year = start.getFullYear();
-    const month = start.getMonth();
+    const month = start.getMonth() + 1;
     const day = start.getDate();
     const hours = start.getHours();
     const minutes = start.getMinutes();
@@ -38,7 +38,7 @@ module.exports = {
   async checkout(ctx) {
     const start = new Date();
     const year = start.getFullYear();
-    const month = start.getMonth();
+    const month = start.getMonth() + 1;
     const day = start.getDate();
     const hours = start.getHours();
     const minutes = start.getMinutes();
