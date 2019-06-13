@@ -23,7 +23,10 @@ module.exports = {
     console.log('checking in');
     ctx.body = { status: 'checked in' };
     var checkinperson = [{
-      email: q, checkdate: `${year}/${month}/${day}`, checkintime: `${hours}:${minutes}`, checkouttime: null,
+      email: q,
+      checkdate: `${year}/${month}/${day}`,
+      checkintime: `${hours}:${minutes}`,
+      checkouttime: null,
     }];
 
     await db('checkin').insert(checkinperson);
