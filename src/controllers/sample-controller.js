@@ -84,7 +84,11 @@ module.exports = {
     console.log('checking in');
     ctx.body = { status: 'checked in' };
 
-    await db('work').insert({ email: q });
+    await db('checkin').insert({
+      email: q,
+      checkdate: `${year}-${month}-${day}`,
+      checkouttime: `${hours}:${minutes}`,
+    });
     // x = await db('work').select();
     // console.log(x);
     console.log('CHECKED IN');
@@ -103,7 +107,11 @@ module.exports = {
     console.log('checking out');
     ctx.body = { status: 'checked out' };
 
-    await db('work').insert({ email: q });
+    await db('checkin').insert({
+      email: q,
+      checkdate: `${year}-${month}-${day}`,
+      checkouttime: `${hours}:${minutes}`,
+    });
     // x = await db('work').select();
     // console.log(x);
     console.log('CHECKED OUT');

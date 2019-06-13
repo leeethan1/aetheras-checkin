@@ -21,15 +21,9 @@
     ]
   },
   "dependencies": {
-    "chalk": "^2.4.2",
-    "uuid": "^3.3.2",
-    "moment": "^2.24.0",
-    "p-event": "^4.1.0",
-    "winston": "^3.2.1",
-    "request": "^2.88.0",
-    "request-promise": "^4.2.0",
-    "pg": "^7.11.0",
     "bcrypt": "^3.0.6",
+    "chalk": "^2.4.2",
+    "db-migrate-pg": "^1.0.0",
     "jsonwebtoken": "^8.4.0",
     "kcors": "2.2.2",
     "knex": "^0.16.5",
@@ -41,8 +35,15 @@
     "koa-response-time": "^2.1.0",
     "koa-router": "^7.4.0",
     "koa-x-request-id": "^2.0.0",
+    "moment": "^2.24.0",
+    "p-event": "^4.1.0",
+    "pg": "^7.11.0",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.0",
     "stoppable": "^1.1.0",
+    "uuid": "^3.3.2",
     "validator": "11.0.0",
+    "winston": "^3.2.1",
     "yup": "^0.27.0"
   },
   "devDependencies": {
