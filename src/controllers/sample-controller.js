@@ -2,11 +2,14 @@
 
 const db = require('../app/db');
 
+function isEmpty(obj) {
+  for (var key in obj) {
+    if (obj.hasOwnProperty(key))
+      return false;
+  }
+  return true;
+}
 
-// let i = 0;
-// const cookieDelete = function (ctx) {
-//   ctx.cookies.set('name', '', { httpOnly: false });
-// };
 module.exports = {
 
   async checkin(ctx) {
@@ -16,23 +19,35 @@ module.exports = {
     const day = start.getDate();
     const hours = start.getHours();
     const minutes = start.getMinutes();
+    const cdate = `${year}-${month}-${day}`;
+    const ctime = `${hours}:${minutes}`
 
-    console.log(`${year}/${month}/${day} ${hours}:${minutes}`);
     const q = ctx.request.querystring;
-    console.log(q);
+    console.log(`${cdate} ${ctime} ${q}`);
     console.log('checking in');
-    ctx.body = { status: 'checked in' };
-    var checkinperson = [{
-      email: q,
-      checkdate: `${year}-${month}-${day}`,
-      checkintime: `${hours}:${minutes}`,
-      checkouttime: null,
-    }];
 
-    await db('checkin').insert(checkinperson);
-    x = await db('checkin').select();
-    console.log(x);
-    console.log('CHECKED IN');
+    ctx.body = { status: 'checking in' };
+
+    //test if user's first time checking in
+    var test = await db('checkin').where({
+      email: q,
+      checkdate: cdate,
+    }).select();
+
+    if (isEmpty(test)) {
+      //add row with email, checkdate, checktime
+      await db('checkin').insert({
+        email: q,
+        checkdate: cdate,
+        checktime: ctime,
+      });
+      //print out checkin table
+      x = await db('checkin').select();
+      console.log(x);
+      console.log('CHECKED IN');
+    } else {
+      console.log('checkin failed')
+    }
 
   },
   async checkout(ctx) {
@@ -49,81 +64,17 @@ module.exports = {
     console.log('checking out');
     ctx.body = { status: 'checked out' };
 
-    await db('checkin').insert({
+    await db('checkout').insert({
       email: q,
       checkdate: `${year}-${month}-${day}`,
-      checkouttime: `${hours}:${minutes}`,
+      checktime: `${hours}:${minutes}`,
     });
-    x = await db('checkin').select();
+
+    x = await db('checkout').select();
     console.log(x);
     console.log('CHECKED OUT');
-
-
   },
 
 
 };
 
-// async hello(ctx) {
-//   ctx.body = { resp: 'hello' };
-//   ctx.redirect('./sample2');
-//   ctx.cookies.set('name', 'ethan', { httpOnly: false });
-// },
-// async byebye(ctx) {
-//   ctx.body = {
-//     resp: 'bye',
-//     name: ctx.cookies.get('name'),
-//   };
-//   ctx.body.redirected = ctx.cookies.get('name') ? 'yes' : 'no';
-//   // console.log(ctx.status);
-//   cookieDelete(ctx);
-// },
-// async tests(ctx) {
-//   ctx.append('hello', 'header');
-//   ctx.body = { data: 'blah' };
-//   // ctx.querystring = { next: '0' };
-//   // ctx.query = { next: '1' };
-//   // ctx.set({'connection': 'something',});
-//   // ctx.remove('host');
-//   // let x = ctx.accepts('html');
-//   // ctx.body = x;
-
-//   // ctx.body = ctx.get('connection');
-//   // ctx.redirect('http://google.com');
-// },
-// async ids(ctx) {
-//   ctx.body = `id:${ctx.params.id}\n${ctx.search}`;
-//   // console.log(ctx.request);
-//   ctx.set('x-download-options', 'something');
-//   // console.log(ctx.response);
-//   // console.log(ctx.query);
-// },
-// async time(ctx) {
-//   const start = new Date();
-//   ctx.body = `Time: ${start}`;
-// },
-
-// async count(ctx) {
-//   i += 1;
-//   ctx.body = { count: i };
-//   if (i % 2 === 1) {
-//     ctx.body.number = 'odd';
-//   } else {
-//     ctx.body.number = 'even';
-//   }
-//   cookieDelete(ctx);
-// },
-// async startover(ctx) {
-//   i = 0;
-//   ctx.body = 'count reset!';
-//   cookieDelete(ctx);
-// },
-// async today(ctx) {
-//   const d = new Date();
-//   const ampm = d.getHours() > 12 ? 'pm' : 'am';
-//   ctx.body = {
-//     date: d.toDateString(),
-//     time: `${d.getHours()} : ${d.getMinutes()}${ampm}`,
-//   };
-//   cookieDelete(ctx);
-// },
