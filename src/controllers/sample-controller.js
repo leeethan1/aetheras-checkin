@@ -2,6 +2,7 @@
 
 const db = require('../app/db');
 
+//checks if object is empty
 function isEmpty(obj) {
   for (var key in obj) {
     if (obj.hasOwnProperty(key))
@@ -13,16 +14,16 @@ function isEmpty(obj) {
 module.exports = {
 
   async checkin(ctx) {
-    const start = new Date();
-    const year = start.getFullYear();
-    const month = start.getMonth() + 1;
-    const day = start.getDate();
-    const hours = start.getHours();
-    const minutes = start.getMinutes();
-    const cdate = `${year}-${month}-${day}`;
-    const ctime = `${hours}:${minutes}`;
+    var start = new Date();
+    var year = start.getFullYear();
+    var month = start.getMonth() + 1;
+    var day = start.getDate();
+    var hours = start.getHours();
+    var minutes = start.getMinutes();
+    var cdate = `${year}-${month}-${day}`;
+    var ctime = `${hours}:${minutes}`;
+    var q = ctx.request.querystring;
 
-    const q = ctx.request.querystring;
     console.log(`${cdate} ${ctime} ${q}`);
     console.log('checking in');
 
@@ -34,37 +35,39 @@ module.exports = {
       checkdate: cdate,
     }).select();
 
+    //adds row to checkin and prints out table
     if (isEmpty(test)) {
-      //add row to checkin table
       await db('checkin').insert({
         email: q,
         checkdate: cdate,
         checktime: ctime,
       });
-      //print out checkin table
-      x = await db('checkin').select();
+
+      var x = await db('checkin').select();
       console.log(x);
       console.log('CHECKED IN');
+
     } else {
       ctx.status = 409;
       ctx.message = "Already Checked In";
       console.log('checkin failed');
+
     }
 
   },
 
   async checkout(ctx) {
 
-    const start = new Date();
-    const year = start.getFullYear();
-    const month = start.getMonth() + 1;
-    const day = start.getDate();
-    const hours = start.getHours();
-    const minutes = start.getMinutes();
-    const cdate = `${year}-${month}-${day}`;
-    const ctime = `${hours}:${minutes}`;
+    var start = new Date();
+    var year = start.getFullYear();
+    var month = start.getMonth() + 1;
+    var day = start.getDate();
+    var hours = start.getHours();
+    var minutes = start.getMinutes();
+    var cdate = `${year}-${month}-${day}`;
+    var ctime = `${hours}:${minutes}`;
+    var q = ctx.request.querystring;
 
-    const q = ctx.request.querystring;
     console.log(`${cdate} ${ctime} ${q}`);
     console.log('checking out');
 
@@ -84,26 +87,26 @@ module.exports = {
     if (isEmpty(test1)) {
       ctx.status = 409;
       ctx.message = "You have not checked in yet";
-    }
-    else if (!isEmpty(test2)) {
-      //add row to checkout table 
+
+    } else if (!isEmpty(test2)) {
       ctx.status = 409;
       ctx.message = "Already Checked Out";
       console.log('checkout failed');
-    } 
-    else {
+
+      //add row to checkout and prints out table
+    } else {
       await db('checkout').insert({
         email: q,
         checkdate: `${year}-${month}-${day}`,
         checktime: `${hours}:${minutes}`,
       });
 
-      //prints out checkout table
-      x = await db('checkout').select();
+      var x = await db('checkout').select();
 
       console.log(x);
       console.log('CHECKED OUT');
     }
+
   }
 
 };
