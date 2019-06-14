@@ -20,7 +20,7 @@ module.exports = {
     const hours = start.getHours();
     const minutes = start.getMinutes();
     const cdate = `${year}-${month}-${day}`;
-    const ctime = `${hours}:${minutes}`
+    const ctime = `${hours}:${minutes}`;
 
     const q = ctx.request.querystring;
     console.log(`${cdate} ${ctime} ${q}`);
@@ -35,7 +35,7 @@ module.exports = {
     }).select();
 
     if (isEmpty(test)) {
-      //add row with email, checkdate, checktime
+      //add row to checkin table
       await db('checkin').insert({
         email: q,
         checkdate: cdate,
@@ -46,35 +46,56 @@ module.exports = {
       console.log(x);
       console.log('CHECKED IN');
     } else {
-      console.log('checkin failed')
+      console.log('checkin failed');
     }
 
   },
+
   async checkout(ctx) {
+
     const start = new Date();
     const year = start.getFullYear();
     const month = start.getMonth() + 1;
     const day = start.getDate();
     const hours = start.getHours();
     const minutes = start.getMinutes();
+    const cdate = `${year}-${month}-${day}`;
+    const ctime = `${hours}:${minutes}`;
 
-    console.log(`${year}/${month}/${day} ${hours}:${minutes}`);
     const q = ctx.request.querystring;
-    console.log(q);
+    console.log(`${cdate} ${ctime} ${q}`);
     console.log('checking out');
-    ctx.body = { status: 'checked out' };
 
-    await db('checkout').insert({
+    ctx.body = { status: 'checking out' };
+
+    //tests that user has checked in today and is first time checking out
+    var test1 = await db('checkin').where({
       email: q,
-      checkdate: `${year}-${month}-${day}`,
-      checktime: `${hours}:${minutes}`,
-    });
+      checkdate: cdate,
+    }).select();
 
-    x = await db('checkout').select();
-    console.log(x);
-    console.log('CHECKED OUT');
-  },
+    var test2 = await db('checkout').where({
+      email: q,
+      checkdate: cdate,
+    }).select();
 
+    if (!isEmpty(test1) && isEmpty(test2)) {
+      //add row to checkout table 
+      await db('checkout').insert({
+        email: q,
+        checkdate: `${year}-${month}-${day}`,
+        checktime: `${hours}:${minutes}`,
+      });
+
+      //prints out checkout table
+      x = await db('checkout').select();
+
+      console.log(x);
+      console.log('CHECKED OUT');
+    } else {
+      console.log('checkout failed');
+    }
+  }
 
 };
 
