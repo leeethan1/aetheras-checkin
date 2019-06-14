@@ -7,31 +7,28 @@ function myfunction() {
   var email = data[0].value;
   var check;
 
-  if (data[1].checked) {
-    check = data[1].value;
-
-  } else if (data[2].checked) {
-    check = data[2].value;
+  // verifies input is valid email format
+  if (!emailtest.test(email)) {
+    alert('Not Valid');
+  } else if (data[1].value == 'Check In') {
+    checkin();
+  } else if (data[2].value == 'Check Out') {
+    checkout();
 
   }
 
   console.log(check);
 
-  //verifies that proper email is entered and button has been checked
-
-  emailtest.test(email) && check ? transfer(check, email) : alert('Not Valid');
   document.getElementById('form').reset();
 
 }
 
-async function transfer(stamp, email) {
-
-  if (stamp == "checkin") {
+async function checkin() {
     console.log("checking in");
 
     var data = document.getElementById('form');
-    var id = data[0].value;
-    var url = 'http://localhost:8080/v1/checkin?' + id;
+    var email = data[0].value;
+    var url = 'http://localhost:8080/v1/checkin?' + email;
 
     console.log(url);
 
@@ -59,15 +56,14 @@ async function transfer(stamp, email) {
       //alerts user check in failed
       document.getElementById('text').innerHTML = message;
       alert(message);
-
     }
-  } else if (stamp == "checkout") {
-
+}
+async function checkout() {
     console.log("checking out");
 
     var data = document.getElementById('form');
-    var id = data[0].value;
-    var url = 'http://localhost:8080/v1/checkout?' + id;
+    var email = data[0].value;
+    var url = 'http://localhost:8080/v1/checkout?' + email;
 
     console.log(url);
 
@@ -98,6 +94,4 @@ async function transfer(stamp, email) {
 
     }
 
-  }
-};
-
+}
