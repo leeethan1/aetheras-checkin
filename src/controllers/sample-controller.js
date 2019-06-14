@@ -12,7 +12,7 @@ module.exports = {
   async checkin(ctx) {
     const start = new Date();
     const year = start.getFullYear();
-    const month = start.getMonth();
+    const month = start.getMonth() + 1;
     const day = start.getDate();
     const hours = start.getHours();
     const minutes = start.getMinutes();
@@ -38,17 +38,18 @@ module.exports = {
   async checkout(ctx) {
     const start = new Date();
     const year = start.getFullYear();
-    const month = start.getMonth();
+    const month = start.getMonth() + 1;
     const day = start.getDate();
     const hours = start.getHours();
     const minutes = start.getMinutes();
+    const date = `${year}-${month}-${day}`;
 
     // console.log(`${year}/${month}/${day} ${hours}:${minutes}`);
     const email = ctx.request.querystring;
     // console.log(q);
     // console.log('checking out');
     ctx.body = { status: 'checked out' };
-    if (noduplicate(email, start)) {
+    if (noduplicate(email, date)) {
       // try{
         console.log("STARTING")
         await db('checkin').insert({
@@ -76,7 +77,25 @@ module.exports = {
 
 function noduplicate(email, date) {
   console.log("RUNNING")
-  date = date.toDateString();
+  // date = date.toDateString();
+
+  // REVIEW HERE
+  function isEmpty(obj) {
+    for (var key in obj) {
+      if (obj.hasOwnProperty(key))
+        return false;
+    }
+    return true;
+  }
+  var test = db('checkin').where({email: email, checkdate: date}).select();
+  if (isEmpty(test))
+    return true
+  else {
+    console.log(test[0['email']])
+    return false
+  }
+    
+  
   try{
     console.log("RUNNING IN")
     db('checkin').select('email', 'checkdate', 'checkouttime')
