@@ -46,6 +46,8 @@ module.exports = {
       console.log(x);
       console.log('CHECKED IN');
     } else {
+      ctx.status = 409;
+      ctx.message = "Already Checked In";
       console.log('checkin failed');
     }
 
@@ -79,8 +81,17 @@ module.exports = {
       checkdate: cdate,
     }).select();
 
-    if (!isEmpty(test1) && isEmpty(test2)) {
+    if (isEmpty(test1)) {
+      ctx.status = 409;
+      ctx.message = "You have not checked in yet";
+    }
+    else if (!isEmpty(test2)) {
       //add row to checkout table 
+      ctx.status = 409;
+      ctx.message = "Already Checked Out";
+      console.log('checkout failed');
+    } 
+    else {
       await db('checkout').insert({
         email: q,
         checkdate: `${year}-${month}-${day}`,
@@ -92,8 +103,6 @@ module.exports = {
 
       console.log(x);
       console.log('CHECKED OUT');
-    } else {
-      console.log('checkout failed');
     }
   }
 

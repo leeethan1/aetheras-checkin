@@ -30,23 +30,23 @@ function myfunction() {
   console.log(check);
 
   if (emailtest.test(email) && check) {
-    var d = new Date();
-    var year = d.getFullYear();
-    var month = d.getMonth() + 1;
-    var day = d.getDate();
-    var hours = d.getHours();
-    var minutes = d.getMinutes();
+    // var d = new Date();
+    // var year = d.getFullYear();
+    // var month = d.getMonth() + 1;
+    // var day = d.getDate();
+    // var hours = d.getHours();
+    // var minutes = d.getMinutes();
 
-    transfer(check);
+    transfer(check, email);
 
-    document.getElementById('text').innerHTML = `${email} ${check} @ ${year}/${month}/${day} ${hours}:${minutes}`;
+    // document.getElementById('text').innerHTML = `${email} ${check} @ ${year}/${month}/${day} ${hours}:${minutes}`;
   } else {
     alert('Not Valid');
   }
   document.getElementById('form').reset();
 
 }
-async function transfer(stamp) {
+async function transfer(stamp, email) {
   if (stamp == "checkin") {
     console.log("checking in");
     const data = document.getElementById('form');
@@ -55,7 +55,26 @@ async function transfer(stamp) {
     console.log(url);
     const resp = await fetch(url, {
     });
-    console.log(id);
+    var status  = resp.status;
+    var message = resp.statusText;
+    console.log(status);
+    console.log(message);
+    if (status == 200) {
+      var d = new Date();
+      var year = d.getFullYear();
+      var month = d.getMonth() + 1;
+      var day = d.getDate();
+      var hours = d.getHours();
+      var minutes = d.getMinutes();
+
+      document.getElementById('text').innerHTML = 
+      `${email} ${stamp} @ ${year}/${month}/${day} ${hours}:${minutes}`;
+    }
+    else {
+      document.getElementById('text').innerHTML = message;
+      alert(message);
+    }
+    
   }
   else if (stamp == "checkout") {
     console.log("checking out");
@@ -65,7 +84,26 @@ async function transfer(stamp) {
     console.log(url);
     const resp = await fetch(url, {
     });
-    console.log(id);
+    var status  = resp.status;
+    var message = resp.statusText;
+    console.log(status);
+    console.log(message);
+    if (status == 200) {
+      var d = new Date();
+      var year = d.getFullYear();
+      var month = d.getMonth() + 1;
+      var day = d.getDate();
+      var hours = d.getHours();
+      var minutes = d.getMinutes();
+
+      document.getElementById('text').innerHTML = 
+      `${email} ${stamp} @ ${year}/${month}/${day} ${hours}:${minutes}`;
+    }
+    else {
+      document.getElementById('text').innerHTML = message;
+      alert(message);
+    }
+    // console.log(resp);
   }
 };
 // main();
