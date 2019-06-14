@@ -17,14 +17,14 @@ module.exports = {
     const hours = start.getHours();
     const minutes = start.getMinutes();
 
-    console.log(`${year}/${month}/${day} ${hours}:${minutes}`);
-    const q = ctx.request.querystring;
-    console.log(q);
-    console.log('checking in');
+    // console.log(`${year}/${month}/${day} ${hours}:${minutes}`);
+    const email = ctx.request.querystring;
+    // console.log(q);
+    // console.log('checking in');
     ctx.body = { status: 'checked in' };
     var checkinperson = [{
-      email: q,
-      checkdate: `${year}/${month}/${day}`,
+      email: email,
+      checkdate: `${year}-${month}-${day}`,
       checkintime: `${hours}:${minutes}`,
       checkouttime: null,
     }];
@@ -43,27 +43,71 @@ module.exports = {
     const hours = start.getHours();
     const minutes = start.getMinutes();
 
-    console.log(`${year}/${month}/${day} ${hours}:${minutes}`);
-    const q = ctx.request.querystring;
-    console.log(q);
-    console.log('checking out');
+    // console.log(`${year}/${month}/${day} ${hours}:${minutes}`);
+    const email = ctx.request.querystring;
+    // console.log(q);
+    // console.log('checking out');
     ctx.body = { status: 'checked out' };
-
-    await db('checkin').insert({
-      email: q,
-      checkdate: `${year}-${month}-${day}`,
-      checkouttime: `${hours}:${minutes}`,
-    });
-    x = await db('work').select();
-    console.log(x);
+    if (noduplicate(email, start)) {
+      // try{
+        console.log("STARTING")
+        await db('checkin').insert({
+          email: email,
+          checkdate: `${year}-${month}-${day}`,
+          checkouttime: `${hours}:${minutes}`,
+        });
+        console.log("CHECKING OUT");
+        // x = await db('checkin').select();
+        // console.log(x);
+      // } catch (err) {
+      //   console.log("CHECKINGOUTERROR")
+      // };
+    }
+    else
+      console.log("ALREADY CHECKIN/OUT");
+    
+    
+    
     console.log('CHECKED OUT');
 
 
   },
-
-
 };
 
+function noduplicate(email, date) {
+  console.log("RUNNING")
+  date = date.toDateString();
+  try{
+    console.log("RUNNING IN")
+    db('checkin').select('email', 'checkdate', 'checkouttime')
+    .whereIn(['email'], [email])
+    .then((rows) => {
+      for (row of rows) {
+        let i = row['checkdate'].toString().substring(0, 15);
+        console.log(date);
+        console.log(i);
+        let x = row['checkouttime'].toString().substring(0, 15);
+        if (i == date || x == date) {
+          console.log("RETURNING FALSE");
+          return false;
+        }
+          ;
+        // console.log(`${row['email']} ${row['checkdate']} ${row['checkouttime']}`);
+      }
+      console.log("RETURNING TRUE");
+      return true;
+      
+        
+    }).catch((err) => {
+      console.log("INCATCH ERR")
+      return true;
+    });
+  } catch (err) {
+    console.log("CHECKDUPLICATEERROR", err.message)
+  };
+  
+ 
+};
 // async hello(ctx) {
 //   ctx.body = { resp: 'hello' };
 //   ctx.redirect('./sample2');
