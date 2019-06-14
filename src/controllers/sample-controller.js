@@ -1,192 +1,161 @@
-/* eslint-disable */
+/* eslint-disable no-console */
+/* eslint-disable no-prototype-builtins */
+/* eslint-disable no-var */
+/* eslint-disable vars-on-top */
+/* eslint-disable no-restricted-syntax */
 
 const db = require('../app/db');
 
+// checks if object is empty
+function isEmpty(obj) {
+  for (var key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      return false;
+    }
+  }
+  return true;
+}
 
-// let i = 0;
-// const cookieDelete = function (ctx) {
-//   ctx.cookies.set('name', '', { httpOnly: false });
-// };
+function getFDateTime() {
+  const start = new Date();
+  const year = start.getFullYear();
+  const month = start.getMonth() + 1;
+  const day = start.getDate();
+  var hours = start.getHours();
+  if (hours < 10) {
+    hours = `0${hours}`;
+  }
+  var minutes = start.getMinutes();
+  if (minutes < 10) {
+    minutes = `0${minutes}`;
+  }
+  const fDate = `${year}-${month}-${day}`;
+  const fTime = `${hours}:${minutes}`;
+
+  return [fDate, fTime];
+}
+
 module.exports = {
 
   async checkin(ctx) {
-    const start = new Date();
-    const year = start.getFullYear();
-    const month = start.getMonth() + 1;
-    const day = start.getDate();
-    const hours = start.getHours();
-    const minutes = start.getMinutes();
+    const date = getFDateTime();
+    const fDate = date[0];
+    const fTime = date[1];
+    const emailadr = ctx.request.querystring;
+    var uid;
 
-    // console.log(`${year}/${month}/${day} ${hours}:${minutes}`);
-    const email = ctx.request.querystring;
-    // console.log(q);
-    // console.log('checking in');
-    ctx.body = { status: 'checked in' };
-    var checkinperson = [{
-      email: email,
-      checkdate: `${year}-${month}-${day}`,
-      checkintime: `${hours}:${minutes}`,
-      checkouttime: null,
-    }];
+    console.log(`${fDate} ${fTime} ${emailadr}`);
+    console.log('checking in');
 
-    await db('checkin').insert(checkinperson);
-    x = await db('checkin').select();
-    console.log(x);
-    console.log('CHECKED IN');
+    // checks whether email exists in database
+    var ref = await db('employees').where({
+      email: emailadr,
+    }).select();
 
+    if (!isEmpty(ref)) {
+      uid = db('employees').where({
+        email: emailadr,
+      }).select('id');
+    } else {
+      ctx.status = 409;
+      ctx.message = 'Email Does Not Exist';
+
+      console.log('EMAIL DOES NOT EXIST+++++++++++');
+
+      return;
+    }
+
+    // checks whether user has already checked in today
+    var checkins = await db('checkin').where({
+      email: emailadr,
+      checkdate: fDate,
+    }).select();
+
+    if (!isEmpty(checkins)) {
+      ctx.status = 409;
+      ctx.message = 'Already Checked In';
+
+      console.log('CHECKIN FAILED');
+    } else {
+      // add row to checkin table
+      await db('checkin').insert({
+        id: uid,
+        email: emailadr,
+        checkdate: fDate,
+        checktime: fTime,
+      });
+      ctx.status = 200;
+
+      // print out checkin table
+      var x = await db('checkin').select();
+      console.log(x);
+      console.log('CHECKED IN');
+    }
   },
+
   async checkout(ctx) {
-    const start = new Date();
-    const year = start.getFullYear();
-    const month = start.getMonth() + 1;
-    const day = start.getDate();
-    const hours = start.getHours();
-    const minutes = start.getMinutes();
-    const date = `${year}-${month}-${day}`;
+    const date = getFDateTime();
+    const fDate = date[0];
+    const fTime = date[1];
+    const emailadr = ctx.request.querystring;
+    var uid;
 
-    // console.log(`${year}/${month}/${day} ${hours}:${minutes}`);
-    const email = ctx.request.querystring;
-    // console.log(q);
-    // console.log('checking out');
-    ctx.body = { status: 'checked out' };
-    if (noduplicate(email, date)) {
-      // try{
-        console.log("STARTING")
-        await db('checkin').insert({
-          email: email,
-          checkdate: `${year}-${month}-${day}`,
-          checkouttime: `${hours}:${minutes}`,
-        });
-        console.log("CHECKING OUT");
-        // x = await db('checkin').select();
-        // console.log(x);
-      // } catch (err) {
-      //   console.log("CHECKINGOUTERROR")
-      // };
+    console.log(`${fDate} ${fTime} ${emailadr}`);
+    console.log('checking out');
+
+    // checks whether email exists in database
+    var ref = await db('employees').where({
+      email: emailadr,
+    }).select();
+
+    if (!isEmpty(ref)) {
+      uid = db('employees').where({
+        email: emailadr,
+      }).select('id');
+    } else {
+      ctx.status = 409;
+      ctx.message = 'Email Does Not Exist';
+
+      console.log('EMAIL DOES NOT EXIST+++++++++++');
+
+      return;
     }
-    else
-      console.log("ALREADY CHECKIN/OUT");
-    
-    
-    
-    console.log('CHECKED OUT');
 
+    // checks whether user has checked in or checked out today
+    var checkins = await db('checkin').where({
+      email: emailadr,
+      checkdate: fDate,
+    }).select();
+    var checkouts = await db('checkout').where({
+      email: emailadr,
+      checkdate: fDate,
+    }).select();
 
+    if (isEmpty(checkins)) {
+      ctx.status = 409;
+      ctx.message = 'You have not checked in yet';
+
+      console.log('CHECKOUT FAILED1');
+    } else if (!isEmpty(checkouts)) {
+      ctx.status = 409;
+      ctx.message = 'Already Checked Out';
+
+      console.log('CHECKOUT FAILED2');
+    } else {
+      await db('checkout').insert({
+        // add row to checkout table
+        id: uid,
+        email: emailadr,
+        checkdate: fDate,
+        checktime: fTime,
+      });
+      ctx.status = 200;
+
+      // prints out checkout table
+      var x = await db('checkout').select();
+      console.log(x);
+      console.log('CHECKED OUT');
+    }
   },
+
 };
-
-function noduplicate(email, date) {
-  console.log("RUNNING")
-  // date = date.toDateString();
-
-  // REVIEW HERE
-  function isEmpty(obj) {
-    for (var key in obj) {
-      if (obj.hasOwnProperty(key))
-        return false;
-    }
-    return true;
-  }
-  var test = db('checkin').where({email: email, checkdate: date}).select();
-  if (isEmpty(test))
-    return true
-  else {
-    console.log(test[0['email']])
-    return false
-  }
-    
-  
-  try{
-    console.log("RUNNING IN")
-    db('checkin').select('email', 'checkdate', 'checkouttime')
-    .whereIn(['email'], [email])
-    .then((rows) => {
-      for (row of rows) {
-        let i = row['checkdate'].toString().substring(0, 15);
-        console.log(date);
-        console.log(i);
-        let x = row['checkouttime'].toString().substring(0, 15);
-        if (i == date || x == date) {
-          console.log("RETURNING FALSE");
-          return false;
-        }
-          ;
-        // console.log(`${row['email']} ${row['checkdate']} ${row['checkouttime']}`);
-      }
-      console.log("RETURNING TRUE");
-      return true;
-      
-        
-    }).catch((err) => {
-      console.log("INCATCH ERR")
-      return true;
-    });
-  } catch (err) {
-    console.log("CHECKDUPLICATEERROR", err.message)
-  };
-  
- 
-};
-// async hello(ctx) {
-//   ctx.body = { resp: 'hello' };
-//   ctx.redirect('./sample2');
-//   ctx.cookies.set('name', 'ethan', { httpOnly: false });
-// },
-// async byebye(ctx) {
-//   ctx.body = {
-//     resp: 'bye',
-//     name: ctx.cookies.get('name'),
-//   };
-//   ctx.body.redirected = ctx.cookies.get('name') ? 'yes' : 'no';
-//   // console.log(ctx.status);
-//   cookieDelete(ctx);
-// },
-// async tests(ctx) {
-//   ctx.append('hello', 'header');
-//   ctx.body = { data: 'blah' };
-//   // ctx.querystring = { next: '0' };
-//   // ctx.query = { next: '1' };
-//   // ctx.set({'connection': 'something',});
-//   // ctx.remove('host');
-//   // let x = ctx.accepts('html');
-//   // ctx.body = x;
-
-//   // ctx.body = ctx.get('connection');
-//   // ctx.redirect('http://google.com');
-// },
-// async ids(ctx) {
-//   ctx.body = `id:${ctx.params.id}\n${ctx.search}`;
-//   // console.log(ctx.request);
-//   ctx.set('x-download-options', 'something');
-//   // console.log(ctx.response);
-//   // console.log(ctx.query);
-// },
-// async time(ctx) {
-//   const start = new Date();
-//   ctx.body = `Time: ${start}`;
-// },
-
-// async count(ctx) {
-//   i += 1;
-//   ctx.body = { count: i };
-//   if (i % 2 === 1) {
-//     ctx.body.number = 'odd';
-//   } else {
-//     ctx.body.number = 'even';
-//   }
-//   cookieDelete(ctx);
-// },
-// async startover(ctx) {
-//   i = 0;
-//   ctx.body = 'count reset!';
-//   cookieDelete(ctx);
-// },
-// async today(ctx) {
-//   const d = new Date();
-//   const ampm = d.getHours() > 12 ? 'pm' : 'am';
-//   ctx.body = {
-//     date: d.toDateString(),
-//     time: `${d.getHours()} : ${d.getMinutes()}${ampm}`,
-//   };
-//   cookieDelete(ctx);
-// },

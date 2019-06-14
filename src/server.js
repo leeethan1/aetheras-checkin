@@ -22,7 +22,8 @@ async function main() {
     server = await createServerAndListen(app, port, host);
     logger.info('hey we are running');
     logger.info(
-      `${chalk.green('✓')} App is running on port ${chalk.yellow(`${port}`)} in ${chalk.yellow(config.env)} mode`,
+      `${chalk.green('✓')} App is running on port `
+       + `${chalk.yellow(`${port}`)} in ${chalk.yellow(config.env)} mode`,
     );
 
     await Promise.race([
