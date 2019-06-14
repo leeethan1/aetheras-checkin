@@ -1,8 +1,9 @@
 /* eslint-disable max-len */
 /* eslint-disable  no-process-exit */
 const pEvent = require('p-event');
+const chalk = require('chalk');
 
-// const config = require('./config');
+const config = require('./config');
 const createServerAndListen = require('./app/serverbuilder');
 const logger = require('./app/logger');
 const db = require('./app/db');
@@ -19,9 +20,10 @@ async function main() {
 
     server = await createServerAndListen(app, port, host);
     logger.info('hey we are running');
-    // logger.info(
-    //   `${chalk.green('✓')} App is running on port ${chalk.yellow(`${port}`)} in ${chalk.yellow(app.get('env'))} mode`
-    // );
+    logger.info(
+      `${chalk.green('✓')} App is running on port `
+       + `${chalk.yellow(`${port}`)} in ${chalk.yellow(config.env)} mode`,
+    );
 
     await Promise.race([
       ...['SIGINT', 'SIGHUP', 'SIGTERM'].map(s => pEvent(process, s, {
