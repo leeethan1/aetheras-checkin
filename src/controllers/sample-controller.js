@@ -6,6 +6,7 @@
 
 const db = require('../app/db');
 
+// checks if object is empty
 function isEmpty(obj) {
   for (var key in obj) {
     if (obj.hasOwnProperty(key)) {
