@@ -6,51 +6,76 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Aetheras</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="index.js"></script>
+
+
 
     <style>
+        body {
+            height: 100%;
+            width: 100%;
+            background-size: cover;
+            background-image: url('download.png');
+        }
+
         div {
             text-align: center;
-            font-family: 'Verdana'
+            font-family: 'Verdana';
+            color: #2F4356;
+        }
+
+        h1 {
+            margin-top: 50px;
+            margin-bottom: 25px;
+            font-family: 'Impact';
+            font-size: 70px;
         }
 
         input[type=button] {
-            border-radius: 10px;
+            border-radius: 100px;
             width: 100px;
-            height: 25px;
-            margin: .25%
+            height: 35px;
+            margin: 10px;
+            font-size: 15px;
+
         }
 
 
         input[type=text] {
-            font-size: 17px;
-            width: 200px;
-            border-radius: 5px
+            font-size: 20px;
+            width: 270px;
+            height: 30px;
+            border-radius: 5px;
+            margin: 20px;
         }
 
-
         .radio {
-            font-size: 30px
+            margin: 8px;
+        }
+
+        .mail {
+            font-size: 25px;
+        }
+
+        .check {
+            font-size: 20px;
         }
     </style>
 </head>
 
 <body>
+
     <div>
         <h1>Aetheras Check in</h1>
         <form id='form'>
-            Email:<br>
+            <span class='mail'>Email:</span><br>
             <input type='text' id='UID' name='email'><br><br>
-            <input class='radio' type='radio' name='check' value='checkin'> Check in<br>
-            <input class='radio' type='radio' name='check' value='checkout'> Check out<br>
+            <input class='radio' type='radio' name='check' value='checkin'> <span class='check'>Check in</span>
+            <input class='radio' type='radio' name='check' value='checkout'> <span class='check'>Check out</span><br>
             <input type='button' onclick='myfunction()' value='Submit'>
             <h3 id='text'></h3>
         </form>
     </div>
-    <script>
-        
-    
-    </script>
+    <script src="index.js"></script>
 
 
 </body>
