@@ -15,33 +15,39 @@ function isEmpty(obj) {
   }
   return true;
 }
+
 function getFDateTime() {
   const start = new Date();
   const year = start.getFullYear();
   const month = start.getMonth() + 1;
   const day = start.getDate();
-  const hours = start.getHours();
-  const minutes = start.getMinutes();
-  const fdate = `${year}-${month}-${day}`;
-  const ftime = `${hours}:${minutes}`;
+  var hours = start.getHours();
+  if (hours < 10) {
+    hours = `0${hours}`;
+  }
+  var minutes = start.getMinutes();
+  if (minutes < 10) {
+    minutes = `0${minutes}`;
+  }
+  const fDate = `${year}-${month}-${day}`;
+  const fTime = `${hours}:${minutes}`;
 
-  return [fdate, ftime];
+  return [fDate, fTime];
 }
 
 module.exports = {
 
   async checkin(ctx) {
     const date = getFDateTime();
-    const fdate = date[0];
-    const ftime = date[1];
+    const fDate = date[0];
+    const fTime = date[1];
     const emailadr = ctx.request.querystring;
     var uid;
 
-    console.log(`${fdate} ${ftime} ${emailadr}`);
+    console.log(`${fDate} ${fTime} ${emailadr}`);
     console.log('checking in');
 
-    ctx.body = { status: 'checking in' };
-
+    // checks whether email exists in database
     var ref = await db('employees').where({
       email: emailadr,
     }).select();
@@ -59,9 +65,10 @@ module.exports = {
       return;
     }
 
+    // checks whether user has already checked in today
     var checkins = await db('checkin').where({
       email: emailadr,
-      checkdate: fdate,
+      checkdate: fDate,
     }).select();
 
     if (!isEmpty(checkins)) {
@@ -74,9 +81,11 @@ module.exports = {
       await db('checkin').insert({
         id: uid,
         email: emailadr,
-        checkdate: fdate,
-        checktime: ftime,
+        checkdate: fDate,
+        checktime: fTime,
       });
+      ctx.status = 200;
+
       // print out checkin table
       var x = await db('checkin').select();
       console.log(x);
@@ -86,16 +95,15 @@ module.exports = {
 
   async checkout(ctx) {
     const date = getFDateTime();
-    const fdate = date[0];
-    const ftime = date[1];
+    const fDate = date[0];
+    const fTime = date[1];
     const emailadr = ctx.request.querystring;
     var uid;
 
-    console.log(`${fdate} ${ftime} ${emailadr}`);
+    console.log(`${fDate} ${fTime} ${emailadr}`);
     console.log('checking out');
 
-    ctx.body = { status: 'checking out' };
-
+    // checks whether email exists in database
     var ref = await db('employees').where({
       email: emailadr,
     }).select();
@@ -113,14 +121,14 @@ module.exports = {
       return;
     }
 
-    // tests that user has checked in today and is first time checking out
+    // checks whether user has checked in or checked out today
     var checkins = await db('checkin').where({
       email: emailadr,
-      checkdate: fdate,
+      checkdate: fDate,
     }).select();
     var checkouts = await db('checkout').where({
       email: emailadr,
-      checkdate: fdate,
+      checkdate: fDate,
     }).select();
 
     if (isEmpty(checkins)) {
@@ -135,11 +143,13 @@ module.exports = {
       console.log('CHECKOUT FAILED2');
     } else {
       await db('checkout').insert({
+        // add row to checkout table
         id: uid,
         email: emailadr,
-        checkdate: fdate,
-        checktime: ftime,
+        checkdate: fDate,
+        checktime: fTime,
       });
+      ctx.status = 200;
 
       // prints out checkout table
       var x = await db('checkout').select();
