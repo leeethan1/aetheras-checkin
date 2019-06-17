@@ -9,9 +9,9 @@ const db = require('../app/db');
 // ONLY FOR TESTING
 async function testvalues() {
   await db('employees').insert([
-    { id: 1, email: 'a@a.com', ip: 'test' },
-    { id: 2, email: 'b@b.com' },
-    { id: 3, email: 'c@c.com' },
+    { email: 'a@a.com', ip: 'test' },
+    { email: 'b@b.com' },
+    { email: 'c@c.com' },
   ]);
 }
 
@@ -37,10 +37,13 @@ function getFDateTime() {
 
   return [fDate, fTime];
 }
-testvalues();
+
 module.exports = {
 
   async checkin(ctx) {
+    // TESTING ONLY
+    testvalues();
+
     const date = getFDateTime();
     const fDate = date[0];
     const fTime = date[1];
