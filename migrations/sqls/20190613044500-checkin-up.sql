@@ -1,4 +1,24 @@
 /* Replace with your SQL commands */
-CREATE TABLE employees (id SERIAL PRIMARY KEY, email VARCHAR UNIQUE, firstname VARCHAR, lastname VARCHAR);
-CREATE TABLE checkin (id INTEGER REFERENCES employees(id), email VARCHAR NOT NULL, checkdate DATE, checktime TIME);
-CREATE TABLE checkout (id INTEGER REFERENCES employees(id), email VARCHAR NOT NULL, checkdate DATE, checktime TIME);
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE TABLE employees (
+  id uuid DEFAULT uuid_generate_v4 () PRIMARY KEY,
+  firstname VARCHAR,
+  lastname VARCHAR,
+  email VARCHAR UNIQUE, 
+  password VARCHAR,
+  ip VARCHAR UNIQUE
+  );
+CREATE TABLE checkin (
+  id uuid REFERENCES employees(id), 
+  email VARCHAR NOT NULL, 
+  checkdate DATE, 
+  checktime TIME,
+  ip VARCHAR
+  );
+CREATE TABLE checkout (
+  id uuid REFERENCES employees(id), 
+  email VARCHAR NOT NULL, 
+  checkdate DATE, 
+  checktime TIME,
+  ip VARCHAR
+);
