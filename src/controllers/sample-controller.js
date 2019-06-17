@@ -4,16 +4,12 @@
 /* eslint-disable vars-on-top */
 /* eslint-disable no-restricted-syntax */
 
+const { types } = require('pg');
+
 const db = require('../app/db');
 
-// ONLY FOR TESTING
-async function testvalues() {
-  await db('employees').insert([
-    { email: 'a@a.com', ip: 'test' },
-    { email: 'b@b.com' },
-    { email: 'c@c.com' },
-  ]);
-}
+const TYPE_DATESTAMP = 1082;
+types.setTypeParser(TYPE_DATESTAMP, date => date);
 
 // checks if object is empty
 function isEmpty(obj) {
@@ -41,9 +37,6 @@ function getFDateTime() {
 module.exports = {
 
   async checkin(ctx) {
-    // TESTING ONLY
-    testvalues();
-
     const date = getFDateTime();
     const fDate = date[0];
     const fTime = date[1];
@@ -89,7 +82,7 @@ module.exports = {
         id: uid,
         email: emailaddr,
         checkdate: fDate,
-        checktime: fTime,
+        checkintime: fTime,
         ip: ipaddr,
       });
       ctx.status = 200;
@@ -156,7 +149,7 @@ module.exports = {
         id: uid,
         email: emailaddr,
         checkdate: fDate,
-        checktime: fTime,
+        checkouttime: fTime,
         ip: ipaddr,
       });
       ctx.status = 200;
@@ -193,8 +186,18 @@ module.exports = {
       throw err;
     }
   },
+
   async employees(ctx) {
     ctx.body = await db('employees').select();
+  },
+
+  async userlogs(ctx) {
+    const emailaddr = ctx.request.body.email;
+
+    const table = await db('checkin').where('checkin.email', emailaddr).select()
+      .innerJoin('checkout', 'checkin.checkdate', 'checkout.checkdate');
+    console.log(table);
+    ctx.response.body = table;
   },
 
 };
