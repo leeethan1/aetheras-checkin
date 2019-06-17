@@ -37,19 +37,16 @@ function getFDateTime() {
 
   return [fDate, fTime];
 }
-
+testvalues();
 module.exports = {
 
   async checkin(ctx) {
     const date = getFDateTime();
     const fDate = date[0];
     const fTime = date[1];
-    const emailaddr = ctx.request.querystring;
+    const emailaddr = ctx.request.body.email;
     const ipaddr = ctx.ip;
     var uid;
-
-    await testvalues();
-    console.log(ctx.ip);
 
     console.log(`${fDate} ${fTime} ${emailaddr}`);
     console.log('checking in');
@@ -105,7 +102,7 @@ module.exports = {
     const date = getFDateTime();
     const fDate = date[0];
     const fTime = date[1];
-    const emailaddr = ctx.request.querystring;
+    const emailaddr = ctx.request.body.email;
     const ipaddr = ctx.ip;
     var uid;
 
