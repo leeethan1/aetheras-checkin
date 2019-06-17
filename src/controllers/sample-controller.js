@@ -6,6 +6,15 @@
 
 const db = require('../app/db');
 
+// ONLY FOR TESTING
+async function testvalues() {
+  await db('employees').insert([
+    { id: 1, email: 'a@a.com', ip: 'test' },
+    { id: 2, email: 'b@b.com' },
+    { id: 3, email: 'c@c.com' },
+  ]);
+}
+
 // checks if object is empty
 function isEmpty(obj) {
   for (var key in obj) {
@@ -35,20 +44,24 @@ module.exports = {
     const date = getFDateTime();
     const fDate = date[0];
     const fTime = date[1];
-    const emailadr = ctx.request.querystring;
+    const emailaddr = ctx.request.querystring;
+    const ipaddr = ctx.ip;
     var uid;
 
-    console.log(`${fDate} ${fTime} ${emailadr}`);
+    await testvalues();
+    console.log(ctx.ip);
+
+    console.log(`${fDate} ${fTime} ${emailaddr}`);
     console.log('checking in');
 
     // checks whether email exists in database
     var ref = await db('employees').where({
-      email: emailadr,
+      email: emailaddr,
     }).select();
 
     if (!isEmpty(ref)) {
       uid = db('employees').where({
-        email: emailadr,
+        email: emailaddr,
       }).select('id');
     } else {
       ctx.status = 409;
@@ -61,7 +74,7 @@ module.exports = {
 
     // checks whether user has already checked in today
     var checkins = await db('checkin').where({
-      email: emailadr,
+      email: emailaddr,
       checkdate: fDate,
     }).select();
 
@@ -74,9 +87,10 @@ module.exports = {
       // add row to checkin table
       await db('checkin').insert({
         id: uid,
-        email: emailadr,
+        email: emailaddr,
         checkdate: fDate,
         checktime: fTime,
+        ip: ipaddr,
       });
       ctx.status = 200;
 
@@ -91,20 +105,21 @@ module.exports = {
     const date = getFDateTime();
     const fDate = date[0];
     const fTime = date[1];
-    const emailadr = ctx.request.querystring;
+    const emailaddr = ctx.request.querystring;
+    const ipaddr = ctx.ip;
     var uid;
 
-    console.log(`${fDate} ${fTime} ${emailadr}`);
+    console.log(`${fDate} ${fTime} ${emailaddr}`);
     console.log('checking out');
 
     // checks whether email exists in database
     var ref = await db('employees').where({
-      email: emailadr,
+      email: emailaddr,
     }).select();
 
     if (!isEmpty(ref)) {
       uid = db('employees').where({
-        email: emailadr,
+        email: emailaddr,
       }).select('id');
     } else {
       ctx.status = 409;
@@ -117,11 +132,11 @@ module.exports = {
 
     // checks whether user has checked in or checked out today
     var checkins = await db('checkin').where({
-      email: emailadr,
+      email: emailaddr,
       checkdate: fDate,
     }).select();
     var checkouts = await db('checkout').where({
-      email: emailadr,
+      email: emailaddr,
       checkdate: fDate,
     }).select();
 
@@ -139,9 +154,10 @@ module.exports = {
       await db('checkout').insert({
         // add row to checkout table
         id: uid,
-        email: emailadr,
+        email: emailaddr,
         checkdate: fDate,
         checktime: fTime,
+        ip: ipaddr,
       });
       ctx.status = 200;
 
@@ -150,6 +166,10 @@ module.exports = {
       console.log(x);
       console.log('CHECKED OUT');
     }
+  },
+
+  async employees(ctx) {
+    ctx.body = await db('employees').select();
   },
 
 };
