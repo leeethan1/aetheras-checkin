@@ -152,4 +152,29 @@ module.exports = {
     }
   },
 
+  async addemail(ctx) {
+    ctx.body = 'Adding email';
+    const query = ctx.request.querystring.split('&');
+    const emailaddr = query[0];
+    const fname = query[1];
+    const lname = query[2];
+
+    // checks if email is already added to the registry
+    try {
+      await db('employees').insert({
+        email: emailaddr,
+        firstname: fname,
+        lastname: lname,
+      });
+      ctx.status = 200;
+
+      var x = await db('checkin').select();
+      console.log(x);
+      console.log('ADDED');
+    } catch (err) {
+      ctx.status = 409;
+      ctx.message = err;
+      throw err;
+    }
+  },
 };
