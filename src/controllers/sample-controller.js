@@ -1,3 +1,4 @@
+/* eslint-disable func-names */
 /* eslint-disable no-console */
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable no-var */
@@ -137,12 +138,12 @@ module.exports = {
       ctx.status = 409;
       ctx.message = 'You have not checked in yet';
 
-      console.log('CHECKOUT FAILED1');
+      console.log('CHECKOUT FAILED: ALREADY CHECKED OUT');
     } else if (!isEmpty(checkouts)) {
       ctx.status = 409;
       ctx.message = 'Already Checked Out';
 
-      console.log('CHECKOUT FAILED2');
+      console.log('CHECKOUT FAILED: ALREADY CHECKED IN');
     } else {
       await db('checkout').insert({
         // add row to checkout table
@@ -191,11 +192,17 @@ module.exports = {
     ctx.body = await db('employees').select();
   },
 
+  // creates combined checkin/checkout json
   async userlogs(ctx) {
     const emailaddr = ctx.request.body.email;
 
-    const table = await db('checkin').where('checkin.email', emailaddr).select()
-      .innerJoin('checkout', 'checkin.checkdate', 'checkout.checkdate');
+    const table = await db('checkin').select()
+      .innerJoin('checkout', function () {
+        this.onIn('checkin.email', [emailaddr])
+          .onIn('checkout.email', [emailaddr])
+          .on('checkin.checkdate', '=', 'checkout.checkdate');
+      });
+
     console.log(table);
     ctx.response.body = table;
   },
