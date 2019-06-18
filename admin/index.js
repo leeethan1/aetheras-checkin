@@ -33,6 +33,12 @@ async function userlogs() {
     var tr = document.createElement("TR");
     document.body.appendChild(tr);
     var th = document.createElement("TH");
+    th.innerHTML = "First Name";
+    document.body.appendChild(th);
+    var th = document.createElement("TH");
+    th.innerHTML =  "Last Name";
+    document.body.appendChild(th);
+    var th = document.createElement("TH");
     th.innerHTML = "Email";
     document.body.appendChild(th);
     th = document.createElement("TH");
@@ -47,6 +53,12 @@ async function userlogs() {
     for (xs in x) {
       var tr = document.createElement("TR");
       document.body.appendChild(tr);
+      var td = document.createElement("TD");
+      td.innerHTML = x[xs].firstname;
+      document.body.appendChild(td);
+      var td = document.createElement("TD");
+      td.innerHTML = x[xs].lastname;
+      document.body.appendChild(td);
       var td = document.createElement("TD");
       td.innerHTML = x[xs].email;
       document.body.appendChild(td);

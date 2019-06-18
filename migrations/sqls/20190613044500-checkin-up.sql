@@ -26,10 +26,10 @@ CREATE TABLE checkout (
 );
 
 -- FOR TESTING PURPOSES
-INSERT INTO employees (id, email) VALUES 
-(1, 'a@a.com'), 
-(2, 'b@b.com'), 
-(3, 'c@c.com');
+INSERT INTO employees (id, firstname, lastname, email) VALUES 
+(1, 'john', 'doe', 'a@a.com'), 
+(2, 'jane', 'doe', 'b@b.com'), 
+(3, 'tom', 'doe', 'c@c.com');
 INSERT INTO checkin (id, email, checkdate, checkintime) VALUES 
 (1, 'a@a.com', '2019-01-01', '01:00'),
 (1, 'a@a.com', '2019-02-01', '02:00'),

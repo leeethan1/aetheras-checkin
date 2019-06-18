@@ -262,9 +262,9 @@ module.exports = {
         this.onIn('checkin.email', [emailaddr])
           .onIn('checkout.email', [emailaddr])
           .on('checkin.checkdate', '=', 'checkout.checkdate');
-      });
+      })
+      .innerJoin('employees', 'employees.id', 'checkin.id');
 
-    console.log(table);
     ctx.response.body = table;
   },
 
