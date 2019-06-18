@@ -36,7 +36,8 @@ INSERT INTO checkin (id, email, checkdate, checkintime) VALUES
 (1, 'a@a.com', '2019-03-01', '03:00'),
 (2, 'b@b.com', '2019-03-01', '04:00'),
 (3, 'c@c.com', '2019-04-01', '05:00'),
-(3, 'c@c.com', '2019-04-03', '06:00');
+(3, 'c@c.com', '2019-04-03', '06:00'),
+(1, 'a@a.com', '2019-06-14', '10:00');
 INSERT INTO checkout (id, email, checkdate, checkouttime) VALUES 
 (1, 'a@a.com', '2019-01-01', '01:30'),
 (1, 'a@a.com', '2019-02-01', '02:30'),

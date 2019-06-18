@@ -35,6 +35,57 @@ function getFDateTime() {
   return [fDate, fTime];
 }
 
+// backlogs checkout if user forgot the previous day
+async function hasCheckedOut(emailaddr) {
+  const start = new Date();
+  var temp = start - 86400000;
+  var prevDate = new Date(temp);
+  const dayNum = prevDate.getDay();
+  // change previous day to Friday if yesterday was Sunday
+  if (dayNum === 0) {
+    temp = start - 259200000;
+    prevDate = new Date(temp);
+  }
+  const year = prevDate.getFullYear();
+  const month = prevDate.getMonth() + 1;
+  const day = prevDate.getDate();
+  const fDate = `${year}-${month}-${day}`;
+  var uid;
+
+  const checkedin = await db('checkin').select().where({
+    email: emailaddr,
+    checkdate: fDate,
+  });
+  if (isEmpty(checkedin)) {
+    return;
+  }
+
+  const checkedout = await db('checkout').select().where({
+    email: emailaddr,
+    checkdate: fDate,
+  });
+  if (isEmpty(checkedout)) {
+    uid = await db('employees').where({
+      email: emailaddr,
+    }).select('id');
+    uid = uid[0].id;
+    await db('checkout').insert({
+      id: uid,
+      email: emailaddr,
+      checkdate: fDate,
+      checkouttime: '20:00',
+    });
+
+    // print inserted row
+    const x = await db('checkout').select().where({
+      email: emailaddr,
+      checkdate: fDate,
+    });
+    console.log(x);
+    console.log('ADDED BACKLOG');
+  }
+}
+
 module.exports = {
 
   async checkin(ctx) {
@@ -54,9 +105,10 @@ module.exports = {
     }).select();
 
     if (!isEmpty(ref)) {
-      uid = db('employees').where({
+      uid = await db('employees').where({
         email: emailaddr,
       }).select('id');
+      uid = uid[0].id;
     } else {
       ctx.status = 409;
       ctx.message = 'Email Does Not Exist';
@@ -65,6 +117,8 @@ module.exports = {
 
       return;
     }
+
+    await hasCheckedOut(emailaddr);
 
     // checks whether user has already checked in today
     var checkins = await db('checkin').where({
@@ -89,7 +143,10 @@ module.exports = {
       ctx.status = 200;
 
       // print out checkin table
-      var x = await db('checkin').select();
+      const x = await db('checkin').select().where({
+        email: emailaddr,
+        checkdate: fDate,
+      });
       console.log(x);
       console.log('CHECKED IN');
     }
@@ -112,9 +169,10 @@ module.exports = {
     }).select();
 
     if (!isEmpty(ref)) {
-      uid = db('employees').where({
+      uid = await db('employees').where({
         email: emailaddr,
       }).select('id');
+      uid = uid[0].id;
     } else {
       ctx.status = 409;
       ctx.message = 'Email Does Not Exist';
@@ -156,7 +214,10 @@ module.exports = {
       ctx.status = 200;
 
       // prints out checkout table
-      var x = await db('checkout').select();
+      const x = await db('checkout').select().where({
+        email: emailaddr,
+        checkdate: fDate,
+      });
       console.log(x);
       console.log('CHECKED OUT');
     }
