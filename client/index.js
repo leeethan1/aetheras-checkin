@@ -30,7 +30,7 @@ async function transfer(stamp, email) {
     console.log("checking in");
 
     var data = document.getElementById('form');
-    var id = data[0].value;
+    var emailaddr = data[0].value;
     var url = 'http://localhost:8080/v1/checkin';
 
     console.log(url);
@@ -40,7 +40,7 @@ async function transfer(stamp, email) {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ email: id }),
+      body: JSON.stringify({ email: emailaddr }),
     });
     var status = resp.status;
     var message = resp.statusText;
@@ -67,7 +67,7 @@ async function transfer(stamp, email) {
     console.log("checking out");
 
     var data = document.getElementById('form');
-    var id = data[0].value;
+    var emailaddr = data[0].value;
     var url = 'http://localhost:8080/v1/checkout';
 
     console.log(url);
@@ -77,7 +77,7 @@ async function transfer(stamp, email) {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ email: id }),
+      body: JSON.stringify({ email: emailaddr }),
     });
     var status = resp.status;
     var message = resp.statusText;
