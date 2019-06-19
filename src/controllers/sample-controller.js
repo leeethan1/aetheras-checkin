@@ -86,6 +86,29 @@ async function hasCheckedOut(emailaddr) {
   }
 }
 
+async function checkIP(check, emailaddr, ipaddr) {
+  const eip = await db('employees').select('ip').where({ email: emailaddr });
+
+  if (eip[0].ip === ipaddr) {
+    return true;
+  }
+  if (eip[0].ip === null) {
+    await db('employees').update({ ip: ipaddr }).where({ email: emailaddr });
+    console.log('UPDATED');
+    return true;
+  }
+
+  // const ips = await db(check).select('ip').where({ email: emailaddr })
+  //   .groupBy('ip')
+  //   .orderByRaw('count(ip) DESC LIMIT 1');
+  // await db('employees').update({ ip: ips[0].ip }).where({ email: emailaddr });
+
+  // if (ips[0].ip === ipaddr) {
+  //   return true;
+  // }
+  return false;
+}
+
 module.exports = {
 
   async checkin(ctx) {
@@ -115,6 +138,14 @@ module.exports = {
 
       console.log('EMAIL DOES NOT EXIST+++++++++++');
 
+      return;
+    }
+
+    const ipcheck = await checkIP('checkin', emailaddr, ipaddr);
+    if (!ipcheck) {
+      console.log('USING DIFFERENT IP');
+      ctx.status = 409;
+      ctx.message = 'Irregular IP address';
       return;
     }
 
@@ -179,6 +210,14 @@ module.exports = {
 
       console.log('EMAIL DOES NOT EXIST+++++++++++');
 
+      return;
+    }
+
+    const ipcheck = await checkIP('checkout', emailaddr, ipaddr);
+    if (!ipcheck) {
+      console.log('USING DIFFERENT IP');
+      ctx.status = 409;
+      ctx.message = 'Irregular IP address';
       return;
     }
 

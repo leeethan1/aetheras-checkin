@@ -6,7 +6,7 @@ CREATE TABLE employees (
   firstname VARCHAR,
   lastname VARCHAR,
   email VARCHAR UNIQUE,
-  ip VARCHAR UNIQUE
+  ip VARCHAR
   );
 CREATE TABLE checkin (
   -- id uuid REFERENCES employees(id), 
@@ -30,6 +30,7 @@ INSERT INTO employees (id, firstname, lastname, email) VALUES
 (1, 'john', 'doe', 'a@a.com'), 
 (2, 'jane', 'doe', 'b@b.com'), 
 (3, 'tom', 'doe', 'c@c.com');
+SELECT setval('employees_id_seq', (SELECT MAX(id) from "employees"));
 INSERT INTO checkin (id, email, checkdate, checkintime) VALUES 
 (1, 'a@a.com', '2019-01-01', '01:00'),
 (1, 'a@a.com', '2019-02-01', '02:00'),
