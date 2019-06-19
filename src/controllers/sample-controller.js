@@ -37,20 +37,28 @@ function getFDateTime() {
 
 // backlogs checkout if user forgot the previous day
 async function hasCheckedOut(emailaddr) {
-  const start = new Date();
-  var temp = start - 86400000;
-  var prevDate = new Date(temp);
-  const dayNum = prevDate.getDay();
-  // change previous day to Friday if yesterday was Sunday
-  if (dayNum === 0) {
-    temp = start - 259200000;
-    prevDate = new Date(temp);
-  }
-  const year = prevDate.getFullYear();
-  const month = prevDate.getMonth() + 1;
-  const day = prevDate.getDate();
-  const fDate = `${year}-${month}-${day}`;
+  // const start = new Date();
+  // var temp = start - 86400000;
+  // var prevDate = new Date(temp);
+  // const dayNum = prevDate.getDay();
+  // // change previous day to Friday if yesterday was Sunday
+  // if (dayNum === 0) {
+  //   temp = start - 259200000;
+  //   prevDate = new Date(temp);
+  // }
+  // const year = prevDate.getFullYear();
+  // const month = prevDate.getMonth() + 1;
+  // const day = prevDate.getDate();
+  // var fDate = `${year}-${month}-${day}`;
   var uid;
+
+  const test = await db('checkin').select('checkdate').where({
+    email: emailaddr,
+  }).orderBy('checkdate', 'desc')
+    .limit(1);
+
+  const fDate = test[0].checkdate;
+  // console.log(test[0].checkdate);
 
   const checkedin = await db('checkin').select().where({
     email: emailaddr,
@@ -73,7 +81,7 @@ async function hasCheckedOut(emailaddr) {
       id: uid,
       email: emailaddr,
       checkdate: fDate,
-      checkouttime: '20:00',
+      checkouttime: '18:00',
     });
 
     // print inserted row
@@ -82,7 +90,7 @@ async function hasCheckedOut(emailaddr) {
       checkdate: fDate,
     });
     console.log(x);
-    console.log('ADDED BACKLOG');
+    console.log('^^^ADDED BACKLOG^^^\n');
   }
 }
 
@@ -94,7 +102,9 @@ async function checkIP(check, emailaddr, ipaddr) {
   }
   if (eip[0].ip === null) {
     await db('employees').update({ ip: ipaddr }).where({ email: emailaddr });
-    console.log('UPDATED');
+
+    console.log(await db('employees').select().where({ email: emailaddr }));
+    console.log('^^^UPDATED EMPLOYEE IP^^^\n');
     return true;
   }
 
@@ -120,7 +130,7 @@ module.exports = {
     var uid;
 
     console.log(`${fDate} ${fTime} ${emailaddr}`);
-    console.log('checking in');
+    console.log('+++CHECKING IN+++\n');
 
     // checks whether email exists in database
     var ref = await db('employees').where({
@@ -136,20 +146,18 @@ module.exports = {
       ctx.status = 409;
       ctx.message = 'Email Does Not Exist';
 
-      console.log('EMAIL DOES NOT EXIST+++++++++++');
+      console.log('*****EMAIL DOES NOT EXIST*****');
 
       return;
     }
 
     const ipcheck = await checkIP('checkin', emailaddr, ipaddr);
     if (!ipcheck) {
-      console.log('USING DIFFERENT IP');
+      console.log('*****IRREGULAR IP ADDRESS*****');
       ctx.status = 409;
       ctx.message = 'Irregular IP address';
       return;
     }
-
-    await hasCheckedOut(emailaddr);
 
     // checks whether user has already checked in today
     var checkins = await db('checkin').where({
@@ -161,8 +169,9 @@ module.exports = {
       ctx.status = 409;
       ctx.message = 'Already Checked In';
 
-      console.log('CHECKIN FAILED');
+      console.log('*****ALREADY CHECKED IN*****');
     } else {
+      await hasCheckedOut(emailaddr);
       // add row to checkin table
       await db('checkin').insert({
         id: uid,
@@ -179,7 +188,7 @@ module.exports = {
         checkdate: fDate,
       });
       console.log(x);
-      console.log('CHECKED IN');
+      console.log('+++CHECKED IN+++');
     }
   },
 
@@ -192,7 +201,7 @@ module.exports = {
     var uid;
 
     console.log(`${fDate} ${fTime} ${emailaddr}`);
-    console.log('checking out');
+    console.log('+++CHECKING OUT+++\n');
 
     // checks whether email exists in database
     var ref = await db('employees').where({
@@ -208,14 +217,14 @@ module.exports = {
       ctx.status = 409;
       ctx.message = 'Email Does Not Exist';
 
-      console.log('EMAIL DOES NOT EXIST+++++++++++');
+      console.log('*****EMAIL DOES NOT EXIST*****');
 
       return;
     }
 
     const ipcheck = await checkIP('checkout', emailaddr, ipaddr);
     if (!ipcheck) {
-      console.log('USING DIFFERENT IP');
+      console.log('*****IRREGULAR IP ADDRESS*****');
       ctx.status = 409;
       ctx.message = 'Irregular IP address';
       return;
@@ -235,12 +244,12 @@ module.exports = {
       ctx.status = 409;
       ctx.message = 'You have not checked in yet';
 
-      console.log('CHECKOUT FAILED: ALREADY CHECKED OUT');
+      console.log('*****CHECKOUT FAILED: ALREADY CHECKED OUT*****');
     } else if (!isEmpty(checkouts)) {
       ctx.status = 409;
       ctx.message = 'Already Checked Out';
 
-      console.log('CHECKOUT FAILED: ALREADY CHECKED IN');
+      console.log('*****CHECKOUT FAILED: ALREADY CHECKED IN*****');
     } else {
       await db('checkout').insert({
         // add row to checkout table
@@ -258,7 +267,7 @@ module.exports = {
         checkdate: fDate,
       });
       console.log(x);
-      console.log('CHECKED OUT');
+      console.log('+++CHECKED OUT+++');
     }
   },
 
