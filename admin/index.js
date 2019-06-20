@@ -118,3 +118,7 @@ async function userlogs() {
   }
 }
 
+async function refresh() {
+  location.reload();
+}
+
