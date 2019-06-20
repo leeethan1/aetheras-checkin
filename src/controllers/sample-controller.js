@@ -356,7 +356,7 @@ module.exports = {
     } catch (e) {
       console.log(e);
     }
-    // ctx.response.redirect('file:///Users/josh/dev/aetheras-checkin/client/index.html');
+    ctx.response.redirect('localhost:5000');
   },
 
   async login(ctx) {
