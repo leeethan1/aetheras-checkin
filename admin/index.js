@@ -107,7 +107,7 @@ async function userlogs() {
       td = document.createElement("TD");
       td.innerHTML = x[xs].checkouttime;
       document.body.appendChild(td);
-      console.log(x[xs].checkdate, x[xs].checktime);
+
       // var par = document.createElement("P");
       // par.innerHTML = `${x[xs].email} ${x[xs].checkdate} ${x[xs].checktime}`;
       // document.body.appendChild(par);
