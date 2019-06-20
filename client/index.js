@@ -27,12 +27,17 @@ async function checkin() {
     console.log("checking in");
 
     var data = document.getElementById('form');
-    var email = data[0].value;
-    var url = 'http://localhost:8080/v1/checkin?' + email;
+    var emailaddr = data[0].value;
+    var url = 'http://localhost:8080/v1/checkin';
 
     console.log(url);
 
     var resp = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email: emailaddr }),
     });
     var status = resp.status;
     var message = resp.statusText;
@@ -42,16 +47,12 @@ async function checkin() {
 
     //page tells user successful check in
     if (status == 200) {
-      var d = new Date();
-      var year = d.getFullYear();
-      var month = d.getMonth() + 1;
-      var day = d.getDate();
-      var hours = d.getHours();
-      var minutes = d.getMinutes();
+      const date = getFDateTime();
+      const fDate = date[0];
+      const fTime = date[1];
 
       document.getElementById('text').innerHTML =
-        `${email} ${stamp} @ ${year}/${month}/${day} ${hours}:${minutes}`;
-
+        `${email} ${stamp} @ ${fDate} ${fTime}`;
     } else {
       //alerts user check in failed
       document.getElementById('text').innerHTML = message;
@@ -62,12 +63,17 @@ async function checkout() {
     console.log("checking out");
 
     var data = document.getElementById('form');
-    var email = data[0].value;
-    var url = 'http://localhost:8080/v1/checkout?' + email;
+    var emailaddr = data[0].value;
+    var url = 'http://localhost:8080/v1/checkout';
 
     console.log(url);
 
     var resp = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email: emailaddr }),
     });
     var status = resp.status;
     var message = resp.statusText;
@@ -77,16 +83,12 @@ async function checkout() {
 
     //page tells user successful check out
     if (status == 200) {
-      var d = new Date();
-      var year = d.getFullYear();
-      var month = d.getMonth() + 1;
-      var day = d.getDate();
-      var hours = d.getHours();
-      var minutes = d.getMinutes();
+      const date = getFDateTime();
+      const fDate = date[0];
+      const fTime = date[1];
 
       document.getElementById('text').innerHTML =
-        `${email} ${stamp} @ ${year}/${month}/${day} ${hours}:${minutes}`;
-
+        `${email} ${stamp} @ ${fDate} ${fTime}`;
     } else {
       //alerts user check out failed
       document.getElementById('text').innerHTML = message;
@@ -94,4 +96,17 @@ async function checkout() {
 
     }
 
+  }
+
+function getFDateTime() {
+  const start = new Date();
+  const year = start.getFullYear();
+  const month = start.getMonth() + 1;
+  const day = start.getDate();
+  const hours = start.getHours();
+  const minutes = start.getMinutes();
+  const fDate = `${year}-${month}-${day}`;
+  const fTime = `${hours}:${minutes}`;
+
+  return [fDate, fTime];
 }
