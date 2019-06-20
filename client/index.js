@@ -24,6 +24,22 @@ function myfunction() {
 
 }
 
+async function login() {
+  var resp = await fetch('http://localhost:8080/v1/login', {
+    method: 'GET',
+    mode: 'cors',
+  })
+  var x = await resp.json();
+  
+  var googleurl = x.url;
+  var createA = document.createElement('a');
+  var createAText = document.createTextNode("somethinghere");
+  createA.setAttribute('href', googleurl);
+  createA.appendChild(createAText);
+  document.body.appendChild(createA);
+  console.log(googleurl);
+}
+
 async function transfer(stamp, email) {
 
   if (stamp == "checkin") {

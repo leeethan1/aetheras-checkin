@@ -11,6 +11,8 @@ router.post('/checkout', samplesRoute.checkout);
 router.post('/emailreg', samplesRoute.addemail);
 router.get('/employees', samplesRoute.employees);
 router.post('/userlogs', samplesRoute.userlogs);
+router.get('/oauth2', samplesRoute.oauth2);
+router.get('/login', samplesRoute.login);
 
 
 module.exports = router.routes();
