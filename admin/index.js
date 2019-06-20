@@ -8,7 +8,7 @@ async function addEmail() {
   }
   var infoarr = info.split(', ');
 
-  var emailadr = infoarr[0];
+  var emailaddr = infoarr[0];
   var fname = infoarr[1];
   var lname = infoarr[2];
 
@@ -18,12 +18,12 @@ async function addEmail() {
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ email: emailadr, firstname: fname, lastname: lname }),
+    body: JSON.stringify({ email: emailaddr, firstname: fname, lastname: lname }),
   });
   var status = resp.status;
   var msg;
   if (status == 200) {
-    msg = '-Added email ' + emailadr;
+    msg = '-Added email ' + emailaddr;
   } else {
     msg = '-Email did not add';
   }

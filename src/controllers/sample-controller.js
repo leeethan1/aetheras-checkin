@@ -5,7 +5,6 @@
 /* eslint-disable vars-on-top */
 /* eslint-disable no-restricted-syntax */
 
-
 const { types } = require('pg');
 
 const db = require('../app/db');
@@ -57,6 +56,9 @@ async function hasCheckedOut(emailaddr) {
     email: emailaddr,
   }).orderBy('checkdate', 'desc')
     .limit(1);
+  if (isEmpty(test)) {
+    return;
+  }
 
   const fDate = test[0].checkdate;
   // console.log(test[0].checkdate);
@@ -128,6 +130,7 @@ module.exports = {
     const fTime = date[1];
     const emailaddr = ctx.request.body.email;
     const ipaddr = ctx.ip;
+    var uid;
 
     console.log(`${fDate} ${fTime} ${emailaddr}`);
     console.log('+++CHECKING IN+++\n');
@@ -137,7 +140,12 @@ module.exports = {
       email: emailaddr,
     }).select();
 
-    if (isEmpty(ref)) {
+    if (!isEmpty(ref)) {
+      uid = await db('employees').where({
+        email: emailaddr,
+      }).select('id');
+      uid = uid[0].id;
+    } else {
       ctx.status = 409;
       ctx.message = 'Email Does Not Exist';
 
@@ -169,6 +177,7 @@ module.exports = {
       await hasCheckedOut(emailaddr);
       // add row to checkin table
       await db('checkin').insert({
+        id: uid,
         email: emailaddr,
         checkdate: fDate,
         checkintime: fTime,
@@ -192,6 +201,7 @@ module.exports = {
     const fTime = date[1];
     const emailaddr = ctx.request.body.email;
     const ipaddr = ctx.ip;
+    var uid;
 
     console.log(`${fDate} ${fTime} ${emailaddr}`);
     console.log('+++CHECKING OUT+++\n');
@@ -202,6 +212,11 @@ module.exports = {
     }).select();
 
     if (!isEmpty(ref)) {
+      uid = await db('employees').where({
+        email: emailaddr,
+      }).select('id');
+      uid = uid[0].id;
+    } else {
       ctx.status = 409;
       ctx.message = 'Email Does Not Exist';
 
@@ -241,6 +256,7 @@ module.exports = {
     } else {
       await db('checkout').insert({
         // add row to checkout table
+        id: uid,
         email: emailaddr,
         checkdate: fDate,
         checkouttime: fTime,
@@ -261,14 +277,14 @@ module.exports = {
   async addemail(ctx) {
     ctx.body = 'Adding email';
     const query = ctx.request.body;
-    const emailadr = query.email;
+    const emailaddr = query.email;
     const fname = query.firstname;
     const lname = query.lastname;
 
     // checks if email is already added to the registry
     try {
       await db('employees').insert({
-        email: emailadr,
+        email: emailaddr,
         firstname: fname,
         lastname: lname,
       });
@@ -278,6 +294,8 @@ module.exports = {
       console.log(x);
       console.log('ADDED');
     } catch (err) {
+      ctx.status = 409;
+      ctx.message = err;
       throw err;
     }
   },
