@@ -6,8 +6,28 @@
 /* eslint-disable no-restricted-syntax */
 
 const { types } = require('pg');
+const { google } = require('googleapis');
+const jwt = require('jsonwebtoken');
 
 const db = require('../app/db');
+
+
+const oauth2Client = new google.auth.OAuth2(
+  '934270667898-sppb26nd1avnfa3dbm1ps0rp385ar6hp.apps.googleusercontent.com',
+  'EUiHjSdbgLrdi7tYMYa5yvqV',
+  'http://localhost:8080/v1/oauth2',
+);
+
+google.options({ auth: oauth2Client });
+
+function getGoogleAuthURL(scopes) {
+  const authorizeUrl = oauth2Client.generateAuthUrl({
+    access_type: 'offline',
+    scope: scopes,
+  });
+
+  return authorizeUrl;
+}
 
 const TYPE_DATESTAMP = 1082;
 types.setTypeParser(TYPE_DATESTAMP, date => date);
@@ -320,6 +340,28 @@ module.exports = {
       .innerJoin('employees', 'employees.id', 'checkin.id');
 
     ctx.response.body = table;
+  },
+
+  async oauth2(ctx) {
+    // console.log(ctx.request.query);
+    const { code } = ctx.request.query;
+    try {
+      const { tokens } = await oauth2Client.getToken(code);
+      console.log(tokens);
+
+      // get the decoded payload and header
+      var decoded = jwt.decode(tokens.id_token, { complete: true });
+      console.log(decoded.header);
+      console.log(decoded.payload);
+    } catch (e) {
+      console.log(e);
+    }
+    // ctx.response.redirect('file:///Users/josh/dev/aetheras-checkin/client/index.html');
+  },
+
+  async login(ctx) {
+    // ctx.response.redirect(getGoogleAuthURL(['email', 'profile', 'openid']));
+    ctx.response.body = ({ url: getGoogleAuthURL(['email', 'profile', 'openid']) });
   },
 
 };
