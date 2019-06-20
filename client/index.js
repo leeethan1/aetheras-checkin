@@ -32,11 +32,12 @@ async function login() {
   var x = await resp.json();
   
   var googleurl = x.url;
-  var createA = document.createElement('a');
-  var createAText = document.createTextNode("somethinghere");
-  createA.setAttribute('href', googleurl);
-  createA.appendChild(createAText);
-  document.body.appendChild(createA);
+  window.location.replace(googleurl);
+  // var createA = document.createElement('a');
+  // var createAText = document.createTextNode("somethinghere");
+  // createA.setAttribute('href', googleurl);
+  // createA.appendChild(createAText);
+  // document.body.appendChild(createA);
   console.log(googleurl);
 }
 
