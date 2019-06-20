@@ -6,15 +6,6 @@
 
 const db = require('../app/db');
 
-// ONLY FOR TESTING
-async function testvalues() {
-  await db('employees').insert([
-    { email: 'a@a.com', ip: 'test' },
-    { email: 'b@b.com' },
-    { email: 'c@c.com' },
-  ]);
-}
-
 // checks if object is empty
 function isEmpty(obj) {
   for (var key in obj) {
@@ -41,15 +32,10 @@ function getFDateTime() {
 module.exports = {
 
   async checkin(ctx) {
-    // TESTING ONLY
-    testvalues();
-
     const date = getFDateTime();
     const fDate = date[0];
     const fTime = date[1];
     const emailaddr = ctx.request.body.email;
-    const ipaddr = ctx.ip;
-    var uid;
 
     console.log(`${fDate} ${fTime} ${emailaddr}`);
     console.log('checking in');
@@ -59,11 +45,7 @@ module.exports = {
       email: emailaddr,
     }).select();
 
-    if (!isEmpty(ref)) {
-      uid = db('employees').where({
-        email: emailaddr,
-      }).select('id');
-    } else {
+    if (isEmpty(ref)) {
       ctx.status = 409;
       ctx.message = 'Email Does Not Exist';
 
@@ -86,11 +68,9 @@ module.exports = {
     } else {
       // add row to checkin table
       await db('checkin').insert({
-        id: uid,
         email: emailaddr,
         checkdate: fDate,
         checktime: fTime,
-        ip: ipaddr,
       });
       ctx.status = 200;
 
@@ -106,8 +86,6 @@ module.exports = {
     const fDate = date[0];
     const fTime = date[1];
     const emailaddr = ctx.request.body.email;
-    const ipaddr = ctx.ip;
-    var uid;
 
     console.log(`${fDate} ${fTime} ${emailaddr}`);
     console.log('checking out');
@@ -117,11 +95,7 @@ module.exports = {
       email: emailaddr,
     }).select();
 
-    if (!isEmpty(ref)) {
-      uid = db('employees').where({
-        email: emailaddr,
-      }).select('id');
-    } else {
+    if (isEmpty(ref)) {
       ctx.status = 409;
       ctx.message = 'Email Does Not Exist';
 
@@ -153,11 +127,9 @@ module.exports = {
     } else {
       await db('checkout').insert({
         // add row to checkout table
-        id: uid,
         email: emailaddr,
         checkdate: fDate,
         checktime: fTime,
-        ip: ipaddr,
       });
       ctx.status = 200;
 
@@ -170,31 +142,31 @@ module.exports = {
 
   async addemail(ctx) {
     ctx.body = 'Adding email';
-    const query = ctx.request.querystring.split('&');
-    const emailaddr = query[0];
-    const fname = query[1];
-    const lname = query[2];
+    const query = ctx.request.body;
+    const emailadr = query.email;
+    const fname = query.firstname;
+    const lname = query.lastname;
 
     // checks if email is already added to the registry
     try {
       await db('employees').insert({
-        email: emailaddr,
+        email: emailadr,
         firstname: fname,
         lastname: lname,
       });
       ctx.status = 200;
 
-      var x = await db('checkin').select();
+      var x = await db('employees').select();
       console.log(x);
       console.log('ADDED');
     } catch (err) {
-      ctx.status = 409;
-      ctx.message = err;
       throw err;
     }
   },
   async employees(ctx) {
-    ctx.body = await db('employees').select();
+    ctx.body = 'Viewing employees';
+    var x = await db('employees').select('email');
+    x = JSON.stringify(x);
+    ctx.message = x;
   },
-
 };
