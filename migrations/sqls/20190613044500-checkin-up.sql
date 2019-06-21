@@ -6,7 +6,6 @@ CREATE TABLE employees (
   firstname VARCHAR,
   lastname VARCHAR,
   email VARCHAR UNIQUE,
-  ip VARCHAR,
   refresh_token VARCHAR
   );
 CREATE TABLE checkin (
@@ -15,8 +14,7 @@ CREATE TABLE checkin (
   id INTEGER REFERENCES employees(id),
   email VARCHAR NOT NULL, 
   checkdate DATE, 
-  checkintime TIME,
-  ip VARCHAR
+  checkintime TIME
   );
 CREATE TABLE checkout (
   table_id SERIAL PRIMARY KEY,
@@ -24,8 +22,7 @@ CREATE TABLE checkout (
   id INTEGER REFERENCES employees(id),
   email VARCHAR NOT NULL, 
   checkdate DATE, 
-  checkouttime TIME,
-  ip VARCHAR
+  checkouttime TIME
 );
 
 -- FOR TESTING PURPOSES

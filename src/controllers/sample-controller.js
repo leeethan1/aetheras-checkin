@@ -118,31 +118,6 @@ async function hasCheckedOut(emailaddr) {
   }
 }
 
-async function checkIP(check, emailaddr, ipaddr) {
-  const eip = await db('employees').select('ip').where({ email: emailaddr });
-
-  if (eip[0].ip === ipaddr) {
-    return true;
-  }
-  if (eip[0].ip === null) {
-    await db('employees').update({ ip: ipaddr }).where({ email: emailaddr });
-
-    console.log(await db('employees').select().where({ email: emailaddr }));
-    console.log('^^^UPDATED EMPLOYEE IP^^^\n');
-    return true;
-  }
-
-  // const ips = await db(check).select('ip').where({ email: emailaddr })
-  //   .groupBy('ip')
-  //   .orderByRaw('count(ip) DESC LIMIT 1');
-  // await db('employees').update({ ip: ips[0].ip }).where({ email: emailaddr });
-
-  // if (ips[0].ip === ipaddr) {
-  //   return true;
-  // }
-  return false;
-}
-
 async function authenticate() {
   var decoded = jwt.decode(oauth2Client.credentials.id_token,
     { complete: true });
@@ -169,7 +144,6 @@ module.exports = {
     const date = getFDateTime();
     const fDate = date[0];
     const fTime = date[1];
-    const ipaddr = ctx.ip;
     var uid;
     var emailaddr;
 
@@ -195,14 +169,6 @@ module.exports = {
       return;
     }
 
-    const ipcheck = await checkIP('checkin', emailaddr, ipaddr);
-    if (!ipcheck) {
-      console.log('*****IRREGULAR IP ADDRESS*****');
-      ctx.status = 409;
-      ctx.message = 'Irregular IP address';
-      return;
-    }
-
     // checks whether user has already checked in today
     var checkins = await db('checkin').where({
       email: emailaddr,
@@ -222,7 +188,6 @@ module.exports = {
         email: emailaddr,
         checkdate: fDate,
         checkintime: fTime,
-        ip: ipaddr,
       });
       ctx.status = 200;
 
@@ -240,7 +205,6 @@ module.exports = {
     const date = getFDateTime();
     const fDate = date[0];
     const fTime = date[1];
-    const ipaddr = ctx.ip;
     var uid;
     var emailaddr;
 
@@ -262,14 +226,6 @@ module.exports = {
 
       console.log('*****EMAIL DOES NOT EXIST*****');
 
-      return;
-    }
-
-    const ipcheck = await checkIP('checkout', emailaddr, ipaddr);
-    if (!ipcheck) {
-      console.log('*****IRREGULAR IP ADDRESS*****');
-      ctx.status = 409;
-      ctx.message = 'Irregular IP address';
       return;
     }
 
@@ -300,7 +256,6 @@ module.exports = {
         email: emailaddr,
         checkdate: fDate,
         checkouttime: fTime,
-        ip: ipaddr,
       });
       ctx.status = 200;
 
