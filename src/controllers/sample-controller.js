@@ -242,7 +242,8 @@ module.exports = {
 
   // creates combined checkin/checkout json
   async userlogs(ctx) {
-    const emailaddr = ctx.request.body.email;
+    const emailaddr = ctx.querystring;
+    console.log(emailaddr);
 
     const table = await db('checkin').select()
       .innerJoin('checkout', function () {
@@ -251,6 +252,7 @@ module.exports = {
           .on('checkin.checkdate', '=', 'checkout.checkdate');
       })
       .innerJoin('employees', 'employees.id', 'checkin.id');
+    console.log(table);
 
     ctx.response.body = table;
   },
