@@ -121,8 +121,14 @@ function getFDateTime() {
   const year = start.getFullYear();
   const month = start.getMonth() + 1;
   const day = start.getDate();
-  const hours = start.getHours();
-  const minutes = start.getMinutes();
+  var hours = start.getHours();
+  if (hours < 10) {
+    hours = `0${hours}`;
+  }
+  var minutes = start.getMinutes();
+  if (minutes < 10) {
+    minutes = `0${minutes}`;
+  }
   const fDate = `${year}-${month}-${day}`;
   const fTime = `${hours}:${minutes}`;
 
