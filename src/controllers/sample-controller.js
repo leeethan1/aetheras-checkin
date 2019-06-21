@@ -293,11 +293,9 @@ module.exports = {
           .on('checkin.checkdate', '=', 'checkout.checkdate');
       })
       .innerJoin('employees', 'employees.id', 'checkin.id');
-    var x = JSON.stringify(table);
-    x = JSON.parse(x);
 
     fs.writeFileSync('logs.txt', 'TableID,ID,First Name,Last Name,Email,Date,Checkin,Checkout\n');
-    x.forEach((param) => {
+    table.forEach((param) => {
       var line = param.table_id;
       line = `${line},${param.id},${param.firstname},${param.lastname},${param.email},${param.checkdate},${param.checkintime},${param.checkouttime}
 `;
