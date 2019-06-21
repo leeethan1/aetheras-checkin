@@ -275,7 +275,7 @@ module.exports = {
     } catch (e) {
       console.log(e);
     }
-    ctx.response.redirect('localhost:5000');
+    ctx.response.redirect('http://192.168.1.68:5000');
   },
 
   async login(ctx) {
