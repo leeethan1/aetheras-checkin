@@ -122,3 +122,9 @@ async function refresh() {
   location.reload();
 }
 
+async function writeCSV() {
+  var resp = await fetch('http://localhost:8080/v1/writeCSV', {
+    method: 'GET',
+    mode: 'cors',
+  })
+}

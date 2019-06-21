@@ -8,6 +8,7 @@
 const { types } = require('pg');
 const { google } = require('googleapis');
 const jwt = require('jsonwebtoken');
+const fs = require('fs');
 
 const db = require('../app/db');
 
@@ -283,4 +284,27 @@ module.exports = {
     ctx.response.body = ({ url: getGoogleAuthURL(['email', 'profile', 'openid']) });
   },
 
+  async writeCSV() {
+    const table = await db('checkin').select()
+      .innerJoin('checkout', function () {
+        this.on('checkin.email', '=', 'checkout.email')
+          .on('checkin.checkdate', '=', 'checkout.checkdate');
+      })
+      .innerJoin('employees', 'employees.id', 'checkin.id');
+    var x = JSON.stringify(table);
+    x = JSON.parse(x);
+
+    fs.writeFileSync('logs.txt', 'TableID,ID,First Name,Last Name,Email,Date,Checkin,Checkout\n');
+    x.forEach((param) => {
+      var line = param.table_id;
+      line = `${line},${param.id},${param.firstname},${param.lastname},${param.email},${param.checkdate},${param.checkintime},${param.checkouttime}
+`;
+      fs.appendFileSync('logs.txt', line);
+      // line = line.replace(/"/g, '');
+      // line = `${line.slice(1, line.lastIndexOf('}'))}`;
+
+      console.log(line);
+    });
+    // console.log(x);
+  },
 };
