@@ -53,15 +53,10 @@ async function viewEmail() {
 
 async function userlogs() {
   const info = prompt('Enter Email:');
-  const url = 'http://localhost:8080/v1/userlogs';
+  const url = 'http://localhost:8080/v1/userlogs?' + info;
 
   if (info !== null) {
     var resp = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ email: info }),
     });
     var x = await resp.json();
 

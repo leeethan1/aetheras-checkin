@@ -56,92 +56,92 @@ function getFDateTime() {
   return [fDate, fTime];
 }
 
-// backlogs checkout if user forgot the previous day
-async function hasCheckedOut(emailaddr) {
-  // const start = new Date();
-  // var temp = start - 86400000;
-  // var prevDate = new Date(temp);
-  // const dayNum = prevDate.getDay();
-  // // change previous day to Friday if yesterday was Sunday
-  // if (dayNum === 0) {
-  //   temp = start - 259200000;
-  //   prevDate = new Date(temp);
-  // }
-  // const year = prevDate.getFullYear();
-  // const month = prevDate.getMonth() + 1;
-  // const day = prevDate.getDate();
-  // var fDate = `${year}-${month}-${day}`;
-  var uid;
+// // backlogs checkout if user forgot the previous day
+// async function hasCheckedOut(emailaddr) {
+//   // const start = new Date();
+//   // var temp = start - 86400000;
+//   // var prevDate = new Date(temp);
+//   // const dayNum = prevDate.getDay();
+//   // // change previous day to Friday if yesterday was Sunday
+//   // if (dayNum === 0) {
+//   //   temp = start - 259200000;
+//   //   prevDate = new Date(temp);
+//   // }
+//   // const year = prevDate.getFullYear();
+//   // const month = prevDate.getMonth() + 1;
+//   // const day = prevDate.getDate();
+//   // var fDate = `${year}-${month}-${day}`;
+//   var uid;
 
-  const test = await db('checkin').select('checkdate').where({
-    email: emailaddr,
-  }).orderBy('checkdate', 'desc')
-    .limit(1);
-  if (isEmpty(test)) {
-    return;
-  }
+//   const test = await db('checkin').select('checkdate').where({
+//     email: emailaddr,
+//   }).orderBy('checkdate', 'desc')
+//     .limit(1);
+//   if (isEmpty(test)) {
+//     return;
+//   }
 
-  const fDate = test[0].checkdate;
-  // console.log(test[0].checkdate);
+//   const fDate = test[0].checkdate;
+//   // console.log(test[0].checkdate);
 
-  const checkedin = await db('checkin').select().where({
-    email: emailaddr,
-    checkdate: fDate,
-  });
-  if (isEmpty(checkedin)) {
-    return;
-  }
+//   const checkedin = await db('checkin').select().where({
+//     email: emailaddr,
+//     checkdate: fDate,
+//   });
+//   if (isEmpty(checkedin)) {
+//     return;
+//   }
 
-  const checkedout = await db('checkout').select().where({
-    email: emailaddr,
-    checkdate: fDate,
-  });
-  if (isEmpty(checkedout)) {
-    uid = await db('employees').where({
-      email: emailaddr,
-    }).select('id');
-    uid = uid[0].id;
-    await db('checkout').insert({
-      id: uid,
-      email: emailaddr,
-      checkdate: fDate,
-      checkouttime: '18:00',
-    });
+//   const checkedout = await db('checkout').select().where({
+//     email: emailaddr,
+//     checkdate: fDate,
+//   });
+//   if (isEmpty(checkedout)) {
+//     uid = await db('employees').where({
+//       email: emailaddr,
+//     }).select('id');
+//     uid = uid[0].id;
+//     await db('checkout').insert({
+//       id: uid,
+//       email: emailaddr,
+//       checkdate: fDate,
+//       checkouttime: '18:00',
+//     });
 
-    // print inserted row
-    const x = await db('checkout').select().where({
-      email: emailaddr,
-      checkdate: fDate,
-    });
-    console.log(x);
-    console.log('^^^ADDED BACKLOG^^^\n');
-  }
-}
+//     // print inserted row
+//     const x = await db('checkout').select().where({
+//       email: emailaddr,
+//       checkdate: fDate,
+//     });
+//     console.log(x);
+//     console.log('^^^ADDED BACKLOG^^^\n');
+//   }
+// }
 
-async function checkIP(check, emailaddr, ipaddr) {
-  const eip = await db('employees').select('ip').where({ email: emailaddr });
+// async function checkIP(check, emailaddr, ipaddr) {
+//   const eip = await db('employees').select('ip').where({ email: emailaddr });
 
-  if (eip[0].ip === ipaddr) {
-    return true;
-  }
-  if (eip[0].ip === null) {
-    await db('employees').update({ ip: ipaddr }).where({ email: emailaddr });
+//   if (eip[0].ip === ipaddr) {
+//     return true;
+//   }
+//   if (eip[0].ip === null) {
+//     await db('employees').update({ ip: ipaddr }).where({ email: emailaddr });
 
-    console.log(await db('employees').select().where({ email: emailaddr }));
-    console.log('^^^UPDATED EMPLOYEE IP^^^\n');
-    return true;
-  }
+//     console.log(await db('employees').select().where({ email: emailaddr }));
+//     console.log('^^^UPDATED EMPLOYEE IP^^^\n');
+//     return true;
+//   }
 
-  // const ips = await db(check).select('ip').where({ email: emailaddr })
-  //   .groupBy('ip')
-  //   .orderByRaw('count(ip) DESC LIMIT 1');
-  // await db('employees').update({ ip: ips[0].ip }).where({ email: emailaddr });
+//   // const ips = await db(check).select('ip').where({ email: emailaddr })
+//   //   .groupBy('ip')
+//   //   .orderByRaw('count(ip) DESC LIMIT 1');
+//   // await db('employees').update({ ip: ips[0].ip }).where({ email: emailaddr });
 
-  // if (ips[0].ip === ipaddr) {
-  //   return true;
-  // }
-  return false;
-}
+//   // if (ips[0].ip === ipaddr) {
+//   //   return true;
+//   // }
+//   return false;
+// }
 
 async function authenticate() {
   var decoded = jwt.decode(oauth2Client.credentials.id_token,
@@ -150,8 +150,6 @@ async function authenticate() {
     const user = await db('employees').select('email')
       .where({
         email: decoded.payload.email,
-        firstname: decoded.payload.given_name,
-        lastname: decoded.payload.family_name,
       });
     console.log(decoded.payload.email);
     if (!isEmpty(user)) {
@@ -169,7 +167,7 @@ module.exports = {
     const date = getFDateTime();
     const fDate = date[0];
     const fTime = date[1];
-    const ipaddr = ctx.ip;
+    // const ipaddr = ctx.ip;
     var uid;
     var emailaddr;
 
@@ -178,7 +176,7 @@ module.exports = {
     console.log('+++CHECKING IN+++\n');
 
     // checks whether email exists in database
-    if (await authenticate()) {
+    if (authenticate()) {
       var decoded = jwt.decode(oauth2Client.credentials.id_token,
         { complete: true });
       emailaddr = decoded.payload.email;
@@ -195,13 +193,13 @@ module.exports = {
       return;
     }
 
-    const ipcheck = await checkIP('checkin', emailaddr, ipaddr);
-    if (!ipcheck) {
-      console.log('*****IRREGULAR IP ADDRESS*****');
-      ctx.status = 409;
-      ctx.message = 'Irregular IP address';
-      return;
-    }
+    // const ipcheck = await checkIP('checkin', emailaddr, ipaddr);
+    // if (!ipcheck) {
+    //   console.log('*****IRREGULAR IP ADDRESS*****');
+    //   ctx.status = 409;
+    //   ctx.message = 'Irregular IP address';
+    //   return;
+    // }
 
     // checks whether user has already checked in today
     var checkins = await db('checkin').where({
@@ -215,14 +213,14 @@ module.exports = {
 
       console.log('*****ALREADY CHECKED IN*****');
     } else {
-      await hasCheckedOut(emailaddr);
+      // await hasCheckedOut(emailaddr);
       // add row to checkin table
       await db('checkin').insert({
         id: uid,
         email: emailaddr,
         checkdate: fDate,
         checkintime: fTime,
-        ip: ipaddr,
+        // ip: ipaddr,
       });
       ctx.status = 200;
 
@@ -240,7 +238,7 @@ module.exports = {
     const date = getFDateTime();
     const fDate = date[0];
     const fTime = date[1];
-    const ipaddr = ctx.ip;
+    // const ipaddr = ctx.ip;
     var uid;
     var emailaddr;
 
@@ -248,7 +246,7 @@ module.exports = {
     console.log('+++CHECKING OUT+++\n');
 
     // checks whether email exists in database
-    if (await authenticate()) {
+    if (authenticate()) {
       var decoded = jwt.decode(oauth2Client.credentials.id_token,
         { complete: true });
       emailaddr = decoded.payload.email;
@@ -265,13 +263,13 @@ module.exports = {
       return;
     }
 
-    const ipcheck = await checkIP('checkout', emailaddr, ipaddr);
-    if (!ipcheck) {
-      console.log('*****IRREGULAR IP ADDRESS*****');
-      ctx.status = 409;
-      ctx.message = 'Irregular IP address';
-      return;
-    }
+    // const ipcheck = await checkIP('checkout', emailaddr, ipaddr);
+    // if (!ipcheck) {
+    //   console.log('*****IRREGULAR IP ADDRESS*****');
+    //   ctx.status = 409;
+    //   ctx.message = 'Irregular IP address';
+    //   return;
+    // }
 
     // checks whether user has checked in or checked out today
     var checkins = await db('checkin').where({
@@ -300,7 +298,7 @@ module.exports = {
         email: emailaddr,
         checkdate: fDate,
         checkouttime: fTime,
-        ip: ipaddr,
+        // ip: ipaddr,
       });
       ctx.status = 200;
 
@@ -349,7 +347,8 @@ module.exports = {
 
   // creates combined checkin/checkout json
   async userlogs(ctx) {
-    const emailaddr = ctx.request.body.email;
+    const emailaddr = ctx.querystring;
+    console.log(emailaddr);
 
     const table = await db('checkin').select()
       .innerJoin('checkout', function () {
@@ -358,6 +357,7 @@ module.exports = {
           .on('checkin.checkdate', '=', 'checkout.checkdate');
       })
       .innerJoin('employees', 'employees.id', 'checkin.id');
+    console.log(table);
 
     ctx.response.body = table;
   },
