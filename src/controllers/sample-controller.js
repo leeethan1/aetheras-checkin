@@ -26,6 +26,7 @@ function getGoogleAuthURL(scopes) {
     scope: scopes,
   });
 
+  // ctx.response.redirect(authorizeUrl);
   return authorizeUrl;
 }
 
@@ -142,25 +143,45 @@ async function checkIP(check, emailaddr, ipaddr) {
   return false;
 }
 
+async function authenticate() {
+  var decoded = jwt.decode(oauth2Client.credentials.id_token,
+    { complete: true });
+  if (decoded != null) {
+    const user = await db('employees').select('email')
+      .where({
+        email: decoded.payload.email,
+        firstname: decoded.payload.given_name,
+        lastname: decoded.payload.family_name,
+      });
+    console.log(decoded.payload.email);
+    if (!isEmpty(user)) {
+      console.log('TRUE');
+      return true;
+    }
+  }
+  console.log('FALSE');
+  return false;
+}
+
 module.exports = {
 
   async checkin(ctx) {
     const date = getFDateTime();
     const fDate = date[0];
     const fTime = date[1];
-    const emailaddr = ctx.request.body.email;
     const ipaddr = ctx.ip;
     var uid;
+    var emailaddr;
 
-    console.log(`${fDate} ${fTime} ${emailaddr}`);
+
+    // console.log(`${fDate} ${fTime} ${emailaddr}`);
     console.log('+++CHECKING IN+++\n');
 
     // checks whether email exists in database
-    var ref = await db('employees').where({
-      email: emailaddr,
-    }).select();
-
-    if (!isEmpty(ref)) {
+    if (await authenticate()) {
+      var decoded = jwt.decode(oauth2Client.credentials.id_token,
+        { complete: true });
+      emailaddr = decoded.payload.email;
       uid = await db('employees').where({
         email: emailaddr,
       }).select('id');
@@ -219,19 +240,18 @@ module.exports = {
     const date = getFDateTime();
     const fDate = date[0];
     const fTime = date[1];
-    const emailaddr = ctx.request.body.email;
     const ipaddr = ctx.ip;
     var uid;
+    var emailaddr;
 
-    console.log(`${fDate} ${fTime} ${emailaddr}`);
+    // console.log(`${fDate} ${fTime} ${emailaddr}`);
     console.log('+++CHECKING OUT+++\n');
 
     // checks whether email exists in database
-    var ref = await db('employees').where({
-      email: emailaddr,
-    }).select();
-
-    if (!isEmpty(ref)) {
+    if (await authenticate()) {
+      var decoded = jwt.decode(oauth2Client.credentials.id_token,
+        { complete: true });
+      emailaddr = decoded.payload.email;
       uid = await db('employees').where({
         email: emailaddr,
       }).select('id');
@@ -343,16 +363,23 @@ module.exports = {
   },
 
   async oauth2(ctx) {
-    // console.log(ctx.request.query);
     const { code } = ctx.request.query;
     try {
       const { tokens } = await oauth2Client.getToken(code);
-      console.log(tokens);
+      oauth2Client.setCredentials(tokens);
 
+      if (await authenticate()) {
+        var decoded = jwt.decode(tokens.id_token, { complete: true });
+
+        if (tokens.refresh_token) {
+          await db('employees').update({ refresh_token: tokens.refresh_token })
+            .where({ email: decoded.payload.email });
+        }
+      }
       // get the decoded payload and header
-      var decoded = jwt.decode(tokens.id_token, { complete: true });
-      console.log(decoded.header);
-      console.log(decoded.payload);
+
+      // console.log(decoded.header);
+      // console.log(decoded.payload);
     } catch (e) {
       console.log(e);
     }
@@ -360,7 +387,7 @@ module.exports = {
   },
 
   async login(ctx) {
-    // ctx.response.redirect(getGoogleAuthURL(['email', 'profile', 'openid']));
+    // getGoogleAuthURL(ctx, ['email', 'profile', 'openid']);
     ctx.response.body = ({ url: getGoogleAuthURL(['email', 'profile', 'openid']) });
   },
 

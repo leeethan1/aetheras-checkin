@@ -6,7 +6,8 @@ CREATE TABLE employees (
   firstname VARCHAR,
   lastname VARCHAR,
   email VARCHAR UNIQUE,
-  ip VARCHAR
+  ip VARCHAR,
+  refresh_token VARCHAR
   );
 CREATE TABLE checkin (
   table_id SERIAL PRIMARY KEY,
@@ -31,7 +32,7 @@ CREATE TABLE checkout (
 INSERT INTO employees (id, firstname, lastname, email) VALUES 
 (1, 'john', 'doe', 'a@a.com'), 
 (2, 'jane', 'doe', 'b@b.com'), 
-(3, 'tom', 'doe', 'c@c.com');
+(3, 'Josh', 'Lai', 'josh.lai.tw@gmail.com');
 SELECT setval('employees_id_seq', (SELECT MAX(id) from "employees"));
 INSERT INTO checkin (id, email, checkdate, checkintime) VALUES 
 (1, 'a@a.com', '2019-01-01', '01:00'),

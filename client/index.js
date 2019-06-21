@@ -16,10 +16,10 @@ function myfunction() {
   }
 
   console.log(check);
-
+  transfer(check,email)
   //verifies that proper email is entered and button has been checked
 
-  emailtest.test(email) && check ? transfer(check, email) : alert('Not Valid');
+  // emailtest.test(email) && check ? transfer(check, email) : alert('Not Valid');
   document.getElementById('form').reset();
 
 }
@@ -33,11 +33,7 @@ async function login() {
   
   var googleurl = x.url;
   window.location.replace(googleurl);
-  // var createA = document.createElement('a');
-  // var createAText = document.createTextNode("somethinghere");
-  // createA.setAttribute('href', googleurl);
-  // createA.appendChild(createAText);
-  // document.body.appendChild(createA);
+
   console.log(googleurl);
 }
 
