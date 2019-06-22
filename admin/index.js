@@ -118,8 +118,16 @@ async function refresh() {
 }
 
 async function writeCSV() {
-  var resp = await fetch('http://localhost:8080/v1/writeCSV', {
-    method: 'GET',
-    mode: 'cors',
-  })
+  window.open('http://localhost:8080/v1/writeCSV');
+  // var resp = await fetch('http://localhost:8080/v1/writeCSV', {
+  //   method: 'GET',
+  //   mode: 'cors',
+  // }).then(res => {
+  //   return res.text();
+  // });
+  // var x = resp;
+  // window.open(x);
+  // console.log(resp)
+  // console.log(await JSON.stringify(resp.body));
+  // window.open(resp);
 }
