@@ -33,7 +33,7 @@ INSERT INTO employees
 VALUES
   (1, 'john', 'doe', 'a@a.com'),
   (2, 'jane', 'doe', 'b@b.com'),
-  (3, 'Josh', 'Lai', 'josh.lai.tw@gmail.com');
+  (3, 'Josh', 'Lai', 'c@c.com');
 SELECT setval('employees_id_seq', (SELECT MAX(id)
   from "employees"));
 INSERT INTO checkin

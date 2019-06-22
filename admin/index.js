@@ -118,7 +118,8 @@ async function refresh() {
 }
 
 async function writeCSV() {
-  window.open('http://localhost:8080/v1/writeCSV');
+  var date = prompt('Enter date (YYYY-MM)');
+  window.open('http://localhost:8080/v1/writeCSV?' + date);
   // var resp = await fetch('http://localhost:8080/v1/writeCSV', {
   //   method: 'GET',
   //   mode: 'cors',

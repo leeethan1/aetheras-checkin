@@ -296,6 +296,8 @@ module.exports = {
   },
 
   async writeCSV(ctx) {
+    const re = new RegExp(ctx.querystring);
+    console.log(re);
     const table = await db('checkin').select()
       .innerJoin('checkout', function () {
         this.on('checkin.email', '=', 'checkout.email')
@@ -305,16 +307,18 @@ module.exports = {
 
     fs.writeFileSync('logs.csv', 'TableID,ID,First Name,Last Name,Email,Date,Checkin,Checkout\n');
     table.forEach((param) => {
-      var line = param.table_id;
-      line = `${line},${param.id},${param.firstname},${param.lastname},${param.email},${param.checkdate},${param.checkintime},${param.checkouttime}
+      if (re.test(param.checkdate)) {
+        var line = param.table_id;
+        line = `${line},${param.id},${param.firstname},${param.lastname},${param.email},${param.checkdate},${param.checkintime},${param.checkouttime}
 `;
-      fs.appendFileSync('logs.csv', line);
-      // line = line.replace(/"/g, '');
-      // line = `${line.slice(1, line.lastIndexOf('}'))}`;
-      ctx.response.attachment('logs.csv');
-      ctx.response.body = fs.createReadStream(`${__dirname}/../../logs.csv`);
+        fs.appendFileSync('logs.csv', line);
+        // line = line.replace(/"/g, '');
+        // line = `${line.slice(1, line.lastIndexOf('}'))}`;
+        ctx.response.attachment('logs.csv');
+        ctx.response.body = fs.createReadStream(`${__dirname}/../../logs.csv`);
 
-      console.log(line);
+        console.log(line);
+      }
     });
 
     console.log(ctx.response.header);
