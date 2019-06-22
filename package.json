@@ -24,6 +24,7 @@
   "dependencies": {
     "bcrypt": "^3.0.6",
     "chalk": "^2.4.2",
+    "csv-writer": "^1.4.0",
     "db-migrate-pg": "^1.0.0",
     "googleapis": "^40.0.0",
     "jsonwebtoken": "^8.4.0",

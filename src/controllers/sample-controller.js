@@ -294,12 +294,12 @@ module.exports = {
       })
       .innerJoin('employees', 'employees.id', 'checkin.id');
 
-    fs.writeFileSync('logs.txt', 'TableID,ID,First Name,Last Name,Email,Date,Checkin,Checkout\n');
+    fs.writeFileSync('logs.csv', 'TableID,ID,First Name,Last Name,Email,Date,Checkin,Checkout\n');
     table.forEach((param) => {
       var line = param.table_id;
       line = `${line},${param.id},${param.firstname},${param.lastname},${param.email},${param.checkdate},${param.checkintime},${param.checkouttime}
 `;
-      fs.appendFileSync('logs.txt', line);
+      fs.appendFileSync('logs.csv', line);
       // line = line.replace(/"/g, '');
       // line = `${line.slice(1, line.lastIndexOf('}'))}`;
 
