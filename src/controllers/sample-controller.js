@@ -319,8 +319,10 @@ module.exports = {
   },
 
   async writeCSV(ctx) {
-    const re = new RegExp(ctx.querystring);
-    console.log(re);
+    const data = ctx.query;
+    var start; var end; var line;
+    [start, end] = [data.start, data.end];
+
     const table = await db('checkin').select()
       .innerJoin('checkout', function () {
         this.on('checkin.email', '=', 'checkout.email')
@@ -330,9 +332,9 @@ module.exports = {
 
     fs.writeFileSync('logs.csv', 'Email,First Name,Last Name,Date,Checkin,Checkout\n');
     table.forEach((param) => {
-      if (re.test(param.checkdate)) {
-        var line = param.email;
-        line = `${line},${param.firstname},${param.lastname},${param.checkdate},${param.checkintime},${param.checkouttime}`;
+      if (param.checkdate >= start && param.checkdate <= end) {
+        line = param.email;
+        line = `${line},${param.firstname},${param.lastname},${param.checkdate},${param.checkintime},${param.checkouttime}\n`;
         fs.appendFileSync('logs.csv', line);
         ctx.response.attachment('logs.csv');
         ctx.response.body = fs.createReadStream(`${__dirname}/../../logs.csv`);

@@ -111,9 +111,12 @@ async function refresh() {
 }
 
 async function writeCSV() {
-  var date = prompt('Enter date (YYYY-MM)');
-  if (date != null) {
-    window.open('http://localhost:8080/v1/writeCSV?' + date);
+  const start = document.getElementById('startdate').value;
+  const end = document.getElementById('enddate').value;
+
+  if (start != null && end != null) {
+    window.open(`http://localhost:8080/v1/writeCSV?start=${start}&end=${end}`);
   }
+
 
 }
