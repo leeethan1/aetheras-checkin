@@ -59,6 +59,11 @@
         .check {
             font-size: 20px;
         }
+
+        #login {
+            width: 200px;
+            height: 50px;
+        }
     </style>
 </head>
 
@@ -67,12 +72,10 @@
     <div>
         <h1>Aetheras Check in</h1>
         <form id='form'>
-            <label for='UID' class='mail'>Email:</label><br>
-            <input type='text' id='UID' name='email'><br><br>
+            <input type='button' onclick='googlelogin()' value='Login with Google' id='login'> <br>
             <input class='radio' type='radio' name='check' value='checkin'> <span class='check'>Check in</span>
             <input class='radio' type='radio' name='check' value='checkout'> <span class='check'>Check out</span><br>
             <input type='button' onclick='myfunction()' value='Submit'>
-            <input type='button' onclick='login()' value='Login with Google'>
             <h3 id='text'></h3>
         </form>
     </div>

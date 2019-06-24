@@ -64,8 +64,6 @@ async function authenticate() {
     const user = await db('employees').select('email')
       .where({
         email: decoded.payload.email,
-        firstname: decoded.payload.given_name,
-        lastname: decoded.payload.family_name,
       });
     console.log(decoded.payload.email);
     if (!isEmpty(user)) {
@@ -287,7 +285,7 @@ module.exports = {
     } catch (e) {
       console.log(e);
     }
-    ctx.response.redirect('http://192.168.1.68:5000');
+    ctx.response.redirect('localhost:5000');
   },
 
   async login(ctx) {
