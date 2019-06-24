@@ -61,17 +61,22 @@ async function userlogs() {
     var x = await resp.json();
 
     // CHANGE DISPLAY METHOD
-    var tr = document.createElement("TR");
-    document.body.appendChild(tr);
-    var th = document.createElement("TH");
-    th.innerHTML = "First Name";
+    var tr1 = document.createElement("TR");
+    document.body.appendChild(tr1)
+    th = document.createElement("TH");
+    th.innerHTML = "Email: " + x[0].email;
+    th.classList.toggle('header');
     document.body.appendChild(th);
-    var th = document.createElement("TH");
-    th.innerHTML = "Last Name";
+    th = document.createElement("TH");
+    th.innerHTML = "First name: " + x[0].firstname;
+    th.classList.toggle('header');
     document.body.appendChild(th);
-    var th = document.createElement("TH");
-    th.innerHTML = "Email";
+    th = document.createElement("TH");
+    th.innerHTML = "Last name: " + x[0].lastname;
+    th.classList.toggle('header');
     document.body.appendChild(th);
+    var tr2 = document.createElement("TR");
+    document.body.appendChild(tr2);
     th = document.createElement("TH");
     th.innerHTML = "Date";
     document.body.appendChild(th);
@@ -84,15 +89,6 @@ async function userlogs() {
     for (xs in x) {
       var tr = document.createElement("TR");
       document.body.appendChild(tr);
-      var td = document.createElement("TD");
-      td.innerHTML = x[xs].firstname;
-      document.body.appendChild(td);
-      var td = document.createElement("TD");
-      td.innerHTML = x[xs].lastname;
-      document.body.appendChild(td);
-      var td = document.createElement("TD");
-      td.innerHTML = x[xs].email;
-      document.body.appendChild(td);
       td = document.createElement("TD");
       td.innerHTML = x[xs].checkdate;
       document.body.appendChild(td);
@@ -102,10 +98,6 @@ async function userlogs() {
       td = document.createElement("TD");
       td.innerHTML = x[xs].checkouttime;
       document.body.appendChild(td);
-
-      // var par = document.createElement("P");
-      // par.innerHTML = `${x[xs].email} ${x[xs].checkdate} ${x[xs].checktime}`;
-      // document.body.appendChild(par);
     }
   } else {
     console.log('no input');
@@ -119,16 +111,8 @@ async function refresh() {
 
 async function writeCSV() {
   var date = prompt('Enter date (YYYY-MM)');
-  window.open('http://localhost:8080/v1/writeCSV?' + date);
-  // var resp = await fetch('http://localhost:8080/v1/writeCSV', {
-  //   method: 'GET',
-  //   mode: 'cors',
-  // }).then(res => {
-  //   return res.text();
-  // });
-  // var x = resp;
-  // window.open(x);
-  // console.log(resp)
-  // console.log(await JSON.stringify(resp.body));
-  // window.open(resp);
+  if (date != null) {
+    window.open('http://localhost:8080/v1/writeCSV?' + date);
+  }
+
 }

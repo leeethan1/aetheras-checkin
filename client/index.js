@@ -40,7 +40,6 @@ async function transfer(stamp) {
   if (stamp == "checkin") {
     console.log("checking in");
 
-    var data = document.getElementById('form');
     var url = 'http://localhost:8080/v1/checkin';
 
     console.log(url);

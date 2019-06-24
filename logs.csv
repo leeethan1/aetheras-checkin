@@ -1,3 +1,2 @@
-TableID,ID,First Name,Last Name,Email,Date,Checkin,Checkout
-5,3,Josh,Lai,c@c.com,2019-04-01,05:00:00,05:30:00
-6,3,Josh,Lai,c@c.com,2019-04-03,06:00:00,06:30:00
+Email,First Name,Last Name,Date,Checkin,Checkout
+a@a.com,john,doe,2019-02-01,02:00:00,02:30:00
