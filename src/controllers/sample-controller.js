@@ -295,7 +295,8 @@ module.exports = {
     } catch (e) {
       console.log(e);
     }
-    ctx.response.redirect('localhost:5000');
+    ctx.status = 308;
+    ctx.response.redirect('http://localhost:5000');
   },
 
   async login(ctx) {
