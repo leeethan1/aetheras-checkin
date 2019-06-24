@@ -17,18 +17,20 @@ function myfunction() {
   var data = document.getElementById('form');
   var check;
 
-  if (data[0].checked) {
-    check = data[0].value;
-
-  } else if (data[1].checked) {
+  if (data[1].checked) {
     check = data[1].value;
+    console.log(check)
+
+  } else if (data[2].checked) {
+    check = data[2].value;
+    console.log(check)
 
   } else {
     alert('Please checkin or checkout');
     return;
   }
 
-  console.log(check);
+  // console.log(check);
   transfer(check)
 
   document.getElementById('form').reset();
