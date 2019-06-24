@@ -249,18 +249,43 @@ module.exports = {
 
   // creates combined checkin/checkout json
   async userlogs(ctx) {
-    const emailaddr = ctx.querystring;
-    console.log(emailaddr);
-
-    const table = await db('checkin').select()
-      .innerJoin('checkout', function () {
-        this.onIn('checkin.email', [emailaddr])
-          .onIn('checkout.email', [emailaddr])
-          .on('checkin.checkdate', '=', 'checkout.checkdate');
-      })
-      .innerJoin('employees', 'employees.id', 'checkin.id');
-    console.log(table);
-
+    const re = new RegExp('@');
+    const data = ctx.querystring;
+    var emailaddr;
+    var table;
+    if (re.test(data)) {
+      emailaddr = data;
+      table = await db('checkin').select()
+        .innerJoin('checkout', function () {
+          this.onIn('checkin.email', [emailaddr])
+            .onIn('checkout.email', [emailaddr])
+            .on('checkin.checkdate', '=', 'checkout.checkdate');
+        })
+        .innerJoin('employees', 'employees.id', 'checkin.id');
+      console.log(table);
+    } else {
+      try {
+        const fname = data.split('-')[0].toLowerCase();
+        const lname = data.split('-')[1].toLowerCase();
+        const x = await db('employees').select('email').where({
+          firstname: fname,
+          lastname: lname,
+        });
+        if (!isEmpty(x)) {
+          emailaddr = x[0].email;
+          table = await db('checkin').select()
+            .innerJoin('checkout', function () {
+              this.onIn('checkin.email', [emailaddr])
+                .onIn('checkout.email', [emailaddr])
+                .on('checkin.checkdate', '=', 'checkout.checkdate');
+            })
+            .innerJoin('employees', 'employees.id', 'checkin.id');
+          console.log(table);
+        }
+      } catch (err) {
+        throw err;
+      }
+    }
     ctx.response.body = table;
   },
 

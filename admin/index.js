@@ -52,7 +52,8 @@ async function viewEmail() {
 }
 
 async function userlogs() {
-  const info = prompt('Enter Email:');
+  var info = prompt('Enter name or email');
+  info = info.replace(' ', '-')
   const url = 'http://localhost:8080/v1/userlogs?' + info;
 
   if (info !== null) {
