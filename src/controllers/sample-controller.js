@@ -251,18 +251,43 @@ module.exports = {
 
   // creates combined checkin/checkout json
   async userlogs(ctx) {
-    const emailaddr = ctx.querystring;
-    console.log(emailaddr);
-
-    const table = await db('checkin').select()
-      .innerJoin('checkout', function () {
-        this.onIn('checkin.email', [emailaddr])
-          .onIn('checkout.email', [emailaddr])
-          .on('checkin.checkdate', '=', 'checkout.checkdate');
-      })
-      .innerJoin('employees', 'employees.id', 'checkin.id');
-    console.log(table);
-
+    const re = new RegExp('@');
+    const data = ctx.querystring;
+    var emailaddr;
+    var table;
+    if (re.test(data)) {
+      emailaddr = data;
+      table = await db('checkin').select()
+        .innerJoin('checkout', function () {
+          this.onIn('checkin.email', [emailaddr])
+            .onIn('checkout.email', [emailaddr])
+            .on('checkin.checkdate', '=', 'checkout.checkdate');
+        })
+        .innerJoin('employees', 'employees.id', 'checkin.id');
+      console.log(table);
+    } else {
+      try {
+        const fname = data.split('-')[0].toLowerCase();
+        const lname = data.split('-')[1].toLowerCase();
+        const x = await db('employees').select('email').where({
+          firstname: fname,
+          lastname: lname,
+        });
+        if (!isEmpty(x)) {
+          emailaddr = x[0].email;
+          table = await db('checkin').select()
+            .innerJoin('checkout', function () {
+              this.onIn('checkin.email', [emailaddr])
+                .onIn('checkout.email', [emailaddr])
+                .on('checkin.checkdate', '=', 'checkout.checkdate');
+            })
+            .innerJoin('employees', 'employees.id', 'checkin.id');
+          console.log(table);
+        }
+      } catch (err) {
+        throw err;
+      }
+    }
     ctx.response.body = table;
   },
 
@@ -319,8 +344,10 @@ module.exports = {
   },
 
   async writeCSV(ctx) {
-    const re = new RegExp(ctx.querystring);
-    console.log(re);
+    const data = ctx.query;
+    var start; var end; var line;
+    [start, end] = [data.start, data.end];
+
     const table = await db('checkin').select()
       .innerJoin('checkout', function () {
         this.on('checkin.email', '=', 'checkout.email')
@@ -330,10 +357,9 @@ module.exports = {
 
     fs.writeFileSync('logs.csv', 'Email,First Name,Last Name,Date,Checkin,Checkout\n');
     table.forEach((param) => {
-      if (re.test(param.checkdate)) {
-        var line = param.email;
-        line = `${line},${param.firstname},${param.lastname},${param.checkdate},${param.checkintime},${param.checkouttime}
-`;
+      if (param.checkdate >= start && param.checkdate <= end) {
+        line = param.email;
+        line = `${line},${param.firstname},${param.lastname},${param.checkdate},${param.checkintime},${param.checkouttime}\n`;
         fs.appendFileSync('logs.csv', line);
         ctx.response.attachment('logs.csv');
         ctx.response.body = fs.createReadStream(`${__dirname}/../../logs.csv`);

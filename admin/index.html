@@ -8,6 +8,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <style>
+    body {
+      text-align: center;
+    }
+
+    button {
+      margin: 5px;
+      color: black;
+      background: transparent;
+      border: 1px solid black;
+      border-radius: 6px;
+    }
+
     th,
     td {
       border: 1px solid black;
@@ -31,8 +43,12 @@
     <button type="button" id='addEmail' onclick='addEmail()'>Add Email</button> <br>
     <button type="button" id='viewEmail' onclick='viewEmail()'>View Email registry</button> <br>
     <button type="button" id='userlogs' onclick='userlogs()'>Check user logs</button> <br>
+    <span>Starting from: </span>
+    <input type='date' name='startdate' id='startdate'>
+    <span>to: </span>
+    <input type='date' name='enddate' id='enddate'>
     <button type="button" id='writeCSV' onclick='writeCSV()'>Get CSV</button> <br>
-    <button type="button" id='refresh' onclick='refresh()'>Refresh Page</button>
+    <button type="button" id='refresh' onclick='refresh()'>Refresh Page</button> <br>
   </div>
   <script src="index.js"> </script>
 </body>

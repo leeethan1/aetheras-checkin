@@ -52,7 +52,8 @@ async function viewEmail() {
 }
 
 async function userlogs() {
-  const info = prompt('Enter Email:');
+  var info = prompt('Enter name or email');
+  info = info.replace(' ', '-')
   const url = 'http://localhost:8080/v1/userlogs?' + info;
 
   if (info !== null) {
@@ -110,9 +111,12 @@ async function refresh() {
 }
 
 async function writeCSV() {
-  var date = prompt('Enter date (YYYY-MM)');
-  if (date != null) {
-    window.open('http://localhost:8080/v1/writeCSV?' + date);
+  const start = document.getElementById('startdate').value;
+  const end = document.getElementById('enddate').value;
+
+  if (start != null && end != null) {
+    window.open(`http://localhost:8080/v1/writeCSV?start=${start}&end=${end}`);
   }
+
 
 }
