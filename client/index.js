@@ -1,5 +1,24 @@
 /* eslint-disable */
 
+console.log(document.cookie);
+main();
+async function main() {
+  if (document.cookie) {
+    let cookiecheck = await fetch('http://localhost:8080/v1/checkcookie', {
+      method: 'GET',
+      credentials: 'include'
+    })
+    if (cookiecheck.status == 200) {
+      var login = document.getElementById('login');
+      var form = document.getElementById('form');
+      login.style.display = 'none';
+      form.style.display = 'block';
+      console.log('LOGIN COMPLETE')
+    }
+  } else {
+    console.log('no cookies')
+  }
+}
 async function googlelogin() {
   var resp = await fetch('http://localhost:8080/v1/login', {
     method: 'GET',
@@ -17,12 +36,12 @@ function myfunction() {
   var data = document.getElementById('form');
   var check;
 
-  if (data[1].checked) {
-    check = data[1].value;
+  if (data[2].checked) {
+    check = data[2].value;
     console.log(check)
 
-  } else if (data[2].checked) {
-    check = data[2].value;
+  } else if (data[3].checked) {
+    check = data[3].value;
     console.log(check)
 
   } else {
@@ -39,18 +58,26 @@ function myfunction() {
 
 async function transfer(stamp) {
 
+  var data = document.getElementById('form');
+  const userdate = data[0].value;
+  const usertime = data[1].value;
+  console.log(data[0].value)
+  console.log(data[1].value)
+
   if (stamp == "checkin") {
     console.log("checking in");
 
-    var url = 'http://localhost:8080/v1/checkin';
+    if (userdate && usertime) {
+      var url = `http://localhost:8080/v1/checkin?date=${data[0].value}&time=${data[1].value}`;
+    } else {
+      var url = 'http://localhost:8080/v1/checkin';
+    }
+    
 
     console.log(url);
 
     var resp = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      method: 'GET',
     });
     var status = resp.status;
     var message = resp.statusText;
@@ -75,15 +102,17 @@ async function transfer(stamp) {
   } else if (stamp == "checkout") {
 
     console.log("checking out");
-    var url = 'http://localhost:8080/v1/checkout';
+
+    if (userdate && usertime) {
+      var url = `http://localhost:8080/v1/checkout?date=${data[0].value}&time=${data[1].value}`;
+    } else {
+      var url = 'http://localhost:8080/v1/checkout';
+    }
 
     console.log(url);
 
     var resp = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      method: 'GET',
     });
     var status = resp.status;
     var message = resp.statusText;
