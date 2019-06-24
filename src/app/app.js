@@ -23,7 +23,7 @@ app.use(logger());
 app.use(helmet());
 app.use(
   cors({
-    origin: '*', // change this in production
+    origin: 'http://localhost:5000', // change this in production
     exposeHeaders: ['Authorization'],
     credentials: true,
     allowMethods: ['GET', 'PUT', 'POST', 'DELETE'],

@@ -6,9 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Aetheras</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-
-
+    <link rel="shortcut icon" href="">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:500&display=swap" rel="stylesheet"> 
+    <script src="index.js"></script>
     <style>
         body {
             height: 100%;
@@ -39,6 +39,18 @@
 
         }
 
+
+        input[type=text] {
+            font-size: 20px;
+            width: 270px;
+            height: 30px;
+            border-radius: 5px;
+            margin: 20px;
+        }
+        form {
+            display: none;
+        }
+
         .radio {
             margin: 8px;
         }
@@ -49,7 +61,15 @@
 
         #login {
             width: 200px;
-            height: 50px;
+            height: 40px;
+            padding-left: 8px;
+            padding-right: 8px;
+            border-radius: 5px;
+            border-style: outset;
+            background-color: #ffffff;
+            font-family: 'Roboto', sans-serif;
+            font-size: 14px;
+            color: #000000a1;
         }
     </style>
 </head>
@@ -58,8 +78,11 @@
 
     <div>
         <h1>Aetheras Check in</h1>
+        <button onclick='googlelogin()' value='Sign in with Google' id='login'>Sign in with Google</button><br>
         <form id='form'>
-            <input type='button' onclick='googlelogin()' value='Login with Google' id='login'> <br>
+            <label>Optional: Input date and time if adding to backlog</label><br>
+            <input type='date' id=date, value=''>
+            <input type='time' id=time, value=''><br><br>
             <input class='radio' type='radio' name='check' value='checkin'> <span class='check'>Check in</span>
             <input class='radio' type='radio' name='check' value='checkout'> <span class='check'>Check out</span><br>
             <input type='button' onclick='myfunction()' value='Submit'>
@@ -68,7 +91,7 @@
 
 
     </div>
-    <script src="index.js"></script>
+    
 
 
 </body>

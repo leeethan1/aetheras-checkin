@@ -83,10 +83,11 @@ module.exports = {
     var fTime = date[1];
     var uid;
     var emailaddr;
+    const append = ctx.request.query;
 
-    if (ctx.request.body.date && ctx.request.body.time) {
-      fDate = ctx.request.body.date;
-      fTime = ctx.request.body.time;
+    if (append.date && append.time) {
+      fDate = append.date;
+      fTime = append.time;
     }
 
     // console.log(`${fDate} ${fTime} ${emailaddr}`);
@@ -147,10 +148,11 @@ module.exports = {
     var fTime = date[1];
     var uid;
     var emailaddr;
+    const append = ctx.request.query;
 
-    if (ctx.request.body.date && ctx.request.body.time) {
-      fDate = ctx.request.body.date;
-      fTime = ctx.request.body.time;
+    if (append.date && append.time) {
+      fDate = append.date;
+      fTime = append.time;
     }
 
     // console.log(`${fDate} ${fTime} ${emailaddr}`);
@@ -297,6 +299,14 @@ module.exports = {
 
       if (await authenticate()) {
         var decoded = jwt.decode(tokens.id_token, { complete: true });
+        const ids = await db('employees')
+          .where({ email: decoded.payload.email })
+          .select('id');
+        ctx.cookies.set('id', ids[0].id, {
+          signed: true,
+          httpOnly: false,
+          maxAge: 64800000,
+        });
 
         if (tokens.refresh_token) {
           await db('employees').update({ refresh_token: tokens.refresh_token })
@@ -310,12 +320,27 @@ module.exports = {
     } catch (e) {
       console.log(e);
     }
-    ctx.response.redirect('localhost:5000');
+    ctx.status = 308;
+    ctx.response.redirect('http://localhost:5000');
   },
 
   async login(ctx) {
     // getGoogleAuthURL(ctx, ['email', 'profile', 'openid']);
     ctx.response.body = ({ url: getGoogleAuthURL(['email', 'profile', 'openid']) });
+  },
+
+  async checkcookie(ctx) {
+    try {
+      var reqid = ctx.cookies.get('id', { signed: true });
+      const data = await db('employees').where({ id: reqid })
+        .select('refresh_token');
+      const { tokens } = await oauth2Client.refreshToken(data[0].refresh_token);
+      // console.log(tokens)
+      oauth2Client.setCredentials(tokens);
+      ctx.status = 200;
+    } catch (err) {
+      console.log(err);
+    }
   },
 
   async writeCSV(ctx) {
