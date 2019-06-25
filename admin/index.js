@@ -32,8 +32,8 @@ async function addEmail() {
   var node = document.createTextNode(msg);
   h.appendChild(node);
 
-  var element = document.getElementById("div1");
-  element.appendChild(h);
+  var div = document.getElementById("div1");
+  div.appendChild(h);
 
   console.log(status);
 }
@@ -53,52 +53,53 @@ async function viewEmail() {
 
 async function userlogs() {
   var info = prompt('Enter name or email');
-  info = info.replace(' ', '-')
-  const url = 'http://localhost:8080/v1/userlogs?' + info;
-
-  if (info !== null) {
+  if (info) {
+    info = info.replace(' ', '-')
+    const url = 'http://localhost:8080/v1/userlogs?' + info;
     var resp = await fetch(url, {
     });
     var x = await resp.json();
 
     // CHANGE DISPLAY METHOD
+    var tbl = document.createElement('table');
+    document.body.appendChild(tbl);
     var tr1 = document.createElement("TR");
-    document.body.appendChild(tr1)
+    tbl.appendChild(tr1)
     th = document.createElement("TH");
     th.innerHTML = "Email: " + x[0].email;
     th.classList.toggle('header');
-    document.body.appendChild(th);
+    tbl.appendChild(th);
     th = document.createElement("TH");
     th.innerHTML = "First name: " + x[0].firstname;
     th.classList.toggle('header');
-    document.body.appendChild(th);
+    tbl.appendChild(th);
     th = document.createElement("TH");
     th.innerHTML = "Last name: " + x[0].lastname;
     th.classList.toggle('header');
-    document.body.appendChild(th);
+    tbl.appendChild(th);
     var tr2 = document.createElement("TR");
-    document.body.appendChild(tr2);
+    tbl.appendChild(tr2);
     th = document.createElement("TH");
     th.innerHTML = "Date";
-    document.body.appendChild(th);
+    tbl.appendChild(th);
     th = document.createElement("TH");
     th.innerHTML = "Check In Time";
-    document.body.appendChild(th);
+    tbl.appendChild(th);
     th = document.createElement("TH");
     th.innerHTML = "Check Out Time";
-    document.body.appendChild(th);
+    tbl.appendChild(th);
     for (xs in x) {
       var tr = document.createElement("TR");
-      document.body.appendChild(tr);
+      tbl.appendChild(tr);
       td = document.createElement("TD");
       td.innerHTML = x[xs].checkdate;
-      document.body.appendChild(td);
+      tbl.appendChild(td);
       td = document.createElement("TD");
       td.innerHTML = x[xs].checkintime;
-      document.body.appendChild(td);
+      tbl.appendChild(td);
       td = document.createElement("TD");
       td.innerHTML = x[xs].checkouttime;
-      document.body.appendChild(td);
+      tbl.appendChild(td);
     }
   } else {
     console.log('no input');
@@ -106,17 +107,14 @@ async function userlogs() {
   }
 }
 
-async function refresh() {
-  location.reload();
-}
-
 async function writeCSV() {
   const start = document.getElementById('startdate').value;
   const end = document.getElementById('enddate').value;
-
-  if (start != null && end != null) {
+  if (start != '' && end != '') {
     window.open(`http://localhost:8080/v1/writeCSV?start=${start}&end=${end}`);
   }
+}
 
-
+async function refresh() {
+  location.reload();
 }
