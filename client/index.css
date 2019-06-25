@@ -92,8 +92,7 @@ padding: 0;
   transition-duration: 10ms;
   }
 
-
-.google-button__icon {
+.google-icon {
 display: inline-block;
 vertical-align: middle;
 margin: 8px 0 8px 8px;
@@ -102,7 +101,7 @@ height: 18px;
 box-sizing: border-box;
 }
 
-.google-button__text {
+.google-text {
 display: inline-block;
 vertical-align: middle;
 padding: 0 24px;
