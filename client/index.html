@@ -50,6 +50,12 @@
         form {
             display: none;
         }
+        img {
+            padding-right: 24px;
+            vertical-align: middle;
+            width: 18px;
+            height: 18px;
+        }
 
         .radio {
             margin: 8px;
@@ -70,6 +76,7 @@
             font-family: 'Roboto', sans-serif;
             font-size: 14px;
             color: #000000a1;
+            text-align: center;
         }
     </style>
 </head>
@@ -78,7 +85,7 @@
 
     <div>
         <h1>Aetheras Check in</h1>
-        <button onclick='googlelogin()' value='Sign in with Google' id='login'>Sign in with Google</button><br>
+        <button onclick='googlelogin()' value='Sign in with Google' id='login'><img src='g-logo.png'/>Sign in with Google</button><br>
         <form id='form'>
             <label>Optional: Input date and time if adding to backlog</label><br>
             <input type='date' id=date, value=''>
