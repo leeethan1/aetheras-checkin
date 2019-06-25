@@ -343,6 +343,15 @@ module.exports = {
     }
   },
 
+  async redirectCheck(ctx) {
+    if (await authenticate()) {
+      ctx.status = 200;
+    } else {
+      ctx.status = 409;
+      ctx.message = 'User Not In Database';
+    }
+  },
+
   async writeCSV(ctx) {
     const data = ctx.query;
     var start; var end; var line;

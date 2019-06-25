@@ -4,7 +4,7 @@ console.log(document.cookie);
 main();
 async function main() {
   if (document.cookie) {
-    let cookiecheck = await fetch('http://localhost:8080/v1/checkcookie', {
+    var cookiecheck = await fetch('http://localhost:8080/v1/checkcookie', {
       method: 'GET',
       credentials: 'include'
     })
@@ -16,7 +16,10 @@ async function main() {
       console.log('LOGIN COMPLETE')
     }
   } else {
-    console.log('no cookies')
+    var check = await fetch('http://localhost:8080/v1/redirectCheck');
+    if (check.status == 409) {
+      alert(check.statusText);
+    }
   }
 }
 async function googlelogin() {

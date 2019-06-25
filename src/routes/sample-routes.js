@@ -15,6 +15,7 @@ router.get('/oauth2', samplesRoute.oauth2);
 router.get('/login', samplesRoute.login);
 router.get('/writeCSV', samplesRoute.writeCSV);
 router.get('/checkcookie', samplesRoute.checkcookie);
+router.get('/redirectCheck', samplesRoute.redirectCheck);
 
 
 module.exports = router.routes();
