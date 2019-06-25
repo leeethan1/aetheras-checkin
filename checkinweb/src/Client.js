@@ -5,7 +5,7 @@ import title from './title.png';
 import glogo from './g-logo.png';
 import './client.css';
 
-export function Client() {
+function Client() {
   return (
     <div>
         <img className='logo' src={title} alt='title'/>
@@ -27,4 +27,4 @@ export function Client() {
     </div>
   )
 }
-// export default Client;
+export default Client;
