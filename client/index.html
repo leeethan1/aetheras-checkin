@@ -7,85 +7,27 @@
     <title>Aetheras</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="">
+    <link rel="stylesheet" href="index.css">
     <link href="https://fonts.googleapis.com/css?family=Roboto:500&display=swap" rel="stylesheet"> 
     <script src="index.js"></script>
     <style>
-        body {
-            height: 100%;
-            width: 100%;
-            background-size: cover;
-            background-image: url('background.png');
-        }
-
-        div {
-            text-align: center;
-            font-family: 'Verdana';
-            color: #2F4356;
-        }
-
-        h1 {
-            margin-top: 50px;
-            margin-bottom: 25px;
-            font-family: 'Impact';
-            font-size: 70px;
-        }
-
-        input[type=button] {
-            border-radius: 100px;
-            width: 100px;
-            height: 35px;
-            margin: 10px;
-            font-size: 15px;
-
-        }
-
-
-        input[type=text] {
-            font-size: 20px;
-            width: 270px;
-            height: 30px;
-            border-radius: 5px;
-            margin: 20px;
-        }
-        form {
-            display: none;
-        }
-        img {
-            padding-right: 24px;
-            vertical-align: middle;
-            width: 18px;
-            height: 18px;
-        }
-
-        .radio {
-            margin: 8px;
-        }
-
-        .check {
-            font-size: 20px;
-        }
-
-        #login {
-            width: 200px;
-            height: 40px;
-            padding-left: 8px;
-            padding-right: 8px;
-            border-radius: 5px;
-            border-style: outset;
-            background-color: #ffffff;
-            font-family: 'Roboto', sans-serif;
-            font-size: 14px;
-            color: #000000a1;
-            text-align: center;
-        }
+        
     </style>
 </head>
 
 <body>
+        
 
     <div>
-        <h1>Aetheras Check in</h1>
-        <button onclick='googlelogin()' value='Sign in with Google' id='login'><img src='g-logo.png'/>Sign in with Google</button><br>
+        <!-- <h1>Aetheras Check in</h1> -->
+        <img class='logo' src='title.png'/><br>
+        <button type="button" class="google-button" onclick='googlelogin()' id='login'>
+                <span class="google-button__icon">
+                  <img class='glogo' src='g-logo.png'/>
+                </span>
+                <span class="google-button__text">Sign in with Google</span>
+              </button>
+        <!-- <button onclick='googlelogin()' value='google_button' id='login'><img src='g-logo.png'/>SIGN IN WITH GOOGLE</button><br> -->
         <form id='form'>
             <label>Optional: Input date and time if adding to backlog</label><br>
             <input type='date' id=date, value=''>
@@ -96,8 +38,8 @@
             <h3 id='text'></h3>
         </form>
 
-
     </div>
+    
     
 
 
