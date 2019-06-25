@@ -1,7 +1,6 @@
 Email,First Name,Last Name,Date,Checkin,Checkout
-a@a.com,john,doe,2019-01-01,01:00:00,01:30:00
-a@a.com,john,doe,2019-02-01,02:00:00,02:30:00
 a@a.com,john,doe,2019-03-01,03:00:00,03:30:00
 b@b.com,jane,doe,2019-03-01,04:00:00,04:30:00
-c@c.com,Josh,Lai,2019-04-01,05:00:00,05:30:00
-c@c.com,Josh,Lai,2019-04-03,06:00:00,06:30:00
+josh.lai.tw@gmail.com,Josh,Lai,2019-04-01,05:00:00,05:30:00
+josh.lai.tw@gmail.com,Josh,Lai,2019-04-03,06:00:00,06:30:00
+josh.lai.tw@gmail.com,Josh,Lai,2019-06-25,13:55:00,13:55:00
