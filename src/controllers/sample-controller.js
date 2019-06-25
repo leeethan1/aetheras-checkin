@@ -24,6 +24,7 @@ google.options({ auth: oauth2Client });
 function getGoogleAuthURL(scopes) {
   const authorizeUrl = oauth2Client.generateAuthUrl({
     access_type: 'offline',
+    prompt: 'consent',
     scope: scopes,
   });
 
@@ -307,11 +308,24 @@ module.exports = {
           httpOnly: false,
           maxAge: 64800000,
         });
+        ctx.cookies.set('inDatabase', 'true', {
+          signed: true,
+          httpOnly: false,
+          maxAge: 5000,
+          overwrite: true,
+        });
 
         if (tokens.refresh_token) {
           await db('employees').update({ refresh_token: tokens.refresh_token })
             .where({ email: decoded.payload.email });
         }
+      } else {
+        ctx.cookies.set('inDatabase', 'false', {
+          signed: true,
+          httpOnly: false,
+          maxAge: 5000,
+          overwrite: true,
+        });
       }
       // get the decoded payload and header
 

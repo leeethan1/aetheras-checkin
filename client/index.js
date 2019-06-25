@@ -1,9 +1,10 @@
 /* eslint-disable */
 
-console.log(document.cookie);
+console.log((document.cookie));
+
 main();
 async function main() {
-  if (document.cookie) {
+  if (getCookie('id')) {
     var cookiecheck = await fetch('http://localhost:8080/v1/checkcookie', {
       method: 'GET',
       credentials: 'include'
@@ -15,13 +16,30 @@ async function main() {
       form.style.display = 'block';
       console.log('LOGIN COMPLETE')
     }
-  } else {
-    var check = await fetch('http://localhost:8080/v1/redirectCheck');
-    if (check.status == 409) {
-      alert(check.statusText);
+  } else if (getCookie('inDatabase')) {
+    var flag = getCookie('inDatabase');
+    if (flag == 'false') {
+      alert('User Not In Database');
     }
   }
 }
+
+function getCookie(cname) {
+  var name = cname + "=";
+  var decodedCookie = decodeURIComponent(document.cookie);
+  var ca = decodedCookie.split(';');
+  for(var i = 0; i <ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+
 async function googlelogin() {
   var resp = await fetch('http://localhost:8080/v1/login', {
     method: 'GET',
