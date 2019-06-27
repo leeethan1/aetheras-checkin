@@ -32,7 +32,7 @@ export async function addEmail() {
   var node = document.createTextNode(msg);
   h.appendChild(node);
 
-  var div = document.getElementById("text");
+  var div = document.getElementById("output");
   div.appendChild(h);
 
   console.log(status);
@@ -47,7 +47,7 @@ export async function viewEmail() {
   var node = document.createTextNode(resp.statusText);
   h.appendChild(node);
 
-  var element = document.getElementById("text");
+  var element = document.getElementById("output");
   element.appendChild(h);
 }
 
@@ -66,7 +66,7 @@ export async function userlogs() {
     console.log(x)
 
     // CHANGE DISPLAY METHOD
-    var element = document.getElementById("text");
+    var element = document.getElementById("output");
     var tbl = document.createElement('table');
     element.appendChild(tbl);
     var tr1 = document.createElement("TR");
@@ -121,6 +121,8 @@ export async function writeCSV() {
   }
 }
 
-export async function refresh() {
-  location.reload();
+export async function clearOutput() {
+  var element = document.getElementById("output");
+  element.innerHTML = '';
+  // location.reload();
 }

@@ -1,21 +1,10 @@
 /* eslint-disable */
 import React from 'react';
-import * as adminutils from './adminutils';
-
-
+import * as autils from './adminutils';
 
 function Admin() {
   return (
     <AdminForm/>
-    // <button className='nbutton' type="button" onClick={() => adminutils.addEmail()}>Add Email</button><br></br>
-    // <button className='nbutton' type="button" onClick={() => adminutils.viewEmail()}>View Email registry</button><br></br>
-    // <button className='nbutton' type="button" onClick={() => adminutils.userlogs()}>Check user logs</button><br></br>
-    // <br></br><label>Enter Range:</label><br></br>
-    // <span>from: </span>
-    // <input className='datetime' type='date' name='startdate' id='startdate'/>
-    // <span> to: </span>
-    // <input className='datetime' type='date' name='enddate' id='enddate'/><br></br>
-    // <button className='nbutton' type="button" onClick={() => adminutils.writeCSV()}>Get CSV</button><br></br>
   );
 }
 
@@ -24,29 +13,40 @@ function StartDate(props) {
     <input className='datetime' type='date' id='startdate' value={props.value} onChange={ props.handleChange }/>
   );
 }
+
 function EndDate(props) {
   return (
     <input className='datetime' type='date' id='enddate' value={props.value} onChange={ props.handleChange }/>
   );
 }
+
 function AddEmail(props) {
   return (
     <input type='button' className='nbutton' onClick={props.onClick} defaultValue='Add Email'/>
   )
 }
+
 function ViewEmail(props) {
   return (
     <input type='button' className='nbutton' onClick={props.onClick} defaultValue='View Email Registry'/>
   )
 }
+
 function UserLogs(props) {
   return (
     <input type='button' className='nbutton' onClick={props.onClick} defaultValue='Check User Logs'/>
   )
 }
+
 function WriteCSV(props) {
   return (
     <input type='button' className='nbutton' onClick={props.onClick} defaultValue='Download CSV'/>
+  )
+}
+
+function ClearOutput(props) {
+  return (
+    <input type='button' className='nbutton' onClick={props.onClick} defaultValue='Clear Output'/>
   )
 }
 class AdminForm extends React.Component {
@@ -70,13 +70,15 @@ class AdminForm extends React.Component {
   }
   handleClick(i) {
     if (i == 0) {
-      adminutils.addEmail();
+      autils.addEmail();
     } else if (i == 1) {
-      adminutils.viewEmail();
+      autils.viewEmail();
     } else if (i == 2) {
-      adminutils.userlogs();
+      autils.userlogs();
+    } else if (i ==3) {
+      autils.writeCSV();
     } else {
-      adminutils.writeCSV();
+      autils.clearOutput();
     }
   }
 
@@ -88,7 +90,9 @@ class AdminForm extends React.Component {
         <UserLogs onClick={() => this.handleClick(2)}/><br></br><br></br>
         <StartDate value={this.state.sDate} handleChange={this.handlesDate}/>
         <EndDate value={this.state.eDate} handleChange={this.handleeDate}/><br></br>
-        <WriteCSV onClick={() => this.handleClick(3)}/>
+        <WriteCSV onClick={() => this.handleClick(3)}/><br></br>
+        <ClearOutput onClick={() => this.handleClick(4)}/>
+        <h3 id='output'></h3>
       </div>
     );
   }
