@@ -95,7 +95,7 @@ class Form extends React.Component {
   render() {
     return (
       <div>
-        <OptionalLabel/><br></br><br></br>
+        <OptionalLabel/><br></br>
         <Datebox value={this.state.date} handleChange={this.handleDate}/>
         <Timebox value={this.state.time} handleChange={this.handleTime}/><br></br><br></br>
         <CheckInButton onClick={() => this.handleClick(0)}/>
