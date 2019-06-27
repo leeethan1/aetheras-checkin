@@ -29,6 +29,7 @@ h1 {
 .nbutton {
   border-radius: 5px;
   width: 50%;
+  min-width: 150px;
   height: auto;
   margin: 3px;
   font-size: 15px;
@@ -46,7 +47,8 @@ h1 {
 
 .datetime {
   padding: 5px;
-  
+  margin-left: 5px;
+  margin-right: 5px;
 }
 
 .glogo {

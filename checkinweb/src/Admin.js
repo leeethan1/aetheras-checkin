@@ -10,13 +10,19 @@ function Admin() {
 
 function StartDate(props) {
   return (
+    <div>
+    <label>Start:</label>
     <input className='datetime' type='date' id='startdate' value={props.value} onChange={ props.handleChange }/>
+    </div>
   );
 }
 
 function EndDate(props) {
   return (
+    <div>
+    <label>End:</label>
     <input className='datetime' type='date' id='enddate' value={props.value} onChange={ props.handleChange }/>
+    </div>
   );
 }
 
