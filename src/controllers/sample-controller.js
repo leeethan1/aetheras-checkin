@@ -270,10 +270,11 @@ module.exports = {
       try {
         const fname = data.split('-')[0].toLowerCase();
         const lname = data.split('-')[1].toLowerCase();
-        const x = await db('employees').select('email').where({
-          firstname: fname,
-          lastname: lname,
-        });
+        const x = await db('employees').select('email').whereRaw(
+          'LOWER(firstname) = ?', fname,
+        ).andWhereRaw(
+          'LOWER(lastname) = ?', lname,
+        );
         if (!isEmpty(x)) {
           emailaddr = x[0].email;
           table = await db('checkin').select()

@@ -58,10 +58,14 @@ export async function userlogs() {
     const url = 'http://localhost:8080/v1/userlogs?' + info;
     var resp = await fetch(url, {
     });
-    var x = await resp.json();
-    if (x.length === 0) {
-      alert('No such Email');
-      return;
+    try {
+      var x = await resp.json();
+      if (x.length === 0) {
+        alert('No such Email');
+        return;
+      }
+    } catch (err) {
+      throw err;
     }
     console.log(x)
 

@@ -38,13 +38,15 @@ CREATE TABLE checkout
 INSERT INTO admins
   (id, firstname, lastname, email)
 VALUES
-  (1, 'Josh', 'Lai', 'c@c.com');
+  (1, 'Josh', 'Lai', 'c@c.com'),
+  (2, 'Ethan', 'Lee', 'lee.ethan168@gmail.com');
 INSERT INTO employees
   (id, firstname, lastname, email)
 VALUES
   (1, 'john', 'doe', 'a@a.com'),
   (2, 'jane', 'doe', 'b@b.com'),
-  (3, 'Josh', 'Lai', 'c@c.com');
+  (3, 'Josh', 'Lai', 'c@c.com'),
+  (4, 'Ethan', 'Lee', 'lee.ethan168@gmail.com');
 SELECT setval('employees_id_seq', (SELECT MAX(id)
   from "employees"));
 INSERT INTO checkin
