@@ -3,13 +3,14 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Client from './Client.js';
+import Admin from './Admin'
 
 function App() {
-  var flag = 0;
   return (
     <div className="App">
       <Client/>
-      <button className='client' onClick={() => 'placeholder'}>BUTTON</button><br></br>
+      {/* <Admin/>
+      <h3 id='text'></h3> */}
 
       {/* <header className="App-header">
         <img src={logo} className="App-logo" alt="logo"/>

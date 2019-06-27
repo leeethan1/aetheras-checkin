@@ -221,8 +221,8 @@ module.exports = {
     ctx.body = 'Adding email';
     const query = ctx.request.body;
     const emailaddr = query.email;
-    const fname = query.firstname;
-    const lname = query.lastname;
+    const fname = query.firstname.toLowerCase();
+    const lname = query.lastname.toLowerCase();
 
     // checks if email is already added to the registry
     try {
@@ -303,6 +303,22 @@ module.exports = {
         const ids = await db('employees')
           .where({ email: decoded.payload.email })
           .select('id');
+        const admins = await db('admins')
+          .where({ email: decoded.payload.email })
+          .select();
+        if (!isEmpty(admins)) {
+          ctx.cookies.set('isAdmin', 'true', {
+            signed: true,
+            httpOnly: false,
+            maxAge: 64800000,
+          });
+        } else {
+          ctx.cookies.set('isAdmin', 'false', {
+            signed: true,
+            httpOnly: false,
+            maxAge: 64800000,
+          });
+        }
         ctx.cookies.set('id', ids[0].id, {
           signed: true,
           httpOnly: false,
@@ -339,13 +355,15 @@ module.exports = {
   },
 
   async login(ctx) {
-    // getGoogleAuthURL(ctx, ['email', 'profile', 'openid']);
-    ctx.response.body = ({ url: getGoogleAuthURL(['email', 'profile', 'openid']) });
+    ctx.status = 308;
+    ctx.response.redirect(getGoogleAuthURL(['email', 'profile', 'openid']));
+    // ctx.response.body = ({ url: getGoogleAuthURL(['email', 'profile', 'openid']) });
   },
 
   async checkcookie(ctx) {
     try {
       var reqid = ctx.cookies.get('id', { signed: true });
+      ctx.cookies.get('isAdmin', { signed: true });
       const data = await db('employees').where({ id: reqid })
         .select('refresh_token');
       const { tokens } = await oauth2Client.refreshToken(data[0].refresh_token);

@@ -1,4 +1,11 @@
 /* Replace with your SQL commands */
+CREATE TABLE admins
+(
+  id SERIAL PRIMARY KEY,
+  firstname VARCHAR,
+  lastname VARCHAR,
+  email VARCHAR UNIQUE
+);
 CREATE TABLE employees
 (
   -- id uuid DEFAULT uuid_generate_v4 () PRIMARY KEY,
@@ -28,6 +35,10 @@ CREATE TABLE checkout
 );
 
 -- FOR TESTING PURPOSES
+INSERT INTO admins
+  (id, firstname, lastname, email)
+VALUES
+  (1, 'Josh', 'Lai', 'c@c.com');
 INSERT INTO employees
   (id, firstname, lastname, email)
 VALUES

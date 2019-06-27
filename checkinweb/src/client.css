@@ -7,14 +7,14 @@
   background-image: url('background.png');
 } */
 
-div {
+.clientdiv {
   width: 100%;
   height: 100%;
   background-color: #dfdfdf;
   text-align: center;
   font-family: 'Verdana';
   color: rgb(0, 0, 0);
-  position: absolute;
+  position: relative;
 }
 
 h1 {
@@ -24,17 +24,37 @@ h1 {
   font-size: 70px;
 }
 
-input[type=button] {
-  border-radius: 100px;
+.checksform {
+  display: none;
+}
+
+.adminform {
+  display: none;
+  border-style: ridge;
+  width: 75%;
+  margin: auto;
+}
+
+.nbutton {
+  border-radius: 5px;
+  width: 50%;
+  height: auto;
+  margin: 3px;
+  font-size: 15px;
+  padding: 7px;
+  
+}
+.cbuttons {
+  border-radius: 5px;
   width: 100px;
   height: 35px;
   margin: 10px;
   font-size: 15px;
-
 }
 
-form {
-  display: none;
+.datetime {
+  padding: 5px;
+  
 }
 
 .glogo {
@@ -46,7 +66,8 @@ form {
 
 .logo {
   display: block;
-  height: 50%;
+  width: 50%;
+  height: auto;
   margin: auto;
   /* animation: App-logo-spin infinite 20s linear;
   height: 40vmin;

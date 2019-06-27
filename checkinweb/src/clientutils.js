@@ -24,6 +24,14 @@ async function main() {
       alert('User Not In Database');
     }
   }
+  if (getCookie('isAdmin')) {
+    if (getCookie('isAdmin') == 'true') {
+      var admin = document.getElementById('admin');
+      if (admin) {
+        admin.style.display = 'block';
+      }
+    }
+  }
 }
 
 function getCookie(cname) {
@@ -39,16 +47,15 @@ function getCookie(cname) {
 }
 
 export async function googlelogin() {
-  var resp = await fetch('http://localhost:8080/v1/login', {
-    method: 'GET',
-    mode: 'cors',
-  })
-  var x = await resp.json();
+  // var resp = await fetch('http://localhost:8080/v1/login', {
+  //   method: 'GET',
+  //   mode: 'no-cors',
+  // })
+  location = 'http://localhost:8080/v1/login';
+  // var x = await resp.json();
 
-  var googleurl = x.url;
-  window.location.replace(googleurl);
-
-  console.log(googleurl);
+  // var googleurl = x.url;
+  // window.open(googleurl);
 }
 
 export function myfunction() {
@@ -75,19 +82,26 @@ export function myfunction() {
 
 }
 
-async function transfer(stamp) {
+// async function transfer(stamp) {
 
-  var data = document.getElementById('form');
-  const userdate = data[0].value;
-  const usertime = data[1].value;
-  console.log(data[0].value)
-  console.log(data[1].value)
+//   var data = document.getElementById('form');
+//   const userdate = data[0].value;
+//   const usertime = data[1].value;
+//   console.log(data[0].value)
+//   console.log(data[1].value)
 
-  if (stamp == "checkin") {
+//   if (stamp == "checkin") {
+
+export async function checkin(userdate, usertime) {
+    // var data = document.getElementById('form');
+    // const userdate = data[0].value;
+    // const usertime = data[1].value;
+    // console.log(data[0].value)
+    // console.log(data[1].value)
     console.log("checking in");
 
     if (userdate && usertime) {
-      var url = `http://localhost:8080/v1/checkin?date=${data[0].value}&time=${data[1].value}`;
+      var url = `http://localhost:8080/v1/checkin?date=${userdate}&time=${usertime}`;
     } else {
       var url = 'http://localhost:8080/v1/checkin';
     }
@@ -108,14 +122,14 @@ async function transfer(stamp) {
     if (status == 200) {
       if (userdate && usertime) {
         document.getElementById('text').innerHTML =
-        `${stamp} @ ${userdate} ${usertime}`;
+        `Checked In @ ${userdate} ${usertime}`;
       } else {
         const date = getFDateTime();
         const fDate = date[0];
         const fTime = date[1];
 
         document.getElementById('text').innerHTML =
-          `${stamp} @ ${fDate} ${fTime}`;
+          `Checked In @ ${fDate} ${fTime}`;
       }
       
     } else {
@@ -124,12 +138,19 @@ async function transfer(stamp) {
       alert(message);
 
     }
-  } else if (stamp == "checkout") {
+  } 
+  // else if (stamp == "checkout") {
 
+export async function checkout(userdate, usertime) {
+    // var data = document.getElementById('form');
+    // const userdate = data[0].value;
+    // const usertime = data[1].value;
+    // console.log(data[0].value)
+    // console.log(data[1].value)
     console.log("checking out");
 
     if (userdate && usertime) {
-      var url = `http://localhost:8080/v1/checkout?date=${data[0].value}&time=${data[1].value}`;
+      var url = `http://localhost:8080/v1/checkout?date=${userdate}&time=${usertime}`;
     } else {
       var url = 'http://localhost:8080/v1/checkout';
     }
@@ -149,14 +170,14 @@ async function transfer(stamp) {
     if (status == 200) {
       if (userdate && usertime) {
         document.getElementById('text').innerHTML =
-        `${stamp} @ ${userdate} ${usertime}`;
+        `Checked Out @ ${userdate} ${usertime}`;
       } else {
         const date = getFDateTime();
         const fDate = date[0];
         const fTime = date[1];
 
         document.getElementById('text').innerHTML =
-          `${stamp} @ ${fDate} ${fTime}`;
+          `Checked Out @ ${fDate} ${fTime}`;
       }
     } else {
       //alerts user check out failed
@@ -165,7 +186,6 @@ async function transfer(stamp) {
 
     }
 
-  }
 }
 
 function getFDateTime() {

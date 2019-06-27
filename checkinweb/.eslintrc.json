@@ -1,0 +1,55 @@
+{
+  "extends": [
+    "airbnb-base",
+    "plugin:import/recommended",
+    "plugin:promise/recommended",
+    "plugin:node/recommended",
+    "react-app"
+  ],
+  "env": {
+    "es6": true,
+    "node": true
+  },
+  "plugins": [
+    "promise"
+  ],
+  "rules": {
+    "linebreak-style": [
+      "error",
+      "unix"
+    ],
+    "no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "next"
+      }
+    ],
+    "quotes": [
+      "error",
+      "single",
+      {
+        "avoidEscape": true,
+        "allowTemplateLiterals": false
+      }
+    ],
+    "import/order": [
+      "error",
+      {
+        "groups": [
+          [
+            "builtin",
+            "external",
+            "internal"
+          ]
+        ],
+        "newlines-between": "always"
+      }
+    ],
+    "node/no-missing-import": "error",
+    "node/no-extraneous-import": "error",
+    "node/exports-style": [
+      "error",
+      "module.exports"
+    ]
+  }
+}
