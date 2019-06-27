@@ -29,9 +29,13 @@ table {
 
 .adminform {
   display: none;
-  border-style: double;
-  width: 80%;
+  border-style: none;
+  border-radius: 10px;
+  padding: 10px;
+  width: 90%;
   margin: auto;
+  background-color: rgb(255, 241, 226);
+  /* box-shadow: 1px 4px 5px 0px #00000062; */
 }
 
 .nbuttons {
@@ -40,7 +44,7 @@ table {
   width: 15%;
   min-width: 150px;
   height: auto;
-  margin: 3px;
+  margin: 5px;
   font-size: 15px;
   padding: 7px;
   box-shadow: 1px 1px 1px 0px #00000062;
@@ -86,7 +90,7 @@ table {
 
 .logo {
   display: block;
-  width: 50%;
+  width: 35%;
   height: auto;
   margin: auto;
   /* animation: App-logo-spin infinite 20s linear;
