@@ -1,7 +1,7 @@
 .clientdiv {
   width: 100%;
   height: 100%;
-  background-color: rgb(200, 225, 240);
+  background-color: rgb(255, 235, 212);
   text-align: center;
   font-family: 'Courier';
   color: rgb(0, 0, 0);
@@ -34,7 +34,7 @@ table {
   margin: auto;
 }
 
-.nbutton {
+.nbuttons {
   outline: none;
   border-radius: 5px;
   width: 15%;
@@ -43,15 +43,31 @@ table {
   margin: 3px;
   font-size: 15px;
   padding: 7px;
-  
+  box-shadow: 1px 1px 1px 0px #00000062;
+  transition-property: background-color, box-shadow;
+  transition-duration: 100ms;
+  transition-timing-function: ease-in-out;
+}
+.nbuttons:active {
+  background-color: #c0c0c0;
+  box-shadow: none;
 }
 
 .cbuttons {
   border-radius: 5px;
+  border-style: none;
   width: 100px;
   height: 35px;
   margin: 10px;
   font-size: 15px;
+  box-shadow: 1px 4px 5px 0px #00000062;
+  transition-property: background-color, box-shadow;
+  transition-duration: 100ms;
+  transition-timing-function: ease-in-out;
+}
+.cbuttons:active {
+  background-color: #c0c0c0;
+  box-shadow: none;
 }
 
 .datetime {

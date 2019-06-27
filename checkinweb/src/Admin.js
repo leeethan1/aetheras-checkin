@@ -28,31 +28,31 @@ function EndDate(props) {
 
 function AddEmail(props) {
   return (
-    <input type='button' className='nbutton' onClick={props.onClick} defaultValue='Add Email' />
+    <input type='button' className='nbuttons' onClick={props.onClick} defaultValue='Add Email' />
   )
 }
 
 function ViewEmail(props) {
   return (
-    <input type='button' className='nbutton' onClick={props.onClick} defaultValue='View Email Registry' />
+    <input type='button' className='nbuttons' onClick={props.onClick} defaultValue='View Email Registry' />
   )
 }
 
 function UserLogs(props) {
   return (
-    <input type='button' className='nbutton' onClick={props.onClick} defaultValue='Check User Logs' />
+    <input type='button' className='nbuttons' onClick={props.onClick} defaultValue='Check User Logs' />
   )
 }
 
 function WriteCSV(props) {
   return (
-    <input type='button' className='nbutton' onClick={props.onClick} defaultValue='Download CSV' />
+    <input type='button' className='nbuttons' onClick={props.onClick} defaultValue='Download CSV' />
   )
 }
 
 function ClearOutput(props) {
   return (
-    <input type='button' className='nbutton' onClick={props.onClick} defaultValue='Clear Output' />
+    <input type='button' className='nbuttons' onClick={props.onClick} defaultValue='Clear Output' />
   )
 }
 class AdminForm extends React.Component {
