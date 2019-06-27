@@ -47,145 +47,89 @@ function getCookie(cname) {
 }
 
 export async function googlelogin() {
-  // var resp = await fetch('http://localhost:8080/v1/login', {
-  //   method: 'GET',
-  //   mode: 'no-cors',
-  // })
   location = 'http://localhost:8080/v1/login';
-  // var x = await resp.json();
-
-  // var googleurl = x.url;
-  // window.open(googleurl);
 }
-
-export function myfunction() {
-  var data = document.getElementById('form');
-  var check;
-
-  if (data[2].checked) {
-    check = data[2].value;
-    console.log(check)
-
-  } else if (data[3].checked) {
-    check = data[3].value;
-    console.log(check)
-
-  } else {
-    alert('Please checkin or checkout');
-    return;
-  }
-
-  // console.log(check);
-  transfer(check)
-
-  document.getElementById('form').reset();
-
-}
-
-// async function transfer(stamp) {
-
-//   var data = document.getElementById('form');
-//   const userdate = data[0].value;
-//   const usertime = data[1].value;
-//   console.log(data[0].value)
-//   console.log(data[1].value)
-
-//   if (stamp == "checkin") {
 
 export async function checkin(userdate, usertime) {
-    // var data = document.getElementById('form');
-    // const userdate = data[0].value;
-    // const usertime = data[1].value;
-    // console.log(data[0].value)
-    // console.log(data[1].value)
-    console.log("checking in");
+  console.log("checking in");
 
+  if (userdate && usertime) {
+    var url = `http://localhost:8080/v1/checkin?date=${userdate}&time=${usertime}`;
+  } else {
+    var url = 'http://localhost:8080/v1/checkin';
+  }
+  
+
+  console.log(url);
+
+  var resp = await fetch(url, {
+    method: 'GET',
+  });
+  var status = resp.status;
+  var message = resp.statusText;
+
+  console.log(status);
+  console.log(message);
+
+  //page tells user successful check in
+  if (status == 200) {
     if (userdate && usertime) {
-      var url = `http://localhost:8080/v1/checkin?date=${userdate}&time=${usertime}`;
+      document.getElementById('text').innerHTML =
+      `Checked In @ ${userdate} ${usertime}`;
     } else {
-      var url = 'http://localhost:8080/v1/checkin';
+      const date = getFDateTime();
+      const fDate = date[0];
+      const fTime = date[1];
+
+      document.getElementById('text').innerHTML =
+        `Checked In @ ${fDate} ${fTime}`;
     }
     
-
-    console.log(url);
-
-    var resp = await fetch(url, {
-      method: 'GET',
-    });
-    var status = resp.status;
-    var message = resp.statusText;
-
-    console.log(status);
-    console.log(message);
-
-    //page tells user successful check in
-    if (status == 200) {
-      if (userdate && usertime) {
-        document.getElementById('text').innerHTML =
-        `Checked In @ ${userdate} ${usertime}`;
-      } else {
-        const date = getFDateTime();
-        const fDate = date[0];
-        const fTime = date[1];
-
-        document.getElementById('text').innerHTML =
-          `Checked In @ ${fDate} ${fTime}`;
-      }
-      
-    } else {
-      //alerts user check in failed
-      document.getElementById('text').innerHTML = message;
-      alert(message);
-
-    }
-  } 
-  // else if (stamp == "checkout") {
+  } else {
+    //alerts user check in failed
+    document.getElementById('text').innerHTML = message;
+    alert(message);
+  }
+} 
 
 export async function checkout(userdate, usertime) {
-    // var data = document.getElementById('form');
-    // const userdate = data[0].value;
-    // const usertime = data[1].value;
-    // console.log(data[0].value)
-    // console.log(data[1].value)
-    console.log("checking out");
+  console.log("checking out");
 
+  if (userdate && usertime) {
+    var url = `http://localhost:8080/v1/checkout?date=${userdate}&time=${usertime}`;
+  } else {
+    var url = 'http://localhost:8080/v1/checkout';
+  }
+
+  console.log(url);
+
+  var resp = await fetch(url, {
+    method: 'GET',
+  });
+  var status = resp.status;
+  var message = resp.statusText;
+
+  console.log(status);
+  console.log(message);
+
+  //page tells user successful check out
+  if (status == 200) {
     if (userdate && usertime) {
-      var url = `http://localhost:8080/v1/checkout?date=${userdate}&time=${usertime}`;
+      document.getElementById('text').innerHTML =
+      `Checked Out @ ${userdate} ${usertime}`;
     } else {
-      var url = 'http://localhost:8080/v1/checkout';
+      const date = getFDateTime();
+      const fDate = date[0];
+      const fTime = date[1];
+
+      document.getElementById('text').innerHTML =
+        `Checked Out @ ${fDate} ${fTime}`;
     }
-
-    console.log(url);
-
-    var resp = await fetch(url, {
-      method: 'GET',
-    });
-    var status = resp.status;
-    var message = resp.statusText;
-
-    console.log(status);
-    console.log(message);
-
-    //page tells user successful check out
-    if (status == 200) {
-      if (userdate && usertime) {
-        document.getElementById('text').innerHTML =
-        `Checked Out @ ${userdate} ${usertime}`;
-      } else {
-        const date = getFDateTime();
-        const fDate = date[0];
-        const fTime = date[1];
-
-        document.getElementById('text').innerHTML =
-          `Checked Out @ ${fDate} ${fTime}`;
-      }
-    } else {
-      //alerts user check out failed
-      document.getElementById('text').innerHTML = message;
-      alert(message);
-
-    }
-
+  } else {
+    //alerts user check out failed
+    document.getElementById('text').innerHTML = message;
+    alert(message);
+  }
 }
 
 function getFDateTime() {
