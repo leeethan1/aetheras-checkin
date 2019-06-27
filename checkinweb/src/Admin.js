@@ -4,15 +4,15 @@ import * as autils from './adminutils';
 
 function Admin() {
   return (
-    <AdminForm/>
+    <AdminForm />
   );
 }
 
 function StartDate(props) {
   return (
     <div>
-    <label>Start:</label>
-    <input className='datetime' type='date' id='startdate' value={props.value} onChange={ props.handleChange }/>
+      <label>Start:</label>
+      <input className='datetime' type='date' id='startdate' value={props.value} onChange={props.handleChange} />
     </div>
   );
 }
@@ -20,39 +20,39 @@ function StartDate(props) {
 function EndDate(props) {
   return (
     <div>
-    <label>End:</label>
-    <input className='datetime' type='date' id='enddate' value={props.value} onChange={ props.handleChange }/>
+      <label>End:&nbsp;&nbsp;</label>
+      <input className='datetime' type='date' id='enddate' value={props.value} onChange={props.handleChange} />
     </div>
   );
 }
 
 function AddEmail(props) {
   return (
-    <input type='button' className='nbutton' onClick={props.onClick} defaultValue='Add Email'/>
+    <input type='button' className='nbutton' onClick={props.onClick} defaultValue='Add Email' />
   )
 }
 
 function ViewEmail(props) {
   return (
-    <input type='button' className='nbutton' onClick={props.onClick} defaultValue='View Email Registry'/>
+    <input type='button' className='nbutton' onClick={props.onClick} defaultValue='View Email Registry' />
   )
 }
 
 function UserLogs(props) {
   return (
-    <input type='button' className='nbutton' onClick={props.onClick} defaultValue='Check User Logs'/>
+    <input type='button' className='nbutton' onClick={props.onClick} defaultValue='Check User Logs' />
   )
 }
 
 function WriteCSV(props) {
   return (
-    <input type='button' className='nbutton' onClick={props.onClick} defaultValue='Download CSV'/>
+    <input type='button' className='nbutton' onClick={props.onClick} defaultValue='Download CSV' />
   )
 }
 
 function ClearOutput(props) {
   return (
-    <input type='button' className='nbutton' onClick={props.onClick} defaultValue='Clear Output'/>
+    <input type='button' className='nbutton' onClick={props.onClick} defaultValue='Clear Output' />
   )
 }
 class AdminForm extends React.Component {
@@ -81,7 +81,7 @@ class AdminForm extends React.Component {
       autils.viewEmail();
     } else if (i == 2) {
       autils.userlogs();
-    } else if (i ==3) {
+    } else if (i == 3) {
       autils.writeCSV();
     } else {
       autils.clearOutput();
@@ -91,13 +91,13 @@ class AdminForm extends React.Component {
   render() {
     return (
       <div>
-        <AddEmail onClick={() => this.handleClick(0)}/><br></br>
-        <ViewEmail onClick={() => this.handleClick(1)}/><br></br>
-        <UserLogs onClick={() => this.handleClick(2)}/><br></br><br></br>
-        <StartDate value={this.state.sDate} handleChange={this.handlesDate}/>
-        <EndDate value={this.state.eDate} handleChange={this.handleeDate}/><br></br>
-        <WriteCSV onClick={() => this.handleClick(3)}/><br></br>
-        <ClearOutput onClick={() => this.handleClick(4)}/>
+        <AddEmail onClick={() => this.handleClick(0)} /><br></br>
+        <ViewEmail onClick={() => this.handleClick(1)} /><br></br>
+        <UserLogs onClick={() => this.handleClick(2)} /><br></br><br></br>
+        <StartDate value={this.state.sDate} handleChange={this.handlesDate} />
+        <EndDate value={this.state.eDate} handleChange={this.handleeDate} /><br></br>
+        <WriteCSV onClick={() => this.handleClick(3)} /><br></br>
+        <ClearOutput onClick={() => this.handleClick(4)} />
         <h3 id='output'></h3>
       </div>
     );
