@@ -28,7 +28,7 @@ function EndDate(props) {
 
 function AddEmail(props) {
   return (
-    <input type='button' className='nbuttons' onClick={props.onClick} defaultValue='Add Email' />
+    <input type='button' className='nbuttons' onClick={props.onClick} defaultValue='Add Employee' />
   )
 }
 
@@ -40,7 +40,7 @@ function ViewEmail(props) {
 
 function UserLogs(props) {
   return (
-    <input type='button' className='nbuttons' onClick={props.onClick} defaultValue='Check User Logs' />
+    <input type='button' className='nbuttons' onClick={props.onClick} defaultValue='View User Logs' />
   )
 }
 
@@ -92,12 +92,12 @@ class AdminForm extends React.Component {
     return (
       <div>
         <AddEmail onClick={() => this.handleClick(0)} /><br></br>
-        <ViewEmail onClick={() => this.handleClick(1)} /><br></br>
-        <UserLogs onClick={() => this.handleClick(2)} /><br></br><br></br>
+        <ViewEmail onClick={() => this.handleClick(1)} />
+        <UserLogs onClick={() => this.handleClick(2)} /><br></br>
+        <ClearOutput onClick={() => this.handleClick(4)} /><br></br><br></br>
         <StartDate value={this.state.sDate} handleChange={this.handlesDate} />
         <EndDate value={this.state.eDate} handleChange={this.handleeDate} /><br></br>
         <WriteCSV onClick={() => this.handleClick(3)} /><br></br>
-        <ClearOutput onClick={() => this.handleClick(4)} />
         <h3 id='output'></h3>
       </div>
     );
