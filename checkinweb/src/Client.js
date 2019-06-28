@@ -15,7 +15,6 @@ function Client() {
         <Admin/>
       </a>
     </div>
-    
   );
 }
 
@@ -59,13 +58,13 @@ function Timebox(props) {
 function CheckInButton(props) {
   return (
     <input type='button' className='cbuttons' onClick={props.onClick} defaultValue='Check In'/>
-  )
+  );
 }
 
 function CheckOutButton(props) {
   return (
     <input type='button' className='cbuttons' onClick={props.onClick} defaultValue='Check Out'/>
-  )
+  );
 }
 class Form extends React.Component {
   constructor(props) {
@@ -79,27 +78,29 @@ class Form extends React.Component {
     this.handleTime = this.handleTime.bind(this);
     this.handleClick = this.handleClick.bind(this);
   }
+
   handleDate(e) {
     let value = e.target.value;
     this.setState({ date: value });
   }
+
   handleTime(e) {
     let value = e.target.value;
     this.setState({ time: value });
   }
+
   handleClick(i) {
     if (i == 0) {
-      let stats = utils.checkin(this.state.date, this.state.time)
+      let stats = utils.checkin(this.state.date, this.state.time);
       stats.then((stat) => {
           this.setState({value: stat[1]});
       });
     } else {
-      let stats = utils.checkout(this.state.date, this.state.time)
+      let stats = utils.checkout(this.state.date, this.state.time);
       stats.then((stat) => {
           this.setState({value: stat[1]});
       });
     }
-     
   }
 
   render() {

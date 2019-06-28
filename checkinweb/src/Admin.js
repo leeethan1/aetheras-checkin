@@ -29,8 +29,9 @@ function EndDate(props) {
 function AddEmail(props) {
   return (
     <input type='button' className='nbuttons' onClick={props.onClick} defaultValue='Add Employee' />
-  )
+  );
 }
+
 function AddedEmail(props) {
   return (
     <h4>{props.data}</h4>
@@ -63,9 +64,8 @@ function ViewEmail(props) {
   return (
     <div>
       <input type='button' className='nbuttons' onClick={props.onClick} defaultValue='View Email Registry' />
-      
     </div>
-  )
+  );
 }
 
 function DisplayEmail(props) {
@@ -106,7 +106,7 @@ function UserLogs(props) {
     <div>
     <input type='button' className='nbuttons' onClick={props.onClick} defaultValue='View User Logs' />
     </div>
-  )
+  );
 }
 
 function UserLogEntries(props) {
@@ -147,7 +147,7 @@ function SelectedUserInfo(props) {
       <label>{props.data[0].firstname} </label>
       <label>{props.data[0].lastname}</label>
     </div>
-  )
+  );
 }
 class UserLogBox extends React.Component {
   constructor(props) {
@@ -186,12 +186,6 @@ function WriteCSV(props) {
   )
 }
 
-function ClearOutput(props) {
-  return (
-    <input type='button' className='nbuttons' onClick={props.onClick} defaultValue='Clear Output' />
-  )
-}
-
 class AdminForm extends React.Component {
   constructor(props) {
     super(props);
@@ -207,22 +201,14 @@ class AdminForm extends React.Component {
     let value = e.target.value;
     this.setState({ sDate: value });
   }
+
   handleeDate(e) {
     let value = e.target.value;
     this.setState({ eDate: value });
   }
-  handleClick(i) {
-    if (i == 0) {
-      autils.addEmail();
-    } else if (i == 1) {
-      autils.viewEmail();
-    } else if (i == 2) {
-      autils.userlogs();
-    } else if (i == 3) {
-      autils.writeCSV();
-    } else {
-      autils.clearOutput();
-    }
+
+  handleClick() {
+    autils.writeCSV();
   }
 
   render() {
@@ -230,13 +216,10 @@ class AdminForm extends React.Component {
       <div>
         <StartDate value={this.state.sDate} handleChange={this.handlesDate} />
         <EndDate value={this.state.eDate} handleChange={this.handleeDate} /><br></br>
-        <WriteCSV onClick={() => this.handleClick(3)} /><br></br><br></br>
+        <WriteCSV onClick={() => this.handleClick()} /><br></br><br></br>
         <AddEmailBox/> 
-        {/* <ClearOutput onClick={() => this.handleClick(4)} /><br></br><br></br> */}
         <ViewEmailBox/>
         <UserLogBox/>
-        
-        {/* <h3 id='output'></h3> */}
       </div>
     );
   }

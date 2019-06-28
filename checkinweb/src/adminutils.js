@@ -1,5 +1,4 @@
 /* eslint-disable */
-//const ADMINPASS = 'admin123';
 
 export async function addEmail() {
   var info = prompt('email, firstname, lastname');
@@ -28,30 +27,14 @@ export async function addEmail() {
     msg = '-Email did not add';
   }
   return msg;
-  var h = document.createElement("h4");
-  var node = document.createTextNode(msg);
-  h.appendChild(node);
-
-  var div = document.getElementById("output");
-  div.appendChild(h);
-
-  console.log(status);
 }
 
 export async function viewEmail() {
   const url = 'http://localhost:8080/v1/employees';
   var resp = await fetch(url, {
   });
-  var t = await resp.json();
-  return t;
-  console.log(t);
-  
-  var h = document.createElement("h4");
-  var node = document.createTextNode(resp.statusText);
-  h.appendChild(node);
-
-  var element = document.getElementById("output");
-  element.appendChild(h);
+  var table = await resp.json();
+  return table;
 }
 
 export async function userlogs() {
@@ -62,58 +45,14 @@ export async function userlogs() {
     var resp = await fetch(url, {
     });
     try {
-      var x = await resp.json();
-      if (x.length === 0) {
+      var table = await resp.json();
+      if (table.length === 0) {
         alert(`No Logs for ${info.replace('-', ' ')}`);
         return;
       }
-      return x;
+      return table;
     } catch (err) {
       throw err;
-    }
-    console.log(x)
-
-    // CHANGE DISPLAY METHOD
-    var element = document.getElementById("output");
-    var tbl = document.createElement('table');
-    element.appendChild(tbl);
-    var tr1 = document.createElement("TR");
-    tbl.appendChild(tr1)
-    var th = document.createElement("TH");
-    th.innerHTML = "Email: " + x[0].email;
-    th.classList.toggle('header');
-    tbl.appendChild(th);
-    th = document.createElement("TH");
-    th.innerHTML = "First name: " + x[0].firstname;
-    th.classList.toggle('header');
-    tbl.appendChild(th);
-    th = document.createElement("TH");
-    th.innerHTML = "Last name: " + x[0].lastname;
-    th.classList.toggle('header');
-    tbl.appendChild(th);
-    var tr2 = document.createElement("TR");
-    tbl.appendChild(tr2);
-    th = document.createElement("TH");
-    th.innerHTML = "Date";
-    tbl.appendChild(th);
-    th = document.createElement("TH");
-    th.innerHTML = "Check In Time";
-    tbl.appendChild(th);
-    th = document.createElement("TH");
-    th.innerHTML = "Check Out Time";
-    tbl.appendChild(th);
-    for (var xs in x) {
-      var tr = document.createElement("TR");
-      tbl.appendChild(tr);
-      var td = document.createElement("TD");
-      td.innerHTML = x[xs].checkdate;
-      tbl.appendChild(td);
-      td = document.createElement("TD");
-      td.innerHTML = x[xs].checkintime;
-      tbl.appendChild(td);
-      td = document.createElement("TD");
-      td.innerHTML = x[xs].checkouttime;
-      tbl.appendChild(td);
     }
   } else {
     console.log('no input');
@@ -129,10 +68,4 @@ export async function writeCSV() {
   } else {
     alert('Please Input Date Range');
   }
-}
-
-export async function clearOutput() {
-  var element = document.getElementById("output");
-  element.innerHTML = '';
-  // location.reload();
 }
