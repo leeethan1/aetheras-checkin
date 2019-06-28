@@ -1,9 +1,11 @@
 # Check In API
 
-> Check In API for Aetheras Employees
+> Check In application for Aetheras Employees
 
-#### Development
+#### Description
+This application allows users to check in and check out, which the server will then update the database accordingly. Users log in through Google and the server determines whether the email associated is an admin. 
 
+#### Instructions
 Start a local development server with the following command:
 
 `$ npm run dev`
@@ -20,13 +22,6 @@ For deployment use, start the server with:
 
 `$ npm run start`
 
-#### Lint
-
-Linting errors:
-
-`$ npm run lint`
-
-Linting and fix errors:
 
 `$ npm run lint:fix`
 
@@ -55,6 +50,4 @@ docker run --rm --name mydb --network testnet -p 5432:5432 -e POSTGRES_PASSWORD=
 docker run -it --rm --network testnet postgres:11 psql -h mydb -U postgres
 ```
 
-[Nice Little PSQL Postgres tutorial](https://chartio.com/resources/tutorials/how-to-list-databases-and-tables-in-postgresql-using-psql/)
 
-[Insert Data Tutorial](http://www.postgresqltutorial.com/postgresql-insert/)
