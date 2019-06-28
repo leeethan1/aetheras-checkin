@@ -74,19 +74,22 @@ export async function checkin(userdate, usertime) {
   //page tells user successful check in
   if (status == 200) {
     if (userdate && usertime) {
+      return [status, message];
       document.getElementById('text').innerHTML =
       `Checked In @ ${userdate} ${usertime}`;
     } else {
       const date = getFDateTime();
       const fDate = date[0];
       const fTime = date[1];
-
+      return [status, message];
       document.getElementById('text').innerHTML =
         `Checked In @ ${fDate} ${fTime}`;
     }
     
   } else {
     //alerts user check in failed
+    alert(message);
+    return [status, message];
     document.getElementById('text').innerHTML = message;
     alert(message);
   }
@@ -115,18 +118,21 @@ export async function checkout(userdate, usertime) {
   //page tells user successful check out
   if (status == 200) {
     if (userdate && usertime) {
+      return [status, message];
       document.getElementById('text').innerHTML =
       `Checked Out @ ${userdate} ${usertime}`;
     } else {
       const date = getFDateTime();
       const fDate = date[0];
       const fTime = date[1];
-
+      return [status, message];
       document.getElementById('text').innerHTML =
         `Checked Out @ ${fDate} ${fTime}`;
     }
   } else {
     //alerts user check out failed
+    alert(message);
+    return [status, message];
     document.getElementById('text').innerHTML = message;
     alert(message);
   }

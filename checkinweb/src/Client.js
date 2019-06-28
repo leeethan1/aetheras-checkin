@@ -73,9 +73,11 @@ class Form extends React.Component {
     this.state = {
       date: '',
       time: '',
+      value: '',
     };
     this.handleDate = this.handleDate.bind(this);
     this.handleTime = this.handleTime.bind(this);
+    this.handleClick = this.handleClick.bind(this);
   }
   handleDate(e) {
     let value = e.target.value;
@@ -86,10 +88,26 @@ class Form extends React.Component {
     this.setState({ time: value });
   }
   handleClick(i) {
-    if (i == 0)
-      utils.checkin(this.state.date, this.state.time)
-    else 
-      utils.checkout(this.state.date, this.state.time)
+    if (i == 0) {
+      let stats = utils.checkin(this.state.date, this.state.time)
+      stats.then((stat) => {
+        if (stat[0] == 200) {
+          this.setState({value: `Checked In @ ${this.state.date} ${this.state.time}`})
+        } else {
+          this.setState({value: stat[1]});
+        }
+      });
+    } else {
+      let stats = utils.checkout(this.state.date, this.state.time)
+      stats.then((stat) => {
+        if (stat[0] == 200) {
+          this.setState({value: `Checked Out @ ${this.state.date} ${this.state.time}`})
+        } else {
+          this.setState({value: stat[1]});
+        }
+      });
+    }
+     
   }
 
   render() {
@@ -100,6 +118,7 @@ class Form extends React.Component {
         <Timebox value={this.state.time} handleChange={this.handleTime}/><br></br><br></br>
         <CheckInButton onClick={() => this.handleClick(0)}/>
         <CheckOutButton onClick={() => this.handleClick(1)}/>
+        <br></br>{this.state.value}
       </div>
     );
   }
@@ -115,7 +134,7 @@ function AetherasForm() {
       <a className='checksform' id='form'>
         <Form/>
       </a>
-      <h3 id='text'></h3>
+      {/* <h3 id='text'></h3> */}
     </div>
   );
 }
