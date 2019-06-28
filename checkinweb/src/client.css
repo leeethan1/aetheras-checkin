@@ -80,27 +80,6 @@ th {
   box-shadow: none;
 }
 
-.viewemail {
-  float: left;
-  width: 35%;
-  min-width: 160px;
-  margin-left: 7%;
-  margin-top: 20px;
-  border-style: none;
-  border-radius: 10px;
-  background-color: rgb(255, 241, 226);
-}
-
-.userlogs {
-  float: left;
-  width: 50%;
-  min-width: 380px;
-  margin: 20px;
-  border-style: none;
-  border-radius: 10px;
-  background-color: rgb(255, 241, 226);
-}
-
 .datetime {
   padding: 5px;
   margin: 5px;
