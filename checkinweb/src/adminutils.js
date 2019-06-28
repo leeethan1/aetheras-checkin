@@ -27,7 +27,7 @@ export async function addEmail() {
   } else {
     msg = '-Email did not add';
   }
-
+  return msg;
   var h = document.createElement("h4");
   var node = document.createTextNode(msg);
   h.appendChild(node);
@@ -42,7 +42,10 @@ export async function viewEmail() {
   const url = 'http://localhost:8080/v1/employees';
   var resp = await fetch(url, {
   });
-  console.log(resp.statusText);
+  var t = await resp.json();
+  return t;
+  console.log(t);
+  
   var h = document.createElement("h4");
   var node = document.createTextNode(resp.statusText);
   h.appendChild(node);
@@ -61,9 +64,10 @@ export async function userlogs() {
     try {
       var x = await resp.json();
       if (x.length === 0) {
-        alert('No such Email');
+        alert(`No Logs for ${info.replace('-', ' ')}`);
         return;
       }
+      return x;
     } catch (err) {
       throw err;
     }
@@ -122,6 +126,8 @@ export async function writeCSV() {
   const end = document.getElementById('enddate').value;
   if (start != '' && end != '') {
     window.open(`http://localhost:8080/v1/writeCSV?start=${start}&end=${end}`);
+  } else {
+    alert('Please Input Date Range');
   }
 }
 
