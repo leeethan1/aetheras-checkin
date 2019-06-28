@@ -50,8 +50,18 @@ export async function googlelogin() {
   location = 'http://localhost:8080/v1/login';
 }
 
-export async function checkin(userdate, usertime) {
+export async function checkin(userdatepass, usertimepass) {
   console.log("checking in");
+  var userdate = userdatepass;
+  var usertime = usertimepass;
+  const date = getFDateTime();
+
+  if (userdate > date[0] || usertime > date[1]) {
+    alert('Cannot Enter Future Dates');
+    let status = 409;
+    let message = 'Cannot Enter Future Dates';
+    return [status, message];
+  }
 
   if (userdate && usertime) {
     var url = `http://localhost:8080/v1/checkin?date=${userdate}&time=${usertime}`;
@@ -91,8 +101,18 @@ export async function checkin(userdate, usertime) {
   }
 } 
 
-export async function checkout(userdate, usertime) {
+export async function checkout(userdatepass, usertimepass) {
   console.log("checking out");
+  var userdate = userdatepass;
+  var usertime = usertimepass;
+  const date = getFDateTime();
+
+  if (userdate > date[0] || usertime > date[1]) {
+    alert('Cannot Enter Future Dates');
+    let status = 409;
+    let message = 'Cannot Enter Future Dates';
+    return [status, message];
+  }
 
   if (userdate && usertime) {
     var url = `http://localhost:8080/v1/checkout?date=${userdate}&time=${usertime}`;
@@ -133,7 +153,10 @@ export async function checkout(userdate, usertime) {
 function getFDateTime() {
   const start = new Date();
   const year = start.getFullYear();
-  const month = start.getMonth() + 1;
+  var month = start.getMonth() + 1;
+  if (month < 10) {
+    month = `0${month}`;
+  }
   const day = start.getDate();
   var hours = start.getHours();
   if (hours < 10) {
