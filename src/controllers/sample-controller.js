@@ -120,7 +120,7 @@ module.exports = {
 
     if (!isEmpty(checkins)) {
       ctx.status = 409;
-      ctx.message = 'Already Checked In';
+      ctx.message = 'Already Checked In Today';
 
       console.log('*****ALREADY CHECKED IN*****');
     } else {
@@ -194,7 +194,7 @@ module.exports = {
       console.log('*****CHECKOUT FAILED: HAVE NOT CHECKED IN*****');
     } else if (!isEmpty(checkouts)) {
       ctx.status = 409;
-      ctx.message = 'Already Checked Out';
+      ctx.message = 'Already Checked Out Today';
 
       console.log('*****CHECKOUT FAILED: ALREADY CHECKED OUT*****');
     } else {
@@ -246,8 +246,8 @@ module.exports = {
   async employees(ctx) {
     ctx.body = 'Viewing employees';
     var x = await db('employees').select('email');
-    x = JSON.stringify(x);
-    ctx.message = x;
+    // x = JSON.stringify(x);
+    ctx.response.body = x;
   },
 
   // creates combined checkin/checkout json
@@ -258,7 +258,11 @@ module.exports = {
     var table;
     if (re.test(data)) {
       emailaddr = data;
-      table = await db('checkin').select()
+      table = await db('checkin').select(
+        'checkin.email', 'checkin.checkdate',
+        'checkin.checkintime', 'checkout.checkouttime',
+        'employees.firstname', 'employees.lastname',
+      )
         .innerJoin('checkout', function () {
           this.onIn('checkin.email', [emailaddr])
             .onIn('checkout.email', [emailaddr])
@@ -277,7 +281,11 @@ module.exports = {
         );
         if (!isEmpty(x)) {
           emailaddr = x[0].email;
-          table = await db('checkin').select()
+          table = await db('checkin').select(
+            'checkin.email', 'checkin.checkdate',
+            'checkin.checkintime', 'checkout.checkouttime',
+            'employees.firstname', 'employees.lastname',
+          )
             .innerJoin('checkout', function () {
               this.onIn('checkin.email', [emailaddr])
                 .onIn('checkout.email', [emailaddr])
@@ -285,6 +293,8 @@ module.exports = {
             })
             .innerJoin('employees', 'employees.id', 'checkin.id');
           console.log(table);
+        } else {
+          table = [];
         }
       } catch (err) {
         throw err;
