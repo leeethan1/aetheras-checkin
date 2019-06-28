@@ -29,19 +29,101 @@ function EndDate(props) {
 function AddEmail(props) {
   return (
     <input type='button' className='nbuttons' onClick={props.onClick} defaultValue='Add Employee' />
-  )
+  );
+}
+
+function AddedEmail(props) {
+  return (
+    <div>{props.data}</div>
+  );
 }
 
 function ViewEmail(props) {
   return (
-    <input type='button' className='nbuttons' onClick={props.onClick} defaultValue='View Email Registry' />
-  )
+    <div>
+      <input type='button' className='nbuttons' onClick={props.onClick} defaultValue='View Email Registry' />
+    </div>
+  );
+}
+
+function DisplayEmail(props) {
+  return(
+    <div>
+      {props.component}
+    </div>
+  );
 }
 
 function UserLogs(props) {
   return (
+    <div>
     <input type='button' className='nbuttons' onClick={props.onClick} defaultValue='View User Logs' />
-  )
+    </div>
+  );
+}
+
+function UserLogEntries(props) {
+  return (
+    <tr>
+      <td>{props.date}</td>
+      <td>{props.checkin}</td>
+      <td>{props.checkout}</td>
+    </tr>
+  );
+}
+class UserLogTable extends React.Component {
+  render() {
+    var rows = [];
+    this.props.data.forEach((entry, i) => {
+      rows.push(<UserLogEntries key={i} date={entry.checkdate}
+        checkin={entry.checkintime} checkout={entry.checkouttime}/>);
+    })
+    return (
+      <table className='table'>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Check In Time</th>
+            <th>Check Out Time</th>
+          </tr>
+        </thead>
+        <tbody>{rows}</tbody>
+      </table>
+    );
+  }
+}
+
+function SelectedUserInfo(props) {
+  return (
+    <div>
+      <label>{props.user[0].email} </label><br></br>
+      <label>{props.user[0].firstname} </label>
+      <label>{props.user[0].lastname}</label>
+    </div>
+  );
+}
+
+class OutputBox extends React.Component {
+  render() {
+    if (this.props.data && this.props.flag == 0) {
+      var user = <AddedEmail data={this.props.value} />
+    } else if (this.props.data && this.props.flag == 1) {
+      var emails = this.props.data.map((component, i) => <DisplayEmail key={i} component={component.email}/>)
+    } else if (this.props.data && this.props.flag == 2) {
+      var info = <SelectedUserInfo user={this.props.data}/>
+      var table = <UserLogTable data={this.props.data}/>
+    }
+
+    return (
+      <div>
+        {user}
+        {emails}
+        {info}
+        {table}
+      </div>
+    );
+  }
+  
 }
 
 function WriteCSV(props) {
@@ -50,12 +132,7 @@ function WriteCSV(props) {
   )
 }
 
-function ClearOutput(props) {
-  return (
-    <input type='button' className='nbuttons' onClick={props.onClick} defaultValue='Clear Output' />
-  )
-}
-class AdminForm extends React.Component {
+class FormCSV extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -70,39 +147,71 @@ class AdminForm extends React.Component {
     let value = e.target.value;
     this.setState({ sDate: value });
   }
+
   handleeDate(e) {
     let value = e.target.value;
     this.setState({ eDate: value });
   }
-  handleClick(i) {
+
+  handleClick() {
+    autils.writeCSV();
+  }
+
+  render() {
+    return (
+      <div>
+        <StartDate value={this.state.sDate} handleChange={this.handlesDate} />
+        <EndDate value={this.state.eDate} handleChange={this.handleeDate} /><br></br>
+        <WriteCSV onClick={() => this.handleClick()} /><br></br><br></br>
+        {/* <AddEmailBox/> */}
+      </div>
+    );
+  }
+}
+
+class AdminForm extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: [
+        {
+          email: '',
+          firstname: '',
+          lastname: '',
+        },
+      ],
+      flag: 0,
+      value: '',
+    }
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  async handleClick(i) {
     if (i == 0) {
-      autils.addEmail();
+      let promise = autils.addEmail();
+      await promise.then((x) => {if (x) this.setState({ value: x })});
+      this.setState({flag: 0});
     } else if (i == 1) {
-      autils.viewEmail();
+      let promise = autils.viewEmail();
+      await promise.then((x) => {this.setState({ data: x })});
+      this.setState({flag: 1});
     } else if (i == 2) {
-      autils.userlogs();
-    } else if (i == 3) {
-      autils.writeCSV();
-    } else {
-      autils.clearOutput();
+      let promise = autils.userlogs();
+      await promise.then((x) => {if (x) this.setState({ data: x })});this.setState({flag: 2});
     }
   }
 
   render() {
     return (
       <div>
-        <AddEmail onClick={() => this.handleClick(0)} /><br></br>
-        <ViewEmail onClick={() => this.handleClick(1)} />
-        <UserLogs onClick={() => this.handleClick(2)} /><br></br>
-        <ClearOutput onClick={() => this.handleClick(4)} /><br></br><br></br>
-        <StartDate value={this.state.sDate} handleChange={this.handlesDate} />
-        <EndDate value={this.state.eDate} handleChange={this.handleeDate} /><br></br>
-        <WriteCSV onClick={() => this.handleClick(3)} /><br></br>
-        <h3 id='output'></h3>
+        <FormCSV/>
+        <AddEmail onClick={() => this.handleClick(0)}/>
+        <ViewEmail onClick={() => this.handleClick(1)}/>
+        <UserLogs onClick={() => this.handleClick(2)}/>
+        <OutputBox data={this.state.data} flag={this.state.flag} value={this.state.value}/>
       </div>
     );
   }
-
 }
 
 export default Admin;

@@ -74,21 +74,20 @@ export async function checkin(userdate, usertime) {
   //page tells user successful check in
   if (status == 200) {
     if (userdate && usertime) {
-      document.getElementById('text').innerHTML =
-      `Checked In @ ${userdate} ${usertime}`;
+      message = `Checked In @ ${userdate} ${usertime}`;
+      return [status, message];
     } else {
       const date = getFDateTime();
       const fDate = date[0];
       const fTime = date[1];
-
-      document.getElementById('text').innerHTML =
-        `Checked In @ ${fDate} ${fTime}`;
+      message = `Checked In @ ${fDate} ${fTime}`;
+      return [status, message];
     }
     
   } else {
     //alerts user check in failed
-    document.getElementById('text').innerHTML = message;
     alert(message);
+    return [status, message];
   }
 } 
 
@@ -115,20 +114,19 @@ export async function checkout(userdate, usertime) {
   //page tells user successful check out
   if (status == 200) {
     if (userdate && usertime) {
-      document.getElementById('text').innerHTML =
-      `Checked Out @ ${userdate} ${usertime}`;
+      message = `Checked Out @ ${userdate} ${usertime}`;
+      return [status, message];
     } else {
       const date = getFDateTime();
       const fDate = date[0];
       const fTime = date[1];
-
-      document.getElementById('text').innerHTML =
-        `Checked Out @ ${fDate} ${fTime}`;
+      message = `Checked Out @ ${fDate} ${fTime}`;
+      return [status, message];
     }
   } else {
     //alerts user check out failed
-    document.getElementById('text').innerHTML = message;
     alert(message);
+    return [status, message];
   }
 }
 
