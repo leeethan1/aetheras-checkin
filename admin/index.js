@@ -1,5 +1,4 @@
 /* eslint-disable */
-//const ADMINPASS = 'admin123';
 
 async function addEmail() {
   var info = prompt('email, firstname, lastname');
