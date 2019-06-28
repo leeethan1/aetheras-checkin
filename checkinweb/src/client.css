@@ -14,8 +14,13 @@ h1 {
   font-family: 'monospace', sans-serif;
   font-size: 70px;
 }
-table {
+table, td, th {
   margin: 1em auto;
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th {
+  width: 200px;
 }
 
 .header {
@@ -38,25 +43,6 @@ table {
   /* box-shadow: 1px 4px 5px 0px #00000062; */
 }
 
-.nbuttons {
-  outline: none;
-  border-radius: 5px;
-  width: 15%;
-  min-width: 150px;
-  height: auto;
-  margin: 5px;
-  font-size: 15px;
-  padding: 7px;
-  box-shadow: 1px 1px 1px 0px #00000062;
-  transition-property: background-color, box-shadow;
-  transition-duration: 100ms;
-  transition-timing-function: ease-in-out;
-}
-.nbuttons:active {
-  background-color: #c0c0c0;
-  box-shadow: none;
-}
-
 .cbuttons {
   border-radius: 5px;
   border-style: none;
@@ -72,6 +58,47 @@ table {
 .cbuttons:active {
   background-color: #c0c0c0;
   box-shadow: none;
+}
+
+.nbuttons {
+  outline: none;
+  border-radius: 5px;
+  border-style: none;
+  width: 15%;
+  min-width: 150px;
+  height: auto;
+  margin: 5px;
+  font-size: 15px;
+  padding: 7px;
+  box-shadow: 1px 1px 0px 1px rgba(0,0,0,0.05);
+  transition-property: background-color, box-shadow;
+  transition-duration: 100ms;
+  transition-timing-function: ease-in-out;
+}
+.nbuttons:active {
+  background-color: #c0c0c0;
+  box-shadow: none;
+}
+
+.viewemail {
+  float: left;
+  width: 35%;
+  min-width: 160px;
+  margin-left: 7%;
+  margin-top: 20px;
+  border-style: none;
+  border-radius: 10px;
+  background-color: rgb(255, 241, 226);
+}
+
+.userlogs {
+  float: left;
+  width: 50%;
+  min-width: 380px;
+  margin: 20px;
+  border-style: none;
+  border-radius: 10px;
+  background-color: rgb(255, 241, 226);
 }
 
 .datetime {
