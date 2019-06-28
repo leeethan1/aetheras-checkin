@@ -91,20 +91,12 @@ class Form extends React.Component {
     if (i == 0) {
       let stats = utils.checkin(this.state.date, this.state.time)
       stats.then((stat) => {
-        if (stat[0] == 200) {
-          this.setState({value: `Checked In @ ${this.state.date} ${this.state.time}`})
-        } else {
           this.setState({value: stat[1]});
-        }
       });
     } else {
       let stats = utils.checkout(this.state.date, this.state.time)
       stats.then((stat) => {
-        if (stat[0] == 200) {
-          this.setState({value: `Checked Out @ ${this.state.date} ${this.state.time}`})
-        } else {
           this.setState({value: stat[1]});
-        }
       });
     }
      
@@ -134,7 +126,6 @@ function AetherasForm() {
       <a className='checksform' id='form'>
         <Form/>
       </a>
-      {/* <h3 id='text'></h3> */}
     </div>
   );
 }
