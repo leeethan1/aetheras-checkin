@@ -487,6 +487,7 @@ module.exports = {
         console.log(line);
       }
     });
+    fs.unlinkSync(`${__dirname}/../../logs.csv`);
   },
 
   async writeEmployeeCSV(ctx) {
@@ -502,5 +503,6 @@ module.exports = {
       ctx.response.body = fs.createReadStream(`${__dirname}/../../employees.csv`);
       console.log(line);
     });
+    fs.unlinkSync(`${__dirname}/../../employees.csv`);
   },
 };
