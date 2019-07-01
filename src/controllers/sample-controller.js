@@ -9,6 +9,7 @@ const { types } = require('pg');
 const { google } = require('googleapis');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
+const csv = require('csv-parser');
 
 const db = require('../app/db');
 
@@ -226,14 +227,14 @@ module.exports = {
 
     // checks if email is already added to the registry
     try {
-      await db('employees').insert({
+      await db('admins').insert({
         email: emailaddr,
         firstname: fname,
         lastname: lname,
       });
       ctx.status = 200;
 
-      var x = await db('employees').select();
+      var x = await db('admins').select();
       console.log(x);
       console.log('ADDED');
     } catch (err) {
@@ -248,6 +249,27 @@ module.exports = {
     var x = await db('employees').select('email', 'firstname', 'lastname');
     // x = JSON.stringify(x);
     ctx.response.body = x;
+  },
+
+  async employeeUpload(ctx) {
+    var files = fs.readdirSync(`${__dirname}/../../uploads/`);
+    if (files) {
+      console.log(files[0]);
+      var src = fs.createReadStream(`${__dirname}/../../uploads/${files[0]}`);
+      src.pipe(csv())
+        .on('data', async (chunk) => {
+          await db('employees').insert({
+            email: chunk.Email,
+            firstname: chunk['First Name'],
+            lastname: chunk['Last Name'],
+          });
+          console.log(chunk);
+        })
+        .on('end', async () => {
+          ctx.status = 200;
+        });
+      fs.unlinkSync(`${__dirname}/../../uploads/${files[0]}`);
+    }
   },
 
   // creates combined checkin/checkout json

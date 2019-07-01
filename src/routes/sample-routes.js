@@ -1,6 +1,10 @@
 const Router = require('koa-router');
+const multer = require('koa-multer');
 
 const ctrl = require('../controllers');
+
+const upload = multer({ dest: 'uploads/' });
+
 
 const samplesRoute = ctrl.sample;
 
@@ -15,6 +19,7 @@ router.get('/oauth2', samplesRoute.oauth2);
 router.get('/login', samplesRoute.login);
 router.get('/writeCSV', samplesRoute.writeCSV);
 router.get('/checkcookie', samplesRoute.checkcookie);
+router.put('/employeeUpload', upload.single('names'), samplesRoute.employeeUpload);
 
 
 module.exports = router.routes();

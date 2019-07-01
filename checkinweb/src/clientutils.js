@@ -1,8 +1,8 @@
 /* eslint-disable */
 console.log((document.cookie));
 
-main();
-async function main() {
+run();
+async function run() {
   if (getCookie('id')) {
     var cookiecheck = await fetch('http://localhost:8080/v1/checkcookie', {
       method: 'GET',

@@ -28,7 +28,12 @@ function EndDate(props) {
 
 function AddEmail(props) {
   return (
-    <input type='button' className='nbuttons' onClick={props.onClick} defaultValue='Add Employee' />
+    <div>
+      <label>Upload Employee CSV </label>
+      <input type="file" id='upload' accept="text/csv" name="names" onChange={() => autils.uploadCSV(this)}/><br></br>
+      <input type='button' className='nbuttons' onClick={props.onClick} defaultValue='Add Admin' />
+    
+    </div>
   );
 }
 

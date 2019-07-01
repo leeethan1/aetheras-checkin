@@ -29,6 +29,17 @@ export async function addEmail() {
   return msg;
 }
 
+export function uploadCSV() {
+  var formData = new FormData();
+  var input = document.getElementById('upload');
+  console.log(input.files[0]);
+  formData.append('names', input.files[0]);
+  var resp = fetch('http://localhost:8080/v1/employeeUpload', {
+    method: 'PUT',
+    body: formData,
+  })
+}
+
 export async function viewEmail() {
   const url = 'http://localhost:8080/v1/employees';
   var resp = await fetch(url, {
