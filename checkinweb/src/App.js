@@ -6,7 +6,7 @@ import Client from './Client.js';
 function App() {
   return (
     <div className="App">
-      <Client/>
+      <Client />
     </div>
   );
 }
