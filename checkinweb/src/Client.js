@@ -66,6 +66,47 @@ function CheckOutButton(props) {
     <input type='button' className='cbuttons' onClick={props.onClick} defaultValue='Check Out'/>
   );
 }
+
+function UserLogEntries(props) {
+  return (
+    <tr>
+      <td>{props.date}</td>
+      <td>{props.checkin}</td>
+      <td>{props.checkout}</td>
+    </tr>
+  );
+}
+class UserLogTable extends React.Component {
+  render() {
+    var rows = [];
+    this.props.data.forEach((entry, i) => {
+      rows.push(<UserLogEntries key={i} date={entry.checkdate}
+        checkin={entry.checkintime} checkout={entry.checkouttime}/>);
+    })
+    return (
+      <table className='table'>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Check In Time</th>
+            <th>Check Out Time</th>
+          </tr>
+        </thead>
+        <tbody>{rows}</tbody>
+      </table>
+    );
+  }
+}
+
+function SelectedUserInfo(props) {
+  return (
+    <div>
+      <label>{props.user[0].email} </label><br></br>
+      <label>{props.user[0].firstname} </label>
+      <label>{props.user[0].lastname}</label>
+    </div>
+  );
+}
 class Form extends React.Component {
   constructor(props) {
     super(props);
@@ -110,25 +151,56 @@ class Form extends React.Component {
         <Datebox value={this.state.date} handleChange={this.handleDate}/>
         <Timebox value={this.state.time} handleChange={this.handleTime}/><br></br><br></br>
         <CheckInButton onClick={() => this.handleClick(0)}/>
-        <CheckOutButton onClick={() => this.handleClick(1)}/>
+        <CheckOutButton onClick={() => this.handleClick(1)}/> 
         <br></br>{this.state.value}
       </div>
     );
   }
 }
 
+class UserLogBox extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: [
+        {
+          email: '',
+          firstname: '',
+          lastname: '',
+        },
+      ],
+    }
+    this.handleTable();
+  }
+
+  async handleTable() {
+    let promise = utils.getUserLogs();
+    await promise.then((x) => {if (x) {this.setState({ data: x })}});
+  }
+
+  render() {
+    return (
+      <div>
+        <SelectedUserInfo user={this.state.data}/>
+        <UserLogTable data={this.state.data}/>
+      </div>
+    );
+  }
+}
+
 function AetherasForm() {
-  return (
-    <div>
-      <DisplayLogo/>
-      <a id='login'>
-        <GoogleButton/>
-      </a>
-      <a className='checksform' id='form'>
-        <Form/>
-      </a>
-    </div>
-  );
+    return (
+      <div>
+        <DisplayLogo/>
+        <a id='login'>
+          <GoogleButton/>
+        </a>
+        <a className='checksform' id='form'>
+          <Form/><br></br>
+          <UserLogBox/>
+        </a>
+      </div>
+    );
 }
 
 export default Client;

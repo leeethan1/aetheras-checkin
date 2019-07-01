@@ -46,6 +46,31 @@ function getCookie(cname) {
   return "";
 }
 
+export async function getUserLogs() {
+  if (getCookie('id')) {
+    var cookiecheck = await fetch('http://localhost:8080/v1/checkcookie', {
+      method: 'GET',
+      credentials: 'include'
+    })
+    if (cookiecheck.status == 200) {
+      const url = 'http://localhost:8080/v1/userlogs?' + cookiecheck.statusText;
+      var resp = await fetch(url, {
+      });
+      try {
+        var table = await resp.json();
+        if (table.length === 0) {
+          alert(`No Logs for ${cookiecheck.statusText}`);
+          return;
+        }
+        return table;
+      } catch (err) {
+        throw err;
+      }
+    }
+  }
+  return;
+}
+
 export async function googlelogin() {
   location = 'http://localhost:8080/v1/login';
 }
