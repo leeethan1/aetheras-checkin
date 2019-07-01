@@ -28,18 +28,24 @@ function EndDate(props) {
 
 function AddEmail(props) {
   return (
+    <input type='button' className='nbuttons' onClick={props.onClick} defaultValue='Add Admin' />
+  );
+}
+
+function UploadCSV(props) {
+  return (
     <div>
       <label>Upload Employee CSV </label>
-      <input type="file" id='upload' accept="text/csv" name="names" onChange={() => autils.uploadCSV()}/><br></br>
-      <input type='button' className='nbuttons' onClick={props.onClick} defaultValue='Add Admin' />
-    
+      <input type="file" id='upload' accept="text/csv" name="names" onChange={() => autils.uploadCSV()}/><br></br><br></br>
     </div>
   );
 }
 
 function DownloadEmployeeCSV(props)  {
   return (
-    <input type='button' className='nbuttons' onClick={() => autils.writeEmployeeCSV()} value='Download Employee List'/>
+    <div>
+      <input type='button' className='nbuttons' onClick={() => autils.writeEmployeeCSV()} value='Download Employee List'/><br></br><br></br>
+    </div>
   );
 }
 
@@ -154,7 +160,7 @@ class OutputBox extends React.Component {
 
 function WriteCSV(props) {
   return (
-    <input type='button' className='nbuttons' onClick={props.onClick} defaultValue='Download CSV' />
+    <input type='button' className='nbuttons' onClick={props.onClick} defaultValue='Download Logs CSV' />
   )
 }
 
@@ -231,6 +237,7 @@ class AdminForm extends React.Component {
     return (
       <div>
         <FormCSV/>
+        <UploadCSV/>
         <DownloadEmployeeCSV/>
         <AddEmail onClick={() => this.handleClick(0)}/>
         <ViewEmail onClick={() => this.handleClick(1)}/>
