@@ -263,11 +263,12 @@ module.exports = {
         'checkin.checkintime', 'checkout.checkouttime',
         'employees.firstname', 'employees.lastname',
       )
-        .innerJoin('checkout', function () {
+        .leftJoin('checkout', function () {
           this.onIn('checkin.email', [emailaddr])
             .onIn('checkout.email', [emailaddr])
             .on('checkin.checkdate', '=', 'checkout.checkdate');
         })
+        .where('checkin.email', emailaddr)
         .innerJoin('employees', 'employees.id', 'checkin.id');
       console.log(table);
     } else {
@@ -286,11 +287,12 @@ module.exports = {
             'checkin.checkintime', 'checkout.checkouttime',
             'employees.firstname', 'employees.lastname',
           )
-            .innerJoin('checkout', function () {
+            .leftJoin('checkout', function () {
               this.onIn('checkin.email', [emailaddr])
                 .onIn('checkout.email', [emailaddr])
                 .on('checkin.checkdate', '=', 'checkout.checkdate');
             })
+            .where('checkin.email', emailaddr)
             .innerJoin('employees', 'employees.id', 'checkin.id');
           console.log(table);
         } else {
@@ -376,11 +378,12 @@ module.exports = {
       var reqid = ctx.cookies.get('id', { signed: true });
       ctx.cookies.get('isAdmin', { signed: true });
       const data = await db('employees').where({ id: reqid })
-        .select('refresh_token');
+        .select('refresh_token', 'email');
       const { tokens } = await oauth2Client.refreshToken(data[0].refresh_token);
       // console.log(tokens)
       oauth2Client.setCredentials(tokens);
       ctx.status = 200;
+      ctx.message = data[0].email;
     } catch (err) {
       console.log(err);
     }
