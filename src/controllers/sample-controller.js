@@ -245,7 +245,7 @@ module.exports = {
 
   async employees(ctx) {
     ctx.body = 'Viewing employees';
-    var x = await db('employees').select('email');
+    var x = await db('employees').select('email', 'firstname', 'lastname');
     // x = JSON.stringify(x);
     ctx.response.body = x;
   },

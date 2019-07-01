@@ -46,12 +46,26 @@ function ViewEmail(props) {
   );
 }
 
-function DisplayEmail(props) {
-  return(
-    <div>
-      {props.component}
-    </div>
-  );
+class DisplayEmail extends React.Component {
+  render() {
+    var rows = [];
+    this.props.data.forEach((entry, i) => {
+      rows.push(<UserLogEntries key={i} date={entry.email}
+        checkin={entry.firstname} checkout={entry.lastname}/>);
+    })
+    return (
+      <table className='table'>
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+          </tr>
+        </thead>
+        <tbody>{rows}</tbody>
+      </table>
+    );
+  }
 }
 
 function UserLogs(props) {
@@ -108,7 +122,8 @@ class OutputBox extends React.Component {
     if (this.props.data && this.props.flag == 0) {
       var user = <AddedEmail data={this.props.value} />
     } else if (this.props.data && this.props.flag == 1) {
-      var emails = this.props.data.map((component, i) => <DisplayEmail key={i} component={component.email}/>)
+      // var emails = this.props.data.map((component, i) => <DisplayEmail key={i} component={component}/>)
+      var emails = <DisplayEmail data={this.props.data}/>
     } else if (this.props.data && this.props.flag == 2) {
       var info = <SelectedUserInfo user={this.props.data}/>
       var table = <UserLogTable data={this.props.data}/>
