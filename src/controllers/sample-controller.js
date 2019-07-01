@@ -253,23 +253,21 @@ module.exports = {
 
   async employeeUpload(ctx) {
     var files = fs.readdirSync(`${__dirname}/../../uploads/`);
-    if (files) {
-      console.log(files[0]);
-      var src = fs.createReadStream(`${__dirname}/../../uploads/${files[0]}`);
-      src.pipe(csv())
-        .on('data', async (chunk) => {
-          await db('employees').insert({
-            email: chunk.Email,
-            firstname: chunk['First Name'],
-            lastname: chunk['Last Name'],
-          });
-          console.log(chunk);
-        })
-        .on('end', async () => {
-          ctx.status = 200;
+    console.log(files[0]);
+    var src = fs.createReadStream(`${__dirname}/../../uploads/${files[0]}`);
+    ctx.status = 200;
+    src.pipe(csv())
+      .on('data', async (chunk) => {
+        await db('employees').insert({
+          email: chunk.Email,
+          firstname: chunk['First Name'],
+          lastname: chunk['Last Name'],
         });
-      fs.unlinkSync(`${__dirname}/../../uploads/${files[0]}`);
-    }
+        console.log(chunk);
+      })
+      .on('end', async () => {
+        fs.unlinkSync(`${__dirname}/../../uploads/${files[0]}`);
+      });
   },
 
   // creates combined checkin/checkout json
