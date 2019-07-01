@@ -490,4 +490,19 @@ module.exports = {
       }
     });
   },
+
+  async writeEmployeeCSV(ctx) {
+    const table = await db('employees').select('email', 'firstname', 'lastname');
+    var line;
+
+    fs.writeFileSync('employees.csv', 'Email,First Name,Last Name\n');
+    table.forEach((param) => {
+      line = param.email;
+      line = `${line},${param.firstname},${param.lastname}\n`;
+      fs.appendFileSync('employees.csv', line);
+      ctx.response.attachment('employees.csv');
+      ctx.response.body = fs.createReadStream(`${__dirname}/../../employees.csv`);
+      console.log(line);
+    });
+  },
 };

@@ -84,3 +84,7 @@ export async function writeCSV() {
     alert('Please Input Date Range');
   }
 }
+
+export async function writeEmployeeCSV() {
+  window.open('http://localhost:8080/v1/writeEmployeeCSV');
+}

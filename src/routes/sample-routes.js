@@ -20,6 +20,7 @@ router.get('/login', samplesRoute.login);
 router.get('/writeCSV', samplesRoute.writeCSV);
 router.get('/checkcookie', samplesRoute.checkcookie);
 router.put('/employeeUpload', upload.single('names'), samplesRoute.employeeUpload);
+router.get('/writeEmployeeCSV', samplesRoute.writeEmployeeCSV);
 
 
 module.exports = router.routes();

@@ -37,6 +37,12 @@ function AddEmail(props) {
   );
 }
 
+function DownloadEmployeeCSV(props)  {
+  return (
+    <input type='button' className='nbuttons' onClick={() => autils.writeEmployeeCSV()} value='Download Employee List'/>
+  );
+}
+
 function AddedEmail(props) {
   return (
     <div>{props.data}</div>
@@ -225,6 +231,7 @@ class AdminForm extends React.Component {
     return (
       <div>
         <FormCSV/>
+        <DownloadEmployeeCSV/>
         <AddEmail onClick={() => this.handleClick(0)}/>
         <ViewEmail onClick={() => this.handleClick(1)}/>
         <UserLogs onClick={() => this.handleClick(2)}/>
