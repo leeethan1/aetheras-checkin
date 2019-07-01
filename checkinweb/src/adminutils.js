@@ -40,7 +40,7 @@ export async function viewEmail() {
 export async function userlogs() {
   var info = prompt('Enter name or email');
   if (info) {
-    info = info.replace(' ', '-')
+    info = info.replace(' ', '-');
     const url = 'http://localhost:8080/v1/userlogs?' + info;
     var resp = await fetch(url, {
     });
@@ -61,10 +61,14 @@ export async function userlogs() {
 }
 
 export async function writeCSV() {
+  var info = prompt('Enter name or email (leave blank for all employees)')
+  if (info) {
+    info = info.replace(' ', '-');
+  }
   const start = document.getElementById('startdate').value;
   const end = document.getElementById('enddate').value;
   if (start != '' && end != '') {
-    window.open(`http://localhost:8080/v1/writeCSV?start=${start}&end=${end}`);
+    window.open(`http://localhost:8080/v1/writeCSV?start=${start}&end=${end}&info=${info}`);
   } else {
     alert('Please Input Date Range');
   }

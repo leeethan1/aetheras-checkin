@@ -391,19 +391,74 @@ module.exports = {
 
   async writeCSV(ctx) {
     const data = ctx.query;
-    var start; var end; var line;
-    [start, end] = [data.start, data.end];
+    const re = new RegExp('@');
+    var starts = data.start;
+    var ends = data.end;
+    var line;
+    var emailaddr = data.info;
+    var table;
 
-    const table = await db('checkin').select()
-      .innerJoin('checkout', function () {
-        this.on('checkin.email', '=', 'checkout.email')
-          .on('checkin.checkdate', '=', 'checkout.checkdate');
-      })
-      .innerJoin('employees', 'employees.id', 'checkin.id');
+    if (!data.info) {
+      table = await db('checkin').select(
+        'checkin.email', 'checkin.checkdate',
+        'checkin.checkintime', 'checkout.checkouttime',
+        'employees.firstname', 'employees.lastname',
+      )
+        .leftJoin('checkout', function () {
+          this.on('checkin.email', '=', 'checkout.email')
+            .on('checkin.checkdate', '=', 'checkout.checkdate');
+        })
+        .innerJoin('employees', 'employees.id', 'checkin.id');
+      console.log(table);
+    } else if (re.test(emailaddr)) {
+      table = await db('checkin').select(
+        'checkin.email', 'checkin.checkdate',
+        'checkin.checkintime', 'checkout.checkouttime',
+        'employees.firstname', 'employees.lastname',
+      )
+        .leftJoin('checkout', function () {
+          this.on('checkin.email', '=', 'checkout.email')
+            .on('checkin.checkdate', '=', 'checkout.checkdate');
+        })
+        .where('checkin.email', emailaddr)
+        .orderBy([{ column: 'email' }, { column: 'checkdate' }])
+        .innerJoin('employees', 'employees.id', 'checkin.id');
+      console.log(table);
+    } else {
+      try {
+        const fname = data.info.split('-')[0].toLowerCase();
+        const lname = data.info.split('-')[1].toLowerCase();
+        const x = await db('employees').select('email').whereRaw(
+          'LOWER(firstname) = ?', fname,
+        ).andWhereRaw(
+          'LOWER(lastname) = ?', lname,
+        );
+        if (!isEmpty(x)) {
+          emailaddr = x[0].email;
+          table = await db('checkin').select(
+            'checkin.email', 'checkin.checkdate',
+            'checkin.checkintime', 'checkout.checkouttime',
+            'employees.firstname', 'employees.lastname',
+          )
+            .leftJoin('checkout', function () {
+              this.on('checkin.email', '=', 'checkout.email')
+                .on('checkin.checkdate', '=', 'checkout.checkdate');
+            })
+            .where('checkin.email', emailaddr)
+            .orderBy([{ column: 'email' }, { column: 'checkdate' }])
+            .innerJoin('employees', 'employees.id', 'checkin.id');
+          console.log(table);
+        } else {
+          table = [];
+        }
+      } catch (err) {
+        throw err;
+      }
+    }
 
     fs.writeFileSync('logs.csv', 'Email,First Name,Last Name,Date,Checkin,Checkout\n');
     table.forEach((param) => {
-      if (param.checkdate >= start && param.checkdate <= end) {
+      if (param.checkdate >= starts && param.checkdate <= ends) {
         line = param.email;
         line = `${line},${param.firstname},${param.lastname},${param.checkdate},${param.checkintime},${param.checkouttime}\n`;
         fs.appendFileSync('logs.csv', line);
@@ -412,6 +467,5 @@ module.exports = {
         console.log(line);
       }
     });
-    console.log(ctx.response.header);
   },
 };
