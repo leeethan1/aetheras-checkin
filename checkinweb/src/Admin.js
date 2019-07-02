@@ -36,7 +36,7 @@ function UploadCSV(props) {
   return (
     <div>
       <label>Upload Employee CSV </label>
-      <input type="file" id='upload' accept="text/csv" name="names" onChange={() => autils.uploadCSV()}/><br></br><br></br>
+      <input type="file" id='upload' accept="text/csv" name="names" onChange={() => autils.uploadEmployeeCSV()}/><br></br><br></br>
     </div>
   );
 }
@@ -44,7 +44,7 @@ function UploadCSV(props) {
 function DownloadEmployeeCSV(props)  {
   return (
     <div>
-      <input type='button' className='nbuttons' onClick={() => autils.writeEmployeeCSV()} value='Download Employee List'/><br></br><br></br>
+      <input type='button' className='nbuttons' onClick={() => autils.downloadEmployeeCSV()} value='Download Employee List'/><br></br><br></br>
     </div>
   );
 }
@@ -158,7 +158,7 @@ class OutputBox extends React.Component {
   
 }
 
-function WriteCSV(props) {
+function DownloadCSV(props) {
   return (
     <input type='button' className='nbuttons' onClick={props.onClick} defaultValue='Download Logs CSV' />
   )
@@ -186,7 +186,7 @@ class FormCSV extends React.Component {
   }
 
   handleClick() {
-    autils.writeCSV();
+    autils.downloadUserLogsCSV();
   }
 
   render() {
@@ -194,7 +194,7 @@ class FormCSV extends React.Component {
       <div>
         <StartDate value={this.state.sDate} handleChange={this.handlesDate} />
         <EndDate value={this.state.eDate} handleChange={this.handleeDate} /><br></br>
-        <WriteCSV onClick={() => this.handleClick()} /><br></br><br></br>
+        <DownloadCSV onClick={() => this.handleClick()} /><br></br><br></br>
         {/* <AddEmailBox/> */}
       </div>
     );
@@ -220,7 +220,7 @@ class AdminForm extends React.Component {
 
   async handleClick(i) {
     if (i == 0) {
-      let promise = autils.addEmail();
+      let promise = autils.addAdmin();
       await promise.then((x) => {if (x) this.setState({ value: x })});
       this.setState({flag: 0});
     } else if (i == 1) {
@@ -228,7 +228,7 @@ class AdminForm extends React.Component {
       await promise.then((x) => {this.setState({ data: x })});
       this.setState({flag: 1});
     } else if (i == 2) {
-      let promise = autils.userlogs();
+      let promise = autils.viewUserLogs();
       await promise.then((x) => {if (x) this.setState({ data: x })});this.setState({flag: 2});
     }
   }

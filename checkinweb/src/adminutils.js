@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-export async function addEmail() {
+export async function addAdmin() {
   var info = prompt('email, firstname, lastname');
   if (!info) {
     return;
@@ -11,7 +11,7 @@ export async function addEmail() {
   var fname = infoarr[1];
   var lname = infoarr[2];
 
-  const url = 'http://localhost:8080/v1/emailreg';
+  const url = 'http://localhost:8080/v1/addAdmin';
   var resp = await fetch(url, {
     method: 'POST',
     headers: {
@@ -19,23 +19,18 @@ export async function addEmail() {
     },
     body: JSON.stringify({ email: emailaddr, firstname: fname, lastname: lname }),
   });
-  var status = resp.status;
-  var msg;
-  if (status == 200) {
-    msg = '-Added email ' + emailaddr;
-  } else {
-    msg = '-Email did not add';
-  }
-  return msg;
+  var message = resp.statusText;
+
+  return message;
 }
 
-export function uploadCSV() {
+export function uploadEmployeeCSV() {
   var formData = new FormData();
   var input = document.getElementById('upload');
   console.log(input.files[0]);
   if (input.files[0]) {
     formData.append('names', input.files[0]);
-    var resp = fetch('http://localhost:8080/v1/employeeUpload', {
+    var resp = fetch('http://localhost:8080/v1/uploadEmployeeCSV', {
       method: 'PUT',
       body: formData,
     })
@@ -47,18 +42,18 @@ export function uploadCSV() {
 }
 
 export async function viewEmail() {
-  const url = 'http://localhost:8080/v1/employees';
+  const url = 'http://localhost:8080/v1/viewEmployees';
   var resp = await fetch(url, {
   });
   var table = await resp.json();
   return table;
 }
 
-export async function userlogs() {
+export async function viewUserLogs() {
   var info = prompt('Enter name or email');
   if (info) {
     info = info.replace(' ', '-');
-    const url = 'http://localhost:8080/v1/userlogs?' + info;
+    const url = 'http://localhost:8080/v1/viewUserLogs?' + info;
     var resp = await fetch(url, {
     });
     try {
@@ -77,7 +72,7 @@ export async function userlogs() {
   }
 }
 
-export async function writeCSV() {
+export async function downloadUserLogsCSV() {
   var info = prompt('Enter name or email (leave blank for all employees)')
   if (info) {
     info = info.replace(' ', '-');
@@ -85,12 +80,12 @@ export async function writeCSV() {
   const start = document.getElementById('startdate').value;
   const end = document.getElementById('enddate').value;
   if (start != '' && end != '') {
-    window.open(`http://localhost:8080/v1/writeCSV?start=${start}&end=${end}&info=${info}`);
+    window.open(`http://localhost:8080/v1/downloadUserLogsCSV?start=${start}&end=${end}&info=${info}`);
   } else {
     alert('Please Input Date Range');
   }
 }
 
-export async function writeEmployeeCSV() {
-  window.open('http://localhost:8080/v1/writeEmployeeCSV');
+export async function downloadEmployeeCSV() {
+  window.open('http://localhost:8080/v1/downloadEmployeeCSV');
 }

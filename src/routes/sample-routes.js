@@ -5,22 +5,20 @@ const ctrl = require('../controllers');
 
 const upload = multer({ dest: 'uploads/' });
 
-
 const samplesRoute = ctrl.sample;
 
 const router = new Router();
 
-router.get('/checkin', samplesRoute.checkin);
-router.get('/checkout', samplesRoute.checkout);
-router.post('/emailreg', samplesRoute.addemail);
-router.get('/employees', samplesRoute.employees);
-router.get('/userlogs', samplesRoute.userlogs);
-router.get('/oauth2', samplesRoute.oauth2);
 router.get('/login', samplesRoute.login);
-router.get('/writeCSV', samplesRoute.writeCSV);
-router.get('/checkcookie', samplesRoute.checkcookie);
-router.put('/employeeUpload', upload.single('names'), samplesRoute.employeeUpload);
-router.get('/writeEmployeeCSV', samplesRoute.writeEmployeeCSV);
-
+router.get('/oauth2', samplesRoute.oauth2);
+router.get('/checkCookies', samplesRoute.checkCookies);
+router.get('/checkIn', samplesRoute.checkIn);
+router.get('/checkOut', samplesRoute.checkOut);
+router.post('/addAdmin', samplesRoute.addAdmin);
+router.get('/viewEmployees', samplesRoute.viewEmployees);
+router.get('/viewUserLogs', samplesRoute.viewUserLogs);
+router.get('/downloadUserLogCSV', samplesRoute.downloadUserLogCSV);
+router.put('/uploadEmployeeCSV', upload.single('names'), samplesRoute.uploadEmployeeCSV);
+router.get('/downloadEmployeeCSV', samplesRoute.downloadEmployeeCSV);
 
 module.exports = router.routes();

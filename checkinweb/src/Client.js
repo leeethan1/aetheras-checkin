@@ -26,7 +26,7 @@ function DisplayLogo() {
 
 function GoogleButton() {
   return (
-    <button type="button" className="google-button" onClick={() => utils.googlelogin()} id='login'>
+    <button type="button" className="google-button" onClick={() => utils.googleLogin()} id='login'>
       <span className="google-icon">
         <img className='glogo' src={glogo} alt='glogo'/>
       </span>
@@ -71,8 +71,8 @@ function UserLogEntries(props) {
   return (
     <tr>
       <td>{props.date}</td>
-      <td>{props.checkin}</td>
-      <td>{props.checkout}</td>
+      <td>{props.checkIn}</td>
+      <td>{props.checkOut}</td>
     </tr>
   );
 }
@@ -81,7 +81,7 @@ class UserLogTable extends React.Component {
     var rows = [];
     this.props.data.forEach((entry, i) => {
       rows.push(<UserLogEntries key={i} date={entry.checkdate}
-        checkin={entry.checkintime} checkout={entry.checkouttime}/>);
+        checkIn={entry.checkintime} checkOut={entry.checkouttime}/>);
     })
     return (
       <table className='table'>
@@ -132,12 +132,12 @@ class Form extends React.Component {
 
   handleClick(i) {
     if (i == 0) {
-      let stats = utils.checkin(this.state.date, this.state.time);
+      let stats = utils.checkIn(this.state.date, this.state.time);
       stats.then((stat) => {
           this.setState({value: stat[1]});
       });
     } else {
-      let stats = utils.checkout(this.state.date, this.state.time);
+      let stats = utils.checkOut(this.state.date, this.state.time);
       stats.then((stat) => {
           this.setState({value: stat[1]});
       });

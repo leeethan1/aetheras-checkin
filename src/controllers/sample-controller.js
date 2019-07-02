@@ -1,9 +1,5 @@
 /* eslint-disable func-names */
 /* eslint-disable no-console */
-/* eslint-disable no-prototype-builtins */
-/* eslint-disable no-var */
-/* eslint-disable vars-on-top */
-/* eslint-disable no-restricted-syntax */
 
 const { types } = require('pg');
 const { google } = require('googleapis');
@@ -13,6 +9,9 @@ const csv = require('csv-parser');
 
 const db = require('../app/db');
 
+// Keeps consistent date across PostgreSQL and Javascript date types
+const TYPE_DATESTAMP = 1082;
+types.setTypeParser(TYPE_DATESTAMP, date => date);
 
 const oauth2Client = new google.auth.OAuth2(
   '934270667898-sppb26nd1avnfa3dbm1ps0rp385ar6hp.apps.googleusercontent.com',
@@ -29,300 +28,48 @@ function getGoogleAuthURL(scopes) {
     scope: scopes,
   });
 
-  // ctx.response.redirect(authorizeUrl);
   return authorizeUrl;
 }
 
-const TYPE_DATESTAMP = 1082;
-types.setTypeParser(TYPE_DATESTAMP, date => date);
-
-// checks if object is empty
-function isEmpty(obj) {
-  for (var key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      return false;
-    }
+function isEmpty(table) {
+  if (table.length === 0) {
+    return true;
   }
-  return true;
+  return false;
 }
 
-function getFDateTime() {
+function getFormattedDateTime() {
   const start = new Date();
   const year = start.getFullYear();
   const month = start.getMonth() + 1;
   const day = start.getDate();
   const hours = start.getHours();
   const minutes = start.getMinutes();
-  const fDate = `${year}-${month}-${day}`;
-  const fTime = `${hours}:${minutes}`;
+  const formattedDate = `${year}-${month}-${day}`;
+  const formattedTime = `${hours}:${minutes}`;
 
-  return [fDate, fTime];
+  return [formattedDate, formattedTime];
 }
 
 async function authenticate() {
-  var decoded = jwt.decode(oauth2Client.credentials.id_token,
+  const decoded = jwt.decode(oauth2Client.credentials.id_token,
     { complete: true });
   if (decoded != null) {
     const user = await db('employees').select('email')
       .where({
         email: decoded.payload.email,
       });
-    console.log(decoded.payload.email);
     if (!isEmpty(user)) {
-      console.log('TRUE');
       return true;
     }
   }
-  console.log('FALSE');
   return false;
 }
 
 module.exports = {
-
-  async checkin(ctx) {
-    const date = getFDateTime();
-    var fDate = date[0];
-    var fTime = date[1];
-    var uid;
-    var emailaddr;
-    const append = ctx.request.query;
-
-    if (append.date && append.time) {
-      fDate = append.date;
-      fTime = append.time;
-    }
-
-    // console.log(`${fDate} ${fTime} ${emailaddr}`);
-    console.log('+++CHECKING IN+++\n');
-
-    // checks whether email exists in database
-    if (await authenticate()) {
-      var decoded = jwt.decode(oauth2Client.credentials.id_token,
-        { complete: true });
-      emailaddr = decoded.payload.email;
-      uid = await db('employees').where({
-        email: emailaddr,
-      }).select('id');
-      uid = uid[0].id;
-    } else {
-      ctx.status = 409;
-      ctx.message = 'Email Does Not Exist';
-
-      console.log('*****EMAIL DOES NOT EXIST*****');
-
-      return;
-    }
-
-    // checks whether user has already checked in today
-    var checkins = await db('checkin').where({
-      email: emailaddr,
-      checkdate: fDate,
-    }).select();
-
-    if (!isEmpty(checkins)) {
-      ctx.status = 409;
-      ctx.message = 'Already Checked In Today';
-
-      console.log('*****ALREADY CHECKED IN*****');
-    } else {
-      // add row to checkin table
-      await db('checkin').insert({
-        id: uid,
-        email: emailaddr,
-        checkdate: fDate,
-        checkintime: fTime,
-      });
-      ctx.status = 200;
-
-      // print out checkin table
-      const x = await db('checkin').select().where({
-        email: emailaddr,
-        checkdate: fDate,
-      });
-      console.log(x);
-      console.log('+++CHECKED IN+++');
-    }
-  },
-
-  async checkout(ctx) {
-    const date = getFDateTime();
-    var fDate = date[0];
-    var fTime = date[1];
-    var uid;
-    var emailaddr;
-    const append = ctx.request.query;
-
-    if (append.date && append.time) {
-      fDate = append.date;
-      fTime = append.time;
-    }
-
-    // console.log(`${fDate} ${fTime} ${emailaddr}`);
-    console.log('+++CHECKING OUT+++\n');
-
-    // checks whether email exists in database
-    if (await authenticate()) {
-      var decoded = jwt.decode(oauth2Client.credentials.id_token,
-        { complete: true });
-      emailaddr = decoded.payload.email;
-      uid = await db('employees').where({
-        email: emailaddr,
-      }).select('id');
-      uid = uid[0].id;
-    } else {
-      ctx.status = 409;
-      ctx.message = 'Email Does Not Exist';
-
-      console.log('*****EMAIL DOES NOT EXIST*****');
-
-      return;
-    }
-
-    // checks whether user has checked in or checked out today
-    var checkins = await db('checkin').where({
-      email: emailaddr,
-      checkdate: fDate,
-    }).select();
-    var checkouts = await db('checkout').where({
-      email: emailaddr,
-      checkdate: fDate,
-    }).select();
-
-    if (isEmpty(checkins)) {
-      ctx.status = 409;
-      ctx.message = 'You have not checked in yet';
-
-      console.log('*****CHECKOUT FAILED: HAVE NOT CHECKED IN*****');
-    } else if (!isEmpty(checkouts)) {
-      ctx.status = 409;
-      ctx.message = 'Already Checked Out Today';
-
-      console.log('*****CHECKOUT FAILED: ALREADY CHECKED OUT*****');
-    } else {
-      await db('checkout').insert({
-        // add row to checkout table
-        id: uid,
-        email: emailaddr,
-        checkdate: fDate,
-        checkouttime: fTime,
-      });
-      ctx.status = 200;
-
-      // prints out checkout table
-      const x = await db('checkout').select().where({
-        email: emailaddr,
-        checkdate: fDate,
-      });
-      console.log(x);
-      console.log('+++CHECKED OUT+++');
-    }
-  },
-
-  async addemail(ctx) {
-    ctx.body = 'Adding email';
-    const query = ctx.request.body;
-    const emailaddr = query.email;
-    const fname = query.firstname.toLowerCase();
-    const lname = query.lastname.toLowerCase();
-
-    // checks if email is already added to the registry
-    try {
-      await db('admins').insert({
-        email: emailaddr,
-        firstname: fname,
-        lastname: lname,
-      });
-      ctx.status = 200;
-
-      var x = await db('admins').select();
-      console.log(x);
-      console.log('ADDED');
-    } catch (err) {
-      ctx.status = 409;
-      ctx.message = err;
-      throw err;
-    }
-  },
-
-  async employees(ctx) {
-    ctx.body = 'Viewing employees';
-    var x = await db('employees').select('email', 'firstname', 'lastname');
-    // x = JSON.stringify(x);
-    ctx.response.body = x;
-  },
-
-  async employeeUpload(ctx) {
-    var files = fs.readdirSync(`${__dirname}/../../uploads/`);
-    console.log(files[0]);
-    var src = fs.createReadStream(`${__dirname}/../../uploads/${files[0]}`);
-    ctx.status = 200;
-    src.pipe(csv())
-      .on('data', async (chunk) => {
-        await db('employees').insert({
-          email: chunk.Email,
-          firstname: chunk['First Name'],
-          lastname: chunk['Last Name'],
-        });
-        console.log(chunk);
-      })
-      .on('end', async () => {
-        fs.unlinkSync(`${__dirname}/../../uploads/${files[0]}`);
-      });
-  },
-
-  // creates combined checkin/checkout json
-  async userlogs(ctx) {
-    const re = new RegExp('@');
-    const data = ctx.querystring;
-    var emailaddr;
-    var table;
-    if (re.test(data)) {
-      emailaddr = data;
-      table = await db('checkin').select(
-        'checkin.email', 'checkin.checkdate',
-        'checkin.checkintime', 'checkout.checkouttime',
-        'employees.firstname', 'employees.lastname',
-      )
-        .leftJoin('checkout', function () {
-          this.onIn('checkin.email', [emailaddr])
-            .onIn('checkout.email', [emailaddr])
-            .on('checkin.checkdate', '=', 'checkout.checkdate');
-        })
-        .where('checkin.email', emailaddr)
-        .innerJoin('employees', 'employees.id', 'checkin.id');
-      console.log(table);
-    } else {
-      try {
-        const fname = data.split('-')[0].toLowerCase();
-        const lname = data.split('-')[1].toLowerCase();
-        const x = await db('employees').select('email').whereRaw(
-          'LOWER(firstname) = ?', fname,
-        ).andWhereRaw(
-          'LOWER(lastname) = ?', lname,
-        );
-        if (!isEmpty(x)) {
-          emailaddr = x[0].email;
-          table = await db('checkin').select(
-            'checkin.email', 'checkin.checkdate',
-            'checkin.checkintime', 'checkout.checkouttime',
-            'employees.firstname', 'employees.lastname',
-          )
-            .leftJoin('checkout', function () {
-              this.onIn('checkin.email', [emailaddr])
-                .onIn('checkout.email', [emailaddr])
-                .on('checkin.checkdate', '=', 'checkout.checkdate');
-            })
-            .where('checkin.email', emailaddr)
-            .innerJoin('employees', 'employees.id', 'checkin.id');
-          console.log(table);
-        } else {
-          table = [];
-        }
-      } catch (err) {
-        throw err;
-      }
-    }
-    ctx.response.body = table;
+  async login(ctx) {
+    ctx.status = 308;
+    ctx.response.redirect(getGoogleAuthURL(['email', 'profile', 'openid']));
   },
 
   async oauth2(ctx) {
@@ -332,7 +79,7 @@ module.exports = {
       oauth2Client.setCredentials(tokens);
 
       if (await authenticate()) {
-        var decoded = jwt.decode(tokens.id_token, { complete: true });
+        const decoded = jwt.decode(tokens.id_token, { complete: true });
         const ids = await db('employees')
           .where({ email: decoded.payload.email })
           .select('id');
@@ -343,19 +90,19 @@ module.exports = {
           ctx.cookies.set('isAdmin', 'true', {
             signed: true,
             httpOnly: false,
-            maxAge: 64800000,
+            maxAge: 43200000,
           });
         } else {
           ctx.cookies.set('isAdmin', 'false', {
             signed: true,
             httpOnly: false,
-            maxAge: 64800000,
+            maxAge: 43200000,
           });
         }
         ctx.cookies.set('id', ids[0].id, {
           signed: true,
           httpOnly: false,
-          maxAge: 64800000,
+          maxAge: 43200000,
         });
         ctx.cookies.set('inDatabase', 'true', {
           signed: true,
@@ -376,10 +123,6 @@ module.exports = {
           overwrite: true,
         });
       }
-      // get the decoded payload and header
-
-      // console.log(decoded.header);
-      // console.log(decoded.payload);
     } catch (e) {
       console.log(e);
     }
@@ -387,38 +130,252 @@ module.exports = {
     ctx.response.redirect('http://localhost:5000');
   },
 
-  async login(ctx) {
-    ctx.status = 308;
-    ctx.response.redirect(getGoogleAuthURL(['email', 'profile', 'openid']));
-    // ctx.response.body = ({ url: getGoogleAuthURL(['email', 'profile', 'openid']) });
-  },
-
-  async checkcookie(ctx) {
+  async checkCookies(ctx) {
     try {
-      var reqid = ctx.cookies.get('id', { signed: true });
+      const userID = ctx.cookies.get('id', { signed: true });
       ctx.cookies.get('isAdmin', { signed: true });
-      const data = await db('employees').where({ id: reqid })
+      const table = await db('employees').where({ id: userID })
         .select('refresh_token', 'email');
-      const { tokens } = await oauth2Client.refreshToken(data[0].refresh_token);
-      // console.log(tokens)
+      const { tokens } = await oauth2Client.refreshToken(table[0].refresh_token);
+
       oauth2Client.setCredentials(tokens);
       ctx.status = 200;
-      ctx.message = data[0].email;
+      ctx.message = table[0].email;
     } catch (err) {
       console.log(err);
     }
   },
 
-  async writeCSV(ctx) {
-    const data = ctx.query;
-    const re = new RegExp('@');
-    var starts = data.start;
-    var ends = data.end;
-    var line;
-    var emailaddr = data.info;
-    var table;
+  async checkIn(ctx) {
+    const dateTime = ctx.request.query;
+    const date = getFormattedDateTime();
+    let formattedDate = date[0];
+    let formattedTime = date[1];
+    let emailAddress;
+    let uid;
 
-    if (!data.info) {
+    if (dateTime.date && dateTime.time) {
+      formattedDate = dateTime.date;
+      formattedTime = dateTime.time;
+    }
+
+    console.log('+++CHECKING IN+++\n');
+
+    // checks whether email exists in database
+    if (await authenticate()) {
+      const decoded = jwt.decode(oauth2Client.credentials.id_token,
+        { complete: true });
+      emailAddress = decoded.payload.email;
+      uid = await db('employees').where({
+        email: emailAddress,
+      }).select('id');
+      uid = uid[0].id;
+    } else {
+      ctx.status = 409;
+      ctx.message = 'Email Does Not Exist';
+
+      console.log('*****EMAIL DOES NOT EXIST*****');
+
+      return;
+    }
+
+    // checks whether user has already checked in today
+    const checkins = await db('checkin').where({
+      email: emailAddress,
+      checkdate: formattedDate,
+    }).select();
+
+    if (!isEmpty(checkins)) {
+      ctx.status = 409;
+      ctx.message = 'Already Checked In Today';
+
+      console.log('*****ALREADY CHECKED IN*****');
+    } else {
+      await db('checkin').insert({
+        id: uid,
+        email: emailAddress,
+        checkdate: formattedDate,
+        checkintime: formattedTime,
+      });
+      ctx.status = 200;
+
+      const x = await db('checkin').select().where({
+        email: emailAddress,
+        checkdate: formattedDate,
+      });
+      console.log(x);
+      console.log('+++CHECKED IN+++');
+    }
+  },
+
+  async checkOut(ctx) {
+    const dateTime = ctx.request.query;
+    const date = getFormattedDateTime();
+    let formattedDate = date[0];
+    let formattedTime = date[1];
+    let emailAddress;
+    let uid;
+
+    if (dateTime.date && dateTime.time) {
+      formattedDate = dateTime.date;
+      formattedTime = dateTime.time;
+    }
+
+    console.log('+++CHECKING OUT+++\n');
+
+    // checks whether email exists in database
+    if (await authenticate()) {
+      const decoded = jwt.decode(oauth2Client.credentials.id_token,
+        { complete: true });
+      emailAddress = decoded.payload.email;
+      uid = await db('employees').where({
+        email: emailAddress,
+      }).select('id');
+      uid = uid[0].id;
+    } else {
+      ctx.status = 409;
+      ctx.message = 'Email Does Not Exist';
+
+      console.log('*****EMAIL DOES NOT EXIST*****');
+
+      return;
+    }
+
+    // checks whether user has checked in or checked out today
+    const checkins = await db('checkin').where({
+      email: emailAddress,
+      checkdate: formattedDate,
+    }).select();
+    const checkouts = await db('checkout').where({
+      email: emailAddress,
+      checkdate: formattedDate,
+    }).select();
+
+    if (isEmpty(checkins)) {
+      ctx.status = 409;
+      ctx.message = 'You have not checked in yet';
+
+      console.log('*****CHECKOUT FAILED: HAVE NOT CHECKED IN*****');
+    } else if (!isEmpty(checkouts)) {
+      ctx.status = 409;
+      ctx.message = 'Already Checked Out Today';
+
+      console.log('*****CHECKOUT FAILED: ALREADY CHECKED OUT*****');
+    } else {
+      await db('checkout').insert({
+        id: uid,
+        email: emailAddress,
+        checkdate: formattedDate,
+        checkouttime: formattedTime,
+      });
+      ctx.status = 200;
+
+      const x = await db('checkout').select().where({
+        email: emailAddress,
+        checkdate: formattedDate,
+      });
+      console.log(x);
+      console.log('+++CHECKED OUT+++');
+    }
+  },
+
+  async addAdmin(ctx) {
+    const query = ctx.request.body;
+    const emailAddress = query.email;
+    const firstName = query.firstname.toLowerCase();
+    const lastName = query.lastname.toLowerCase();
+
+    // checks if email is already added to the registry
+    try {
+      await db('admins').insert({
+        email: emailAddress,
+        firstname: firstName,
+        lastname: lastName,
+      });
+      ctx.status = 200;
+      ctx.message = `Added Email ${emailAddress}`;
+
+      const x = await db('admins').select();
+      console.log(x);
+      console.log('ADDED');
+    } catch (err) {
+      ctx.status = 409;
+      ctx.message = 'Email Did Not Add';
+      throw err;
+    }
+  },
+
+  async viewEmployees(ctx) {
+    const table = await db('employees').select('email', 'firstname', 'lastname');
+    ctx.response.body = table;
+  },
+
+  // creates combined checkin/checkout json
+  async viewUserLogs(ctx) {
+    const re = new RegExp('@');
+    const data = ctx.querystring;
+    let emailAddress;
+    let table;
+
+    if (re.test(data)) {
+      emailAddress = data;
+      table = await db('checkin').select(
+        'checkin.email', 'checkin.checkdate',
+        'checkin.checkintime', 'checkout.checkouttime',
+        'employees.firstname', 'employees.lastname',
+      )
+        .leftJoin('checkout', function () {
+          this.onIn('checkin.email', [emailAddress])
+            .onIn('checkout.email', [emailAddress])
+            .on('checkin.checkdate', '=', 'checkout.checkdate');
+        })
+        .where('checkin.email', emailAddress)
+        .innerJoin('employees', 'employees.id', 'checkin.id');
+      console.log(table);
+    } else {
+      try {
+        const firstName = data.split('-')[0].toLowerCase();
+        const lastName = data.split('-')[1].toLowerCase();
+        const emails = await db('employees').select('email').whereRaw(
+          'LOWER(firstname) = ?', firstName,
+        ).andWhereRaw(
+          'LOWER(lastname) = ?', lastName,
+        );
+        if (!isEmpty(emails)) {
+          emailAddress = emails[0].email;
+          table = await db('checkin').select(
+            'checkin.email', 'checkin.checkdate',
+            'checkin.checkintime', 'checkout.checkouttime',
+            'employees.firstname', 'employees.lastname',
+          )
+            .leftJoin('checkout', function () {
+              this.onIn('checkin.email', [emailAddress])
+                .onIn('checkout.email', [emailAddress])
+                .on('checkin.checkdate', '=', 'checkout.checkdate');
+            })
+            .where('checkin.email', emailAddress)
+            .innerJoin('employees', 'employees.id', 'checkin.id');
+          console.log(table);
+        } else {
+          table = [];
+        }
+      } catch (err) {
+        throw err;
+      }
+    }
+    ctx.response.body = table;
+  },
+
+  async downloadUserLogCSV(ctx) {
+    const re = new RegExp('@');
+    const queryData = ctx.query;
+    const startDate = queryData.start;
+    const endDate = queryData.end;
+    let emailAddress = queryData.info;
+    let line;
+    let table;
+
+    if (!queryData.info) {
       table = await db('checkin').select(
         'checkin.email', 'checkin.checkdate',
         'checkin.checkintime', 'checkout.checkouttime',
@@ -430,7 +387,7 @@ module.exports = {
         })
         .innerJoin('employees', 'employees.id', 'checkin.id');
       console.log(table);
-    } else if (re.test(emailaddr)) {
+    } else if (re.test(emailAddress)) {
       table = await db('checkin').select(
         'checkin.email', 'checkin.checkdate',
         'checkin.checkintime', 'checkout.checkouttime',
@@ -440,21 +397,21 @@ module.exports = {
           this.on('checkin.email', '=', 'checkout.email')
             .on('checkin.checkdate', '=', 'checkout.checkdate');
         })
-        .where('checkin.email', emailaddr)
+        .where('checkin.email', emailAddress)
         .orderBy([{ column: 'email' }, { column: 'checkdate' }])
         .innerJoin('employees', 'employees.id', 'checkin.id');
       console.log(table);
     } else {
       try {
-        const fname = data.info.split('-')[0].toLowerCase();
-        const lname = data.info.split('-')[1].toLowerCase();
-        const x = await db('employees').select('email').whereRaw(
-          'LOWER(firstname) = ?', fname,
+        const firstName = queryData.info.split('-')[0].toLowerCase();
+        const lastName = queryData.info.split('-')[1].toLowerCase();
+        const emails = await db('employees').select('email').whereRaw(
+          'LOWER(firstname) = ?', firstName,
         ).andWhereRaw(
-          'LOWER(lastname) = ?', lname,
+          'LOWER(lastname) = ?', lastName,
         );
-        if (!isEmpty(x)) {
-          emailaddr = x[0].email;
+        if (!isEmpty(emails)) {
+          emailAddress = emails[0].email;
           table = await db('checkin').select(
             'checkin.email', 'checkin.checkdate',
             'checkin.checkintime', 'checkout.checkouttime',
@@ -464,7 +421,7 @@ module.exports = {
               this.on('checkin.email', '=', 'checkout.email')
                 .on('checkin.checkdate', '=', 'checkout.checkdate');
             })
-            .where('checkin.email', emailaddr)
+            .where('checkin.email', emailAddress)
             .orderBy([{ column: 'email' }, { column: 'checkdate' }])
             .innerJoin('employees', 'employees.id', 'checkin.id');
           console.log(table);
@@ -478,7 +435,7 @@ module.exports = {
 
     fs.writeFileSync('logs.csv', 'Email,First Name,Last Name,Date,Checkin,Checkout\n');
     table.forEach((param) => {
-      if (param.checkdate >= starts && param.checkdate <= ends) {
+      if (param.checkdate >= startDate && param.checkdate <= endDate) {
         line = param.email;
         line = `${line},${param.firstname},${param.lastname},${param.checkdate},${param.checkintime},${param.checkouttime}\n`;
         fs.appendFileSync('logs.csv', line);
@@ -490,9 +447,28 @@ module.exports = {
     fs.unlinkSync(`${__dirname}/../../logs.csv`);
   },
 
-  async writeEmployeeCSV(ctx) {
+  async uploadEmployeeCSV(ctx) {
+    const file = fs.readdirSync(`${__dirname}/../../uploads/`);
+    const src = fs.createReadStream(`${__dirname}/../../uploads/${file[0]}`);
+
+    ctx.status = 200;
+    src.pipe(csv())
+      .on('data', async (chunk) => {
+        await db('employees').insert({
+          email: chunk.Email,
+          firstname: chunk['First Name'],
+          lastname: chunk['Last Name'],
+        });
+        console.log(chunk);
+      })
+      .on('end', async () => {
+        fs.unlinkSync(`${__dirname}/../../uploads/${file[0]}`);
+      });
+  },
+
+  async downloadEmployeeCSV(ctx) {
     const table = await db('employees').select('email', 'firstname', 'lastname');
-    var line;
+    let line;
 
     fs.writeFileSync('employees.csv', 'Email,First Name,Last Name\n');
     table.forEach((param) => {

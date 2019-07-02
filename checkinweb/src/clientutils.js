@@ -4,7 +4,7 @@ console.log((document.cookie));
 run();
 async function run() {
   if (getCookie('id')) {
-    var cookiecheck = await fetch('http://localhost:8080/v1/checkcookie', {
+    var cookiecheck = await fetch('http://localhost:8080/v1/checkCookies', {
       method: 'GET',
       credentials: 'include'
     })
@@ -48,12 +48,12 @@ function getCookie(cname) {
 
 export async function getUserLogs() {
   if (getCookie('id')) {
-    var cookiecheck = await fetch('http://localhost:8080/v1/checkcookie', {
+    var cookiecheck = await fetch('http://localhost:8080/v1/checkCookies', {
       method: 'GET',
       credentials: 'include'
     })
     if (cookiecheck.status == 200) {
-      const url = 'http://localhost:8080/v1/userlogs?' + cookiecheck.statusText;
+      const url = 'http://localhost:8080/v1/viewUserLogs?' + cookiecheck.statusText;
       var resp = await fetch(url, {
       });
       try {
@@ -71,11 +71,11 @@ export async function getUserLogs() {
   return;
 }
 
-export async function googlelogin() {
+export async function googleLogin() {
   location = 'http://localhost:8080/v1/login';
 }
 
-export async function checkin(userdatepass, usertimepass) {
+export async function checkIn(userdatepass, usertimepass) {
   console.log("checking in");
   var userdate = userdatepass;
   var usertime = usertimepass;
@@ -89,9 +89,9 @@ export async function checkin(userdatepass, usertimepass) {
   }
 
   if (userdate && usertime) {
-    var url = `http://localhost:8080/v1/checkin?date=${userdate}&time=${usertime}`;
+    var url = `http://localhost:8080/v1/checkIn?date=${userdate}&time=${usertime}`;
   } else {
-    var url = 'http://localhost:8080/v1/checkin';
+    var url = 'http://localhost:8080/v1/checkIn';
   }
   
 
@@ -126,7 +126,7 @@ export async function checkin(userdatepass, usertimepass) {
   }
 } 
 
-export async function checkout(userdatepass, usertimepass) {
+export async function checkOut(userdatepass, usertimepass) {
   console.log("checking out");
   var userdate = userdatepass;
   var usertime = usertimepass;
@@ -140,9 +140,9 @@ export async function checkout(userdatepass, usertimepass) {
   }
 
   if (userdate && usertime) {
-    var url = `http://localhost:8080/v1/checkout?date=${userdate}&time=${usertime}`;
+    var url = `http://localhost:8080/v1/checkOut?date=${userdate}&time=${usertime}`;
   } else {
-    var url = 'http://localhost:8080/v1/checkout';
+    var url = 'http://localhost:8080/v1/checkOut';
   }
 
   console.log(url);
