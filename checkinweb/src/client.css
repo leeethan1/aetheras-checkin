@@ -1,4 +1,4 @@
-.clientdiv {
+.client-div {
   width: 100%;
   height: 100%;
   background-color: rgb(255, 235, 212);
@@ -28,11 +28,11 @@ th {
   color: white;
 }
 
-.checksform {
+.checks-form {
   display: none;
 }
 
-.adminform {
+.admin-form {
   display: none;
   border-style: none;
   border-radius: 10px;
@@ -40,10 +40,9 @@ th {
   width: 90%;
   margin: auto;
   background-color: rgb(255, 241, 226);
-  /* box-shadow: 1px 4px 5px 0px #00000062; */
 }
 
-.cbuttons {
+.checks-buttons {
   border-radius: 5px;
   border-style: none;
   width: 100px;
@@ -55,12 +54,12 @@ th {
   transition-duration: 100ms;
   transition-timing-function: ease-in-out;
 }
-.cbuttons:active {
+.checks-buttons:active {
   background-color: #c0c0c0;
   box-shadow: none;
 }
 
-.nbuttons {
+.admin-buttons {
   outline: none;
   border-radius: 5px;
   border-style: none;
@@ -75,19 +74,18 @@ th {
   transition-duration: 100ms;
   transition-timing-function: ease-in-out;
 }
-.nbuttons:active {
+.admin-buttons:active {
   background-color: #c0c0c0;
   box-shadow: none;
 }
 
-.datetime {
+.date-time {
   padding: 5px;
   margin: 5px;
-  /* box-shadow: 1px 1px 1px 0px #00000062; */
   border-style: none;
 }
 
-.glogo {
+.g-logo {
   padding-right: 24px;
   vertical-align: middle;
   width: 18px;
@@ -99,17 +97,10 @@ th {
   width: 35%;
   height: auto;
   margin: auto;
-  /* animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none; */
 }
 
 .radio {
   margin: 8px;
-}
-
-.check {
-  font-size: 20px;
 }
 
 .google-button {
@@ -152,13 +143,4 @@ padding: 0 24px;
 font-size: 14px;
 font-weight: bold;
 font-family: 'Roboto',arial,sans-serif;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }

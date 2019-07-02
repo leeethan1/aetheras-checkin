@@ -1,19 +1,23 @@
-/* eslint-disable */
+/* eslint-disable promise/catch-or-return */
+/* eslint-disable promise/always-return */
+/* eslint-disable prefer-destructuring */
+/* eslint-disable node/no-unsupported-features/es-syntax */
+
 import React from 'react';
+
 import './client.css';
-import Admin from './Admin'
+import Admin from './Admin';
 import title from './title.png';
 import glogo from './g-logo.png';
-import * as utils from './clientutils.js'; 
-
+import * as utils from './clientutils';
 
 function Client() {
   return (
-    <div className='clientdiv'>
+    <div className='client-div'>
       <AetherasForm/>
-      <a className='adminform' id='admin'>
+      <div className='admin-form' id='admin'>
         <Admin/>
-      </a>
+      </div>
     </div>
   );
 }
@@ -28,7 +32,7 @@ function GoogleButton() {
   return (
     <button type="button" className="google-button" onClick={() => utils.googleLogin()} id='login'>
       <span className="google-icon">
-        <img className='glogo' src={glogo} alt='glogo'/>
+        <img className='g-logo' src={glogo} alt='glogo'/>
       </span>
       <span className="google-text">Sign in with Google</span>
     </button>
@@ -45,25 +49,86 @@ function OptionalLabel() {
 
 function Datebox(props) {
   return (
-    <input className='datetime' type='date' value={props.value} onChange={ props.handleChange }/>
+    <input className='date-time' type='date' value={props.value} onChange={props.handleChange}/>
   );
 }
 
 function Timebox(props) {
   return (
-    <input className='datetime' type='time' value={props.value} onChange={ props.handleChange }/>
+    <input className='date-time' type='time' value={props.value} onChange={props.handleChange}/>
   );
 }
 
 function CheckInButton(props) {
   return (
-    <input type='button' className='cbuttons' onClick={props.onClick} defaultValue='Check In'/>
+    <input type='button' className='checks-buttons' onClick={props.onClick} defaultValue='Check In'/>
   );
 }
 
 function CheckOutButton(props) {
   return (
-    <input type='button' className='cbuttons' onClick={props.onClick} defaultValue='Check Out'/>
+    <input type='button' className='checks-buttons' onClick={props.onClick} defaultValue='Check Out'/>
+  );
+}
+
+class Form extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      date: '',
+      time: '',
+      value: '',
+    };
+    this.handleDate = this.handleDate.bind(this);
+    this.handleTime = this.handleTime.bind(this);
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  handleDate(e) {
+    const value = e.target.value;
+    this.setState({ date: value });
+  }
+
+  handleTime(e) {
+    const value = e.target.value;
+    this.setState({ time: value });
+  }
+
+  handleClick(i) {
+    if (i === 0) {
+      const stats = utils.checkIn(this.state.date, this.state.time);
+      stats.then((stat) => {
+        this.setState({ value: stat[1] });
+      });
+    } else {
+      const stats = utils.checkOut(this.state.date, this.state.time);
+      stats.then((stat) => {
+        this.setState({ value: stat[1] });
+      });
+    }
+  }
+
+  render() {
+    return (
+      <div>
+        <OptionalLabel/><br></br>
+        <Datebox value={this.state.date} handleChange={this.handleDate}/>
+        <Timebox value={this.state.time} handleChange={this.handleTime}/><br></br><br></br>
+        <CheckInButton onClick={() => this.handleClick(0)}/>
+        <CheckOutButton onClick={() => this.handleClick(1)}/><br></br>
+        {this.state.value}
+      </div>
+    );
+  }
+}
+
+function SelectedUserInfo(props) {
+  return (
+    <div>
+      <label>{props.user[0].email} </label><br></br>
+      <label>{props.user[0].firstname} </label>
+      <label>{props.user[0].lastname}</label>
+    </div>
   );
 }
 
@@ -78,11 +143,11 @@ function UserLogEntries(props) {
 }
 class UserLogTable extends React.Component {
   render() {
-    var rows = [];
+    const rows = [];
     this.props.data.forEach((entry, i) => {
       rows.push(<UserLogEntries key={i} date={entry.checkdate}
         checkIn={entry.checkintime} checkOut={entry.checkouttime}/>);
-    })
+    });
     return (
       <table className='table'>
         <thead>
@@ -98,66 +163,6 @@ class UserLogTable extends React.Component {
   }
 }
 
-function SelectedUserInfo(props) {
-  return (
-    <div>
-      <label>{props.user[0].email} </label><br></br>
-      <label>{props.user[0].firstname} </label>
-      <label>{props.user[0].lastname}</label>
-    </div>
-  );
-}
-class Form extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      date: '',
-      time: '',
-      value: '',
-    };
-    this.handleDate = this.handleDate.bind(this);
-    this.handleTime = this.handleTime.bind(this);
-    this.handleClick = this.handleClick.bind(this);
-  }
-
-  handleDate(e) {
-    let value = e.target.value;
-    this.setState({ date: value });
-  }
-
-  handleTime(e) {
-    let value = e.target.value;
-    this.setState({ time: value });
-  }
-
-  handleClick(i) {
-    if (i == 0) {
-      let stats = utils.checkIn(this.state.date, this.state.time);
-      stats.then((stat) => {
-          this.setState({value: stat[1]});
-      });
-    } else {
-      let stats = utils.checkOut(this.state.date, this.state.time);
-      stats.then((stat) => {
-          this.setState({value: stat[1]});
-      });
-    }
-  }
-
-  render() {
-    return (
-      <div>
-        <OptionalLabel/><br></br>
-        <Datebox value={this.state.date} handleChange={this.handleDate}/>
-        <Timebox value={this.state.time} handleChange={this.handleTime}/><br></br><br></br>
-        <CheckInButton onClick={() => this.handleClick(0)}/>
-        <CheckOutButton onClick={() => this.handleClick(1)}/> 
-        <br></br>{this.state.value}
-      </div>
-    );
-  }
-}
-
 class UserLogBox extends React.Component {
   constructor(props) {
     super(props);
@@ -169,13 +174,13 @@ class UserLogBox extends React.Component {
           lastname: '',
         },
       ],
-    }
+    };
     this.handleTable();
   }
 
   async handleTable() {
-    let promise = utils.getUserLogs();
-    await promise.then((x) => {if (x) {this.setState({ data: x })}});
+    const promise = utils.getUserLogs();
+    await promise.then((x) => { if (x) { this.setState({ data: x }); } });
   }
 
   render() {
@@ -189,18 +194,18 @@ class UserLogBox extends React.Component {
 }
 
 function AetherasForm() {
-    return (
-      <div>
-        <DisplayLogo/>
-        <a id='login'>
-          <GoogleButton/>
-        </a>
-        <a className='checksform' id='form'>
-          <Form/><br></br>
-          <UserLogBox/>
-        </a>
+  return (
+    <div>
+      <DisplayLogo/>
+      <div id='login'>
+        <GoogleButton/>
       </div>
-    );
+      <div className='checks-form' id='form'>
+        <Form/><br></br>
+        <UserLogBox/>
+      </div>
+    </div>
+  );
 }
 
 export default Client;

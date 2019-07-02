@@ -1,32 +1,34 @@
-/* eslint-disable */
-console.log((document.cookie));
+/* eslint-disable prefer-destructuring */
+/* eslint-disable consistent-return */
+/* eslint-disable no-plusplus */
+/* eslint-disable no-alert */
+/* eslint-disable node/no-unsupported-features/es-syntax */
 
-run();
-async function run() {
+checkCookies();
+
+async function checkCookies() {
   if (getCookie('id')) {
-    var cookiecheck = await fetch('http://localhost:8080/v1/checkCookies', {
+    const cookieCheck = await fetch('http://localhost:8080/v1/checkCookies', {
       method: 'GET',
-      credentials: 'include'
-    })
-    if (cookiecheck.status == 200) {
-      var login = document.getElementById('login');
-      var form = document.getElementById('form');
+      credentials: 'include',
+    });
+    if (cookieCheck.status === 200) {
+      const login = document.getElementById('login');
+      const form = document.getElementById('form');
       if (login && form) {
         login.style.display = 'none';
         form.style.display = 'block';
-        console.log('LOGIN COMPLETE')
       }
-      
     }
   } else if (getCookie('inDatabase')) {
-    var flag = getCookie('inDatabase');
-    if (flag == 'false') {
+    const flag = getCookie('inDatabase');
+    if (flag === 'false') {
       alert('User Not In Database');
     }
   }
   if (getCookie('isAdmin')) {
-    if (getCookie('isAdmin') == 'true') {
-      var admin = document.getElementById('admin');
+    if (getCookie('isAdmin') === 'true') {
+      const admin = document.getElementById('admin');
       if (admin) {
         admin.style.display = 'block';
       }
@@ -35,31 +37,32 @@ async function run() {
 }
 
 function getCookie(cname) {
-  var name = cname + "=";
-  var decodedCookie = decodeURIComponent(document.cookie);
-  var ca = decodedCookie.split(';');
-  for(var i = 0; i < ca.length; i++) {
-    var c = ca[i];
-    if (c.includes(name))
+  const name = `${cname}=`;
+  const decodedCookie = decodeURIComponent(document.cookie);
+  const cookie = decodedCookie.split(';');
+  for (let i = 0; i < cookie.length; i++) {
+    const c = cookie[i];
+    if (c.includes(name)) {
       return c.substring(name.length);
+    }
   }
-  return "";
+  return '';
 }
 
 export async function getUserLogs() {
   if (getCookie('id')) {
-    var cookiecheck = await fetch('http://localhost:8080/v1/checkCookies', {
+    const cookieCheck = await fetch('http://localhost:8080/v1/checkCookies', {
       method: 'GET',
-      credentials: 'include'
-    })
-    if (cookiecheck.status == 200) {
-      const url = 'http://localhost:8080/v1/viewUserLogs?' + cookiecheck.statusText;
-      var resp = await fetch(url, {
+      credentials: 'include',
+    });
+    if (cookieCheck.status === 200) {
+      const url = `http://localhost:8080/v1/viewUserLogs?${cookieCheck.statusText}`;
+      const resp = await fetch(url, {
       });
       try {
-        var table = await resp.json();
+        const table = await resp.json();
         if (table.length === 0) {
-          alert(`No Logs for ${cookiecheck.statusText}`);
+          alert(`No Logs for ${cookieCheck.statusText}`);
           return;
         }
         return table;
@@ -68,131 +71,118 @@ export async function getUserLogs() {
       }
     }
   }
-  return;
 }
 
 export async function googleLogin() {
-  location = 'http://localhost:8080/v1/login';
+  window.location = 'http://localhost:8080/v1/login';
 }
 
-export async function checkIn(userdatepass, usertimepass) {
-  console.log("checking in");
-  var userdate = userdatepass;
-  var usertime = usertimepass;
-  const date = getFDateTime();
+export async function checkIn(userDateParam, userTimeParam) {
+  const userDate = userDateParam;
+  const userTime = userTimeParam;
+  const date = getFormattedDateTime();
+  let url;
+  let status;
+  let message;
 
-  if (userdate > date[0] || usertime > date[1]) {
+  if (userDate > date[0] || userTime > date[1]) {
     alert('Cannot Enter Future Dates');
-    let status = 409;
-    let message = 'Cannot Enter Future Dates';
+    status = 409;
+    message = 'Cannot Enter Future Dates';
     return [status, message];
   }
 
-  if (userdate && usertime) {
-    var url = `http://localhost:8080/v1/checkIn?date=${userdate}&time=${usertime}`;
+  if (userDate && userTime) {
+    url = `http://localhost:8080/v1/checkIn?date=${userDate}&time=${userTime}`;
   } else {
-    var url = 'http://localhost:8080/v1/checkIn';
+    url = 'http://localhost:8080/v1/checkIn';
   }
-  
 
-  console.log(url);
-
-  var resp = await fetch(url, {
+  const resp = await fetch(url, {
     method: 'GET',
   });
-  var status = resp.status;
-  var message = resp.statusText;
 
-  console.log(status);
-  console.log(message);
+  status = resp.status;
+  message = resp.statusText;
 
-  //page tells user successful check in
-  if (status == 200) {
-    if (userdate && usertime) {
-      message = `Checked In @ ${userdate} ${usertime}`;
-      return [status, message];
-    } else {
-      const date = getFDateTime();
-      const fDate = date[0];
-      const fTime = date[1];
-      message = `Checked In @ ${fDate} ${fTime}`;
+  // page tells user successful check in
+  if (status === 200) {
+    if (userDate && userTime) {
+      message = `Checked In @ ${userDate} ${userTime}`;
       return [status, message];
     }
-    
-  } else {
-    //alerts user check in failed
-    alert(message);
+    const formattedDate = date[0];
+    const formattedTime = date[1];
+    message = `Checked In @ ${formattedDate} ${formattedTime}`;
     return [status, message];
   }
-} 
-
-export async function checkOut(userdatepass, usertimepass) {
-  console.log("checking out");
-  var userdate = userdatepass;
-  var usertime = usertimepass;
-  const date = getFDateTime();
-
-  if (userdate > date[0] || usertime > date[1]) {
-    alert('Cannot Enter Future Dates');
-    let status = 409;
-    let message = 'Cannot Enter Future Dates';
-    return [status, message];
-  }
-
-  if (userdate && usertime) {
-    var url = `http://localhost:8080/v1/checkOut?date=${userdate}&time=${usertime}`;
-  } else {
-    var url = 'http://localhost:8080/v1/checkOut';
-  }
-
-  console.log(url);
-
-  var resp = await fetch(url, {
-    method: 'GET',
-  });
-  var status = resp.status;
-  var message = resp.statusText;
-
-  console.log(status);
-  console.log(message);
-
-  //page tells user successful check out
-  if (status == 200) {
-    if (userdate && usertime) {
-      message = `Checked Out @ ${userdate} ${usertime}`;
-      return [status, message];
-    } else {
-      const date = getFDateTime();
-      const fDate = date[0];
-      const fTime = date[1];
-      message = `Checked Out @ ${fDate} ${fTime}`;
-      return [status, message];
-    }
-  } else {
-    //alerts user check out failed
-    alert(message);
-    return [status, message];
-  }
+  // alerts user if check in failed
+  alert(message);
+  return [status, message];
 }
 
-function getFDateTime() {
+export async function checkOut(userDateParam, userTimeParam) {
+  const userDate = userDateParam;
+  const userTime = userTimeParam;
+  const date = getFormattedDateTime();
+  let url;
+  let status;
+  let message;
+
+  if (userDate > date[0] || userTime > date[1]) {
+    alert('Cannot Enter Future Dates');
+    status = 409;
+    message = 'Cannot Enter Future Dates';
+    return [status, message];
+  }
+
+  if (userDate && userTime) {
+    url = `http://localhost:8080/v1/checkOut?date=${userDate}&time=${userTime}`;
+  } else {
+    url = 'http://localhost:8080/v1/checkOut';
+  }
+
+  const resp = await fetch(url, {
+    method: 'GET',
+  });
+
+  status = resp.status;
+  message = resp.statusText;
+
+  // page tells user successful check out
+  if (status === 200) {
+    if (userDate && userTime) {
+      message = `Checked Out @ ${userDate} ${userTime}`;
+      return [status, message];
+    }
+    const formattedDate = date[0];
+    const formattedTime = date[1];
+    message = `Checked Out @ ${formattedDate} ${formattedTime}`;
+    return [status, message];
+  }
+  // alerts user if check out failed
+  alert(message);
+  return [status, message];
+}
+
+function getFormattedDateTime() {
   const start = new Date();
   const year = start.getFullYear();
-  var month = start.getMonth() + 1;
+  let month = start.getMonth() + 1;
   if (month < 10) {
     month = `0${month}`;
   }
   const day = start.getDate();
-  var hours = start.getHours();
+  let hours = start.getHours();
   if (hours < 10) {
     hours = `0${hours}`;
   }
-  var minutes = start.getMinutes();
+  let minutes = start.getMinutes();
   if (minutes < 10) {
     minutes = `0${minutes}`;
   }
-  const fDate = `${year}-${month}-${day}`;
-  const fTime = `${hours}:${minutes}`;
+  const formattedDate = `${year}-${month}-${day}`;
+  const formattedTime = `${hours}:${minutes}`;
 
-  return [fDate, fTime];
+  return [formattedDate, formattedTime];
 }
