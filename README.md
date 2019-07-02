@@ -1,10 +1,9 @@
 # Check In API
 
-> Check In application for Aetheras Employees
+> Check In API for Aetheras Employees
 
 #### Description
-This application allows users to check in and check out, which the server will then update the database accordingly. Users log in through Google and the server determines whether the email associated is an admin. 
-
+This API allows access to a time and attendance system for keeping track of employee working hours. It also includes administrator tools to edit and manage the associated PostgreSQL database. All logins are managed using Google Single Sign-On.
 #### Instructions
 Start a local development server with the following command:
 
@@ -36,7 +35,7 @@ JWT Tokens must be included in Http only secure cookies.  CSRF token included in
 - https://stackoverflow.com/questions/11008469/are-json-web-services-vulnerable-to-csrf-attacks
 
 
-# Postgres Tutorial
+# PostgreSQL Tutorial with Docker
 
 This is a small example of how to start a postgres docker container and send commands to it.
 ```shell
@@ -50,4 +49,17 @@ docker run --rm --name mydb --network testnet -p 5432:5432 -e POSTGRES_PASSWORD=
 docker run -it --rm --network testnet postgres:11 psql -h mydb -U postgres
 ```
 
+# Check In Web Client
+
+> Web application for Check In API
+
+#### Description
+This webpage interacts with the Check In API to allow emloyees to check in/out and administrators to perform various tasks to manage the database.
+
+#### Instructions
+First, start the server with the commands previously listed. Then enter the /checkinweb directory and host the webpage with this command:
+
+`$ npm run start`
+
+This will host the webpage at [localhost:5000](http://localhost:5000)
 
