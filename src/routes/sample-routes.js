@@ -17,7 +17,7 @@ router.get('/checkOut', samplesRoute.checkOut);
 router.post('/addAdmin', samplesRoute.addAdmin);
 router.get('/viewEmployees', samplesRoute.viewEmployees);
 router.get('/viewUserLogs', samplesRoute.viewUserLogs);
-router.get('/downloadUserLogCSV', samplesRoute.downloadUserLogCSV);
+router.get('/downloadUserLogsCSV', samplesRoute.downloadUserLogsCSV);
 router.put('/uploadEmployeeCSV', upload.single('names'), samplesRoute.uploadEmployeeCSV);
 router.get('/downloadEmployeeCSV', samplesRoute.downloadEmployeeCSV);
 

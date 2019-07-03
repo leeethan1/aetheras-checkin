@@ -90,19 +90,22 @@ module.exports = {
           ctx.cookies.set('isAdmin', 'true', {
             signed: true,
             httpOnly: false,
-            maxAge: 43200000,
+            maxAge: 57600000,
+            overwrite: true,
           });
         } else {
           ctx.cookies.set('isAdmin', 'false', {
             signed: true,
             httpOnly: false,
-            maxAge: 43200000,
+            maxAge: 57600000,
+            overwrite: true,
           });
         }
         ctx.cookies.set('id', ids[0].id, {
           signed: true,
           httpOnly: false,
-          maxAge: 43200000,
+          maxAge: 57600000,
+          overwrite: true,
         });
         ctx.cookies.set('inDatabase', 'true', {
           signed: true,
@@ -299,9 +302,9 @@ module.exports = {
       console.log(x);
       console.log('ADDED');
     } catch (err) {
+      console.log(err);
       ctx.status = 409;
-      ctx.message = 'Email Did Not Add';
-      throw err;
+      ctx.message = 'Email Already Exists';
     }
   },
 
@@ -366,7 +369,7 @@ module.exports = {
     ctx.response.body = table;
   },
 
-  async downloadUserLogCSV(ctx) {
+  async downloadUserLogsCSV(ctx) {
     const re = new RegExp('@');
     const queryData = ctx.query;
     const startDate = queryData.start;
@@ -450,20 +453,28 @@ module.exports = {
   async uploadEmployeeCSV(ctx) {
     const file = fs.readdirSync(`${__dirname}/../../uploads/`);
     const src = fs.createReadStream(`${__dirname}/../../uploads/${file[0]}`);
+    const people = [];
 
-    ctx.status = 200;
     src.pipe(csv())
-      .on('data', async (chunk) => {
-        await db('employees').insert({
-          email: chunk.Email,
-          firstname: chunk['First Name'],
-          lastname: chunk['Last Name'],
-        });
-        console.log(chunk);
+      .on('data', (chunk) => {
+        people.push(chunk);
       })
-      .on('end', async () => {
+      .on('end', () => {
+        people.forEach(async (x) => {
+          try {
+            await db('employees').insert({
+              email: x.Email,
+              firstname: x['First Name'],
+              lastname: x['Last Name'],
+            });
+          } catch (err) {
+            // FIX ERROR REPORTING
+            console.log(`Already in Database: ${x.Email}`);
+          }
+        });
         fs.unlinkSync(`${__dirname}/../../uploads/${file[0]}`);
       });
+    ctx.status = 200;
   },
 
   async downloadEmployeeCSV(ctx) {
@@ -471,7 +482,7 @@ module.exports = {
     let line;
 
     fs.writeFileSync('employees.csv', 'Email,First Name,Last Name\n');
-    table.forEach((param) => {
+    await table.forEach((param) => {
       line = param.email;
       line = `${line},${param.firstname},${param.lastname}\n`;
       fs.appendFileSync('employees.csv', line);
