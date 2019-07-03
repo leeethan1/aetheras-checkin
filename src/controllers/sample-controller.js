@@ -461,7 +461,9 @@ module.exports = {
 
     src.pipe(csv())
       .on('data', (chunk) => {
-        people.push(chunk);
+        if (chunk.Email && chunk['First Name'] && chunk['Last Name']) {
+          people.push(chunk);
+        }
       })
       .on('end', async () => {
         await Promise.all(people.map(async (x) => {
