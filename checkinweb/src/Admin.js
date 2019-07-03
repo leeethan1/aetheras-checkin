@@ -44,11 +44,12 @@ class UploadEmployeeCSV extends React.Component {
     this.state = {
       label: 'Upload Employee CSV',
     };
+    this.ref = React.createRef();
     this.handleChange = this.handleChange.bind(this);
   }
 
   async handleChange() {
-    const promise = autils.uploadEmployeeCSV();
+    const promise = autils.uploadEmployeeCSV(this.ref.current);
     promise.then(() => { this.setState({ label: 'File Uploaded' }); });
   }
 
@@ -57,7 +58,7 @@ class UploadEmployeeCSV extends React.Component {
       <div>
         <label>{this.state.label} </label>
         <input type="file" id='upload' accept="text/csv" name="names"
-        onChange={() => this.handleChange()}/><br></br><br></br>
+        onChange={() => this.handleChange()} value='' ref={this.ref}/><br></br><br></br>
       </div>
     );
   }
@@ -66,14 +67,16 @@ class UploadEmployeeCSV extends React.Component {
 function DownloadEmployeeCSV() {
   return (
     <div>
-      <input type='button' className='admin-buttons' onClick={() => autils.downloadEmployeeCSV()} value='Download Employee List'/><br></br><br></br>
+      <input type='button' className='admin-buttons' onClick={() => autils.downloadEmployeeCSV()}
+      value='Download Employee List'/><br></br><br></br>
     </div>
   );
 }
 
 function AddAdmin(props) {
   return (
-    <input type='button' className='admin-buttons' onClick={props.onClick} defaultValue='Add Admin' />
+    <input type='button' className='admin-buttons'
+    onClick={props.onClick} defaultValue='Add Admin' />
   );
 }
 
@@ -216,7 +219,9 @@ class FormCSV extends React.Component {
       <div>
         <StartDate value={this.state.sDate} handleChange={this.handlesDate} />
         <EndDate value={this.state.eDate} handleChange={this.handleeDate} /><br></br>
-        <DownloadUserLogsCSV onClick={() => autils.downloadUserLogsCSV()} /><br></br><br></br>
+        <DownloadUserLogsCSV onClick={() => {
+          autils.downloadUserLogsCSV(this.state.sDate, this.state.eDate);
+        }} /><br></br><br></br>
       </div>
     );
   }

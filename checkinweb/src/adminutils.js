@@ -54,13 +54,13 @@ export async function viewUserLogs() {
   }
 }
 
-export async function downloadUserLogsCSV() {
+export async function downloadUserLogsCSV(date, time) {
   let info = prompt('Enter name or email (leave blank for all employees)');
   if (info) {
     info = info.replace(' ', '-');
   }
-  const start = document.getElementById('startDate').value;
-  const end = document.getElementById('endDate').value;
+  const start = date;
+  const end = time;
   if (start !== '' && end !== '') {
     window.open(`http://localhost:8080/v1/downloadUserLogsCSV?start=${start}&end=${end}&info=${info}`);
   } else {
@@ -68,17 +68,15 @@ export async function downloadUserLogsCSV() {
   }
 }
 
-export async function uploadEmployeeCSV() {
+export async function uploadEmployeeCSV(element) {
   const formData = new FormData();
-  const input = document.getElementById('upload');
 
-  if (input.files[0]) {
-    formData.append('names', input.files[0]);
+  if (element.files[0]) {
+    formData.append('names', element.files[0]);
     await fetch('http://localhost:8080/v1/uploadEmployeeCSV', {
       method: 'PUT',
       body: formData,
     });
-    document.getElementById('upload').value = '';
   }
 }
 
