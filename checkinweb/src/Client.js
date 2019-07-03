@@ -15,9 +15,9 @@ import * as utils from './clientutils';
 function Client() {
   return (
     <div className='client-div'>
-      <EmployeeForm/>
+      <EmployeeForm />
       <div className='admin-form' id='admin'>
-        <Admin/>
+        <Admin />
       </div>
     </div>
   );
@@ -25,7 +25,7 @@ function Client() {
 
 function DisplayLogo() {
   return (
-    <img className='logo' src={title} alt='title'/>
+    <img className='logo' src={title} alt='title' />
   );
 }
 
@@ -33,7 +33,7 @@ function GoogleButton() {
   return (
     <button type="button" className="google-button" onClick={() => utils.googleLogin()} id='login'>
       <span className="google-icon">
-        <img className='g-logo' src={glogo} alt='glogo'/>
+        <img className='g-logo' src={glogo} alt='glogo' />
       </span>
       <span className="google-text">Sign in with Google</span>
     </button>
@@ -50,25 +50,27 @@ function OptionalLabel() {
 
 function Datebox(props) {
   return (
-    <input className='date-time' type='date' value={props.value} onChange={props.handleChange}/>
+    <input className='date-time' type='date' value={props.value} onChange={props.handleChange} />
   );
 }
 
 function Timebox(props) {
   return (
-    <input className='date-time' type='time' value={props.value} onChange={props.handleChange}/>
+    <input className='date-time' type='time' value={props.value} onChange={props.handleChange} />
   );
 }
 
 function CheckInButton(props) {
   return (
-    <input type='button' className='checks-buttons' onClick={props.onClick} defaultValue='Check In'/>
+    <input type='button' className='checks-buttons' onClick={props.onClick}
+      defaultValue='Check In' />
   );
 }
 
 function CheckOutButton(props) {
   return (
-    <input type='button' className='checks-buttons' onClick={props.onClick} defaultValue='Check Out'/>
+    <input type='button' className='checks-buttons' onClick={props.onClick}
+      defaultValue='Check Out' />
   );
 }
 
@@ -113,10 +115,12 @@ class Form extends React.Component {
     return (
       <div>
         <OptionalLabel/><br></br>
-        <Datebox value={this.state.date} handleChange={this.handleDate}/>
-        <Timebox value={this.state.time} handleChange={this.handleTime}/><br></br><br></br>
-        <CheckInButton onClick={() => this.handleClick(0)}/>
-        <CheckOutButton onClick={() => this.handleClick(1)}/><br></br>
+        <Datebox value={this.state.date} handleChange={this.handleDate} />
+        <Timebox value={this.state.time} handleChange={this.handleTime} />
+        <br></br><br></br>
+        <CheckInButton onClick={() => this.handleClick(0)} />
+        <CheckOutButton onClick={() => this.handleClick(1)} />
+        <br></br>
         {this.state.value}
       </div>
     );
@@ -126,7 +130,8 @@ class Form extends React.Component {
 function SelectedUserInfo(props) {
   return (
     <div>
-      <label>{props.user[0].email} </label><br></br>
+      <label>{props.user[0].email} </label>
+      <br></br>
       <label>{props.user[0].firstname} </label>
       <label>{props.user[0].lastname}</label>
     </div>
@@ -147,7 +152,7 @@ class UserLogTable extends React.Component {
     const rows = [];
     this.props.data.forEach((entry, i) => {
       rows.push(<UserLogEntries key={i} date={entry.checkdate}
-        checkIn={entry.checkintime} checkOut={entry.checkouttime}/>);
+        checkIn={entry.checkintime} checkOut={entry.checkouttime} />);
     });
     return (
       <table className='table'>
@@ -187,8 +192,8 @@ class UserLogBox extends React.Component {
   render() {
     return (
       <div>
-        <SelectedUserInfo user={this.state.data}/>
-        <UserLogTable data={this.state.data}/>
+        <SelectedUserInfo user={this.state.data} />
+        <UserLogTable data={this.state.data} />
       </div>
     );
   }
@@ -197,13 +202,14 @@ class UserLogBox extends React.Component {
 function EmployeeForm() {
   return (
     <div>
-      <DisplayLogo/>
+      <DisplayLogo />
       <div id='login'>
-        <GoogleButton/>
+        <GoogleButton />
       </div>
       <div className='checks-form' id='form'>
-        <Form/><br></br>
-        <UserLogBox/>
+        <Form />
+        <br></br>
+        <UserLogBox />
       </div>
     </div>
   );

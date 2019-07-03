@@ -18,7 +18,8 @@ function StartDate(props) {
   return (
     <div>
       <label>Start:</label>
-      <input className='date-time' type='date' id='startDate' value={props.value} onChange={props.handleChange} />
+      <input className='date-time' type='date' id='startDate'
+        value={props.value} onChange={props.handleChange} />
     </div>
   );
 }
@@ -27,14 +28,16 @@ function EndDate(props) {
   return (
     <div>
       <label>End:&nbsp;&nbsp;</label>
-      <input className='date-time' type='date' id='endDate' value={props.value} onChange={props.handleChange} />
+      <input className='date-time' type='date' id='endDate'
+        value={props.value} onChange={props.handleChange} />
     </div>
   );
 }
 
 function DownloadUserLogsCSV(props) {
   return (
-    <input type='button' className='admin-buttons' onClick={props.onClick} defaultValue='Download Logs CSV' />
+    <input type='button' className='admin-buttons' onClick={props.onClick}
+      defaultValue='Download Logs CSV' />
   );
 }
 
@@ -58,7 +61,8 @@ class UploadEmployeeCSV extends React.Component {
       <div>
         <label>{this.state.label} </label>
         <input type="file" id='upload' accept="text/csv" name="names"
-        onChange={() => this.handleChange()} value='' ref={this.ref}/><br></br><br></br>
+          onChange={() => this.handleChange()} value='' ref={this.ref} />
+        <br></br><br></br>
       </div>
     );
   }
@@ -68,7 +72,8 @@ function DownloadEmployeeCSV() {
   return (
     <div>
       <input type='button' className='admin-buttons' onClick={() => autils.downloadEmployeeCSV()}
-      value='Download Employee List'/><br></br><br></br>
+      value='Download Employee List' />
+      <br></br><br></br>
     </div>
   );
 }
@@ -89,7 +94,8 @@ function DisplayAddedAdmin(props) {
 function ViewEmail(props) {
   return (
     <div>
-      <input type='button' className='admin-buttons' onClick={props.onClick} defaultValue='View Email Registry' />
+      <input type='button' className='admin-buttons' onClick={props.onClick}
+        defaultValue='View Email Registry' />
     </div>
   );
 }
@@ -99,7 +105,7 @@ class DisplayEmail extends React.Component {
     const rows = [];
     this.props.data.forEach((entry, i) => {
       rows.push(<UserLogEntries key={i} date={entry.email}
-        checkin={entry.firstname} checkout={entry.lastname}/>);
+        checkin={entry.firstname} checkout={entry.lastname} />);
     });
     return (
       <table className='table'>
@@ -119,7 +125,8 @@ class DisplayEmail extends React.Component {
 function ViewUserLogs(props) {
   return (
     <div>
-    <input type='button' className='admin-buttons' onClick={props.onClick} defaultValue='View User Logs' />
+    <input type='button' className='admin-buttons' onClick={props.onClick}
+      defaultValue='View User Logs' />
     </div>
   );
 }
@@ -127,7 +134,8 @@ function ViewUserLogs(props) {
 function SelectedUserInfo(props) {
   return (
     <div>
-      <label>{props.user[0].email} </label><br></br>
+      <label>{props.user[0].email} </label>
+      <br></br>
       <label>{props.user[0].firstname} </label>
       <label>{props.user[0].lastname}</label>
     </div>
@@ -149,7 +157,7 @@ class UserLogTable extends React.Component {
     const rows = [];
     this.props.data.forEach((entry, i) => {
       rows.push(<UserLogEntries key={i} date={entry.checkdate}
-        checkin={entry.checkintime} checkout={entry.checkouttime}/>);
+        checkin={entry.checkintime} checkout={entry.checkouttime} />);
     });
     return (
       <table className='table'>
@@ -176,10 +184,10 @@ class OutputBox extends React.Component {
     if (this.props.data && this.props.flag === 0) {
       user = <DisplayAddedAdmin data={this.props.value} />;
     } else if (this.props.data && this.props.flag === 1) {
-      emails = <DisplayEmail data={this.props.data}/>;
+      emails = <DisplayEmail data={this.props.data} />;
     } else if (this.props.data && this.props.flag === 2) {
-      info = <SelectedUserInfo user={this.props.data}/>;
-      table = <UserLogTable data={this.props.data}/>;
+      info = <SelectedUserInfo user={this.props.data} />;
+      table = <UserLogTable data={this.props.data} />;
     }
 
     return (
@@ -218,10 +226,12 @@ class FormCSV extends React.Component {
     return (
       <div>
         <StartDate value={this.state.sDate} handleChange={this.handlesDate} />
-        <EndDate value={this.state.eDate} handleChange={this.handleeDate} /><br></br>
+        <EndDate value={this.state.eDate} handleChange={this.handleeDate} />
+        <br></br>
         <DownloadUserLogsCSV onClick={() => {
           autils.downloadUserLogsCSV(this.state.sDate, this.state.eDate);
-        }} /><br></br><br></br>
+        }} />
+        <br></br><br></br>
       </div>
     );
   }
@@ -263,13 +273,13 @@ class AdminForm extends React.Component {
   render() {
     return (
       <div>
-        <FormCSV/>
-        <UploadEmployeeCSV/>
-        <DownloadEmployeeCSV/>
-        <AddAdmin onClick={() => this.handleClick(0)}/>
-        <ViewEmail onClick={() => this.handleClick(1)}/>
-        <ViewUserLogs onClick={() => this.handleClick(2)}/>
-        <OutputBox data={this.state.data} flag={this.state.flag} value={this.state.value}/>
+        <FormCSV />
+        <UploadEmployeeCSV />
+        <DownloadEmployeeCSV />
+        <AddAdmin onClick={() => this.handleClick(0)} />
+        <ViewEmail onClick={() => this.handleClick(1)} />
+        <ViewUserLogs onClick={() => this.handleClick(2)} />
+        <OutputBox data={this.state.data} flag={this.state.flag} value={this.state.value} />
       </div>
     );
   }

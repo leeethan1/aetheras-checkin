@@ -20,7 +20,11 @@ export async function addAdmin() {
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ email: emailAddress, firstname: firstName, lastname: lastName }),
+    body: JSON.stringify({
+      email: emailAddress,
+      firstname: firstName,
+      lastname: lastName,
+    }),
   });
 
   return response.statusText;
@@ -61,8 +65,9 @@ export async function downloadUserLogsCSV(date, time) {
   }
   const start = date;
   const end = time;
+  const url = `http://localhost:8080/v1/downloadUserLogsCSV?start=${start}&end=${end}&info=${info}`;
   if (start !== '' && end !== '') {
-    window.open(`http://localhost:8080/v1/downloadUserLogsCSV?start=${start}&end=${end}&info=${info}`);
+    window.open(url);
   } else {
     alert('Please Input Date Range');
   }
