@@ -40,6 +40,8 @@ INSERT INTO admins
 VALUES
   (1, 'Josh', 'Lai', 'c@c.com'),
   (2, 'Ethan', 'Lee', 'lee.ethan168@gmail.com');
+SELECT setval('admins_id_seq', (SELECT MAX(id)
+  from "admins"));
 INSERT INTO employees
   (id, firstname, lastname, email)
 VALUES
