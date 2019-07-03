@@ -333,6 +333,7 @@ module.exports = {
             .on('checkin.checkdate', '=', 'checkout.checkdate');
         })
         .where('checkin.email', emailAddress)
+        .orderBy([{ column: 'email' }, { column: 'checkdate', order: 'desc' }])
         .innerJoin('employees', 'employees.id', 'checkin.id');
       console.log(table);
     } else {
@@ -357,6 +358,7 @@ module.exports = {
                 .on('checkin.checkdate', '=', 'checkout.checkdate');
             })
             .where('checkin.email', emailAddress)
+            .orderBy([{ column: 'email' }, { column: 'checkdate', order: 'desc' }])
             .innerJoin('employees', 'employees.id', 'checkin.id');
           console.log(table);
         } else {
