@@ -377,6 +377,7 @@ module.exports = {
     let emailAddress = queryData.info;
     let line;
     let table;
+    let stream;
 
     if (!queryData.info) {
       table = await db('checkin').select(
@@ -443,11 +444,12 @@ module.exports = {
         line = `${line},${param.firstname},${param.lastname},${param.checkdate},${param.checkintime},${param.checkouttime}\n`;
         fs.appendFileSync('logs.csv', line);
         ctx.response.attachment('logs.csv');
-        ctx.response.body = fs.createReadStream(`${__dirname}/../../logs.csv`);
+        stream = fs.createReadStream(`${__dirname}/../../logs.csv`);
+        ctx.response.body = stream;
         console.log(line);
       }
     });
-    fs.unlinkSync(`${__dirname}/../../logs.csv`);
+    stream.on('end', () => fs.unlinkSync(`${__dirname}/../../logs.csv`));
   },
 
   async uploadEmployeeCSV(ctx) {
@@ -480,6 +482,7 @@ module.exports = {
   async downloadEmployeeCSV(ctx) {
     const table = await db('employees').select('email', 'firstname', 'lastname');
     let line;
+    let stream;
 
     fs.writeFileSync('employees.csv', 'Email,First Name,Last Name\n');
     await table.forEach((param) => {
@@ -487,9 +490,10 @@ module.exports = {
       line = `${line},${param.firstname},${param.lastname}\n`;
       fs.appendFileSync('employees.csv', line);
       ctx.response.attachment('employees.csv');
-      ctx.response.body = fs.createReadStream(`${__dirname}/../../employees.csv`);
+      stream = fs.createReadStream(`${__dirname}/../../employees.csv`);
+      ctx.response.body = stream;
       console.log(line);
     });
-    fs.unlinkSync(`${__dirname}/../../employees.csv`);
+    stream.on('end', () => fs.unlinkSync(`${__dirname}/../../employees.csv`));
   },
 };
