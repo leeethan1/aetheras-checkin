@@ -101,12 +101,20 @@ class Form extends React.Component {
     if (i === 0) {
       const stats = utils.checkIn(this.state.date, this.state.time);
       stats.then((stat) => {
-        this.setState({ value: stat[1] });
+        this.setState({
+          value: stat[1],
+          date: '',
+          time: '',
+        });
       });
     } else {
       const stats = utils.checkOut(this.state.date, this.state.time);
       stats.then((stat) => {
-        this.setState({ value: stat[1] });
+        this.setState({
+          value: stat[1],
+          date: '',
+          time: '',
+        });
       });
     }
   }
