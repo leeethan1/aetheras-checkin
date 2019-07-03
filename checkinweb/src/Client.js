@@ -11,10 +11,11 @@ import title from './title.png';
 import glogo from './g-logo.png';
 import * as utils from './clientutils';
 
+// complete page
 function Client() {
   return (
     <div className='client-div'>
-      <AetherasForm/>
+      <EmployeeForm/>
       <div className='admin-form' id='admin'>
         <Admin/>
       </div>
@@ -193,7 +194,7 @@ class UserLogBox extends React.Component {
   }
 }
 
-function AetherasForm() {
+function EmployeeForm() {
   return (
     <div>
       <DisplayLogo/>
