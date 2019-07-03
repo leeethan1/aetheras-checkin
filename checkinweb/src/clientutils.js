@@ -81,11 +81,13 @@ export async function checkIn(userDateParam, userTimeParam) {
   const userDate = userDateParam;
   const userTime = userTimeParam;
   const date = getFormattedDateTime();
+  const userDateTime = new Date(`${userDateParam} ${userTimeParam}`);
+  const dateTime = new Date(`${date[0]} ${date[1]}`);
   let url;
   let status;
   let message;
 
-  if (userDate > date[0] || userTime > date[1]) {
+  if (userDateTime > dateTime) {
     alert('Cannot Enter Future Dates');
     status = 409;
     message = 'Cannot Enter Future Dates';
@@ -125,11 +127,13 @@ export async function checkOut(userDateParam, userTimeParam) {
   const userDate = userDateParam;
   const userTime = userTimeParam;
   const date = getFormattedDateTime();
+  const userDateTime = new Date(`${userDateParam} ${userTimeParam}`);
+  const dateTime = new Date(`${date[0]} ${date[1]}`);
   let url;
   let status;
   let message;
 
-  if (userDate > date[0] || userTime > date[1]) {
+  if (userDateTime > dateTime) {
     alert('Cannot Enter Future Dates');
     status = 409;
     message = 'Cannot Enter Future Dates';
