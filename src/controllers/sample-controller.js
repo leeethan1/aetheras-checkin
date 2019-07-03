@@ -463,8 +463,8 @@ module.exports = {
       .on('data', (chunk) => {
         people.push(chunk);
       })
-      .on('end', () => {
-        people.forEach(async (x) => {
+      .on('end', async () => {
+        await Promise.all(people.map(async (x) => {
           try {
             await db('employees').insert({
               email: x.Email,
@@ -475,7 +475,7 @@ module.exports = {
             // FIX ERROR REPORTING
             console.log(`Already in Database: ${x.Email}`);
           }
-        });
+        }));
         fs.unlinkSync(`${__dirname}/../../uploads/${file[0]}`);
       });
     ctx.status = 200;
