@@ -7,6 +7,7 @@ import React from 'react';
 
 import * as autils from './adminutils';
 
+// complete form
 function Admin() {
   return (
     <AdminForm />
@@ -37,13 +38,29 @@ function DownloadUserLogsCSV(props) {
   );
 }
 
-function UploadEmployeeCSV() {
-  return (
-    <div>
-      <label>Upload Employee CSV </label>
-      <input type="file" id='upload' accept="text/csv" name="names" onChange={() => autils.uploadEmployeeCSV()}/><br></br><br></br>
-    </div>
-  );
+class UploadEmployeeCSV extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      label: 'Upload Employee CSV',
+    };
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  async handleChange() {
+    const promise = autils.uploadEmployeeCSV();
+    promise.then(() => { this.setState({ label: 'File Uploaded' }); });
+  }
+
+  render() {
+    return (
+      <div>
+        <label>{this.state.label} </label>
+        <input type="file" id='upload' accept="text/csv" name="names"
+        onChange={() => this.handleChange()}/><br></br><br></br>
+      </div>
+    );
+  }
 }
 
 function DownloadEmployeeCSV() {

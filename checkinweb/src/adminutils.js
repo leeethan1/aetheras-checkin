@@ -68,18 +68,17 @@ export async function downloadUserLogsCSV() {
   }
 }
 
-export function uploadEmployeeCSV() {
+export async function uploadEmployeeCSV() {
   const formData = new FormData();
   const input = document.getElementById('upload');
 
   if (input.files[0]) {
     formData.append('names', input.files[0]);
-    fetch('http://localhost:8080/v1/uploadEmployeeCSV', {
+    await fetch('http://localhost:8080/v1/uploadEmployeeCSV', {
       method: 'PUT',
       body: formData,
     });
-  } else {
-    alert('No File Selected');
+    document.getElementById('upload').value = '';
   }
 }
 
