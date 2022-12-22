@@ -28,7 +28,7 @@
     "csv-writer": "^1.4.0",
     "db-migrate-pg": "^1.0.0",
     "googleapis": "^40.0.0",
-    "jsonwebtoken": "^8.4.0",
+    "jsonwebtoken": "^9.0.0",
     "kcors": "2.2.2",
     "knex": "^0.16.5",
     "koa": "^2.6.2",
